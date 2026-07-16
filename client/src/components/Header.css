@@ -70,6 +70,22 @@
   transform: translateY(-1px);
 }
 
+.nav-btn-outline {
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.nav-btn-outline:hover {
+  border-color: var(--accent);
+  color: #c4b5fd;
+}
+
 @media (max-width: 480px) {
   .nav-link { display: none; }
 }

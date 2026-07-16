@@ -1,3 +1,10 @@
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/clerk-react";
 import "./Header.css";
 
 export default function Header() {
@@ -11,7 +18,21 @@ export default function Header() {
         <nav className="nav">
           <a href="#" className="nav-link">Gallery</a>
           <a href="#" className="nav-link">Pricing</a>
-          <button className="nav-btn">Get Started</button>
+
+          {/* ── Not signed in ── */}
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="nav-btn-outline">Se connecter</button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button className="nav-btn">Créer un compte</button>
+            </SignUpButton>
+          </SignedOut>
+
+          {/* ── Signed in ── */}
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
         </nav>
       </div>
     </header>
