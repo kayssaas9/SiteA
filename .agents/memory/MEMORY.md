@@ -1,0 +1,1 @@
+- [Vite environment variable exposure](vite-env-exposure.md) — VITE_* secrets are auto-exposed to the client; no manual remapping needed in vite.config.js.

@@ -42,6 +42,52 @@
 /* ── Section ── */
 .pricing-section { margin-bottom: 56px; }
 
+.pricing-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.billing-toggle {
+  display: inline-flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.billing-toggle button {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.billing-toggle button.active {
+  background: var(--accent-grad);
+  color: #fff;
+}
+
+.toggle-save {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255,255,255,.25);
+  padding: 2px 6px;
+  border-radius: 100px;
+}
+
 .section-title {
   font-size: 20px;
   font-weight: 700;

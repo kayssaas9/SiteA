@@ -17,13 +17,8 @@ export default defineConfig({
     "import.meta.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
     ),
-    // Stripe price IDs — set STRIPE_PRICE_* in Replit Secrets
-    "import.meta.env.VITE_STRIPE_PRICE_BASIC":    JSON.stringify(process.env.STRIPE_PRICE_BASIC    ?? ""),
-    "import.meta.env.VITE_STRIPE_PRICE_PRO":      JSON.stringify(process.env.STRIPE_PRICE_PRO      ?? ""),
-    "import.meta.env.VITE_STRIPE_PRICE_EXPERT":   JSON.stringify(process.env.STRIPE_PRICE_EXPERT   ?? ""),
-    "import.meta.env.VITE_STRIPE_PRICE_PACK_4K":  JSON.stringify(process.env.STRIPE_PRICE_PACK_4K  ?? ""),
-    "import.meta.env.VITE_STRIPE_PRICE_PACK_8K":  JSON.stringify(process.env.STRIPE_PRICE_PACK_8K  ?? ""),
-    "import.meta.env.VITE_STRIPE_PRICE_PACK_20K": JSON.stringify(process.env.STRIPE_PRICE_PACK_20K ?? ""),
+    // Vite expose automatiquement les variables d'environnement préfixées par VITE_
+    // aux fichiers clients (ex: VITE_STRIPE_PRICE_*). Aucun remapping n'est nécessaire.
   },
   server: {
     host: "0.0.0.0",

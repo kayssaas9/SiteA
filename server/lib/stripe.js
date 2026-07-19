@@ -7,21 +7,28 @@ export const stripe = new Stripe(key, { apiVersion: "2024-06-20" });
 
 // ── Credit amounts per product ────────────────────────────────────────────────
 // Map Stripe price IDs → credit grants.
-// Set these via Replit Secrets or env vars.
+// Set these via Replit Secrets (VITE_STRIPE_PRICE_*).
 export const PRICE_CREDITS = {
-  // Subscriptions
-  [process.env.STRIPE_PRICE_BASIC]:   2500,
-  [process.env.STRIPE_PRICE_PRO]:     7500,
-  [process.env.STRIPE_PRICE_EXPERT]:  15000,
+  // Monthly subscriptions
+  [process.env.VITE_STRIPE_PRICE_BASIQUE]: 2500,
+  [process.env.VITE_STRIPE_PRICE_PRO]:     7500,
+  [process.env.VITE_STRIPE_PRICE_EXPERT]:  15000,
+  // Annual subscriptions (same monthly credit grant)
+  [process.env.VITE_STRIPE_PRICE_BASIQUE_ANNUEL]: 2500,
+  [process.env.VITE_STRIPE_PRICE_PRO_ANNUEL]:     7500,
+  [process.env.VITE_STRIPE_PRICE_EXPERT_ANNUEL]:  15000,
   // One-time credit packs
-  [process.env.STRIPE_PRICE_PACK_4K]:  4000,
-  [process.env.STRIPE_PRICE_PACK_8K]:  8500,
-  [process.env.STRIPE_PRICE_PACK_20K]: 20000,
+  [process.env.VITE_STRIPE_PRICE_PACK_4K]:  4000,
+  [process.env.VITE_STRIPE_PRICE_PACK_8K]:  8500,
+  [process.env.VITE_STRIPE_PRICE_PACK_20K]: 20000,
 };
 
-// Plans keyed by price ID
+// Plans keyed by price ID (monthly and annual variants map to the same plan)
 export const PRICE_PLANS = {
-  [process.env.STRIPE_PRICE_BASIC]:  "basic",
-  [process.env.STRIPE_PRICE_PRO]:    "pro",
-  [process.env.STRIPE_PRICE_EXPERT]: "expert",
+  [process.env.VITE_STRIPE_PRICE_BASIQUE]:        "basic",
+  [process.env.VITE_STRIPE_PRICE_BASIQUE_ANNUEL]: "basic",
+  [process.env.VITE_STRIPE_PRICE_PRO]:            "pro",
+  [process.env.VITE_STRIPE_PRICE_PRO_ANNUEL]:     "pro",
+  [process.env.VITE_STRIPE_PRICE_EXPERT]:           "expert",
+  [process.env.VITE_STRIPE_PRICE_EXPERT_ANNUEL]:  "expert",
 };
