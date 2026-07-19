@@ -22,6 +22,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
 }
 
 .logo-icon {
@@ -84,6 +85,53 @@
 .nav-btn-outline:hover {
   border-color: var(--accent);
   color: #c4b5fd;
+}
+
+/* ── Credits badge ── */
+.credits-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  color: #c4b5fd;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.credits-badge:hover {
+  background: rgba(124, 58, 237, 0.25);
+  border-color: var(--accent);
+}
+
+.credits-badge.skeleton {
+  width: 80px;
+  height: 28px;
+  background: var(--surface-2);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.credits-icon  { font-size: 14px; }
+.credits-count { font-variant-numeric: tabular-nums; }
+
+.credits-plan {
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 11px;
+  text-transform: capitalize;
+  margin-left: 2px;
 }
 
 @media (max-width: 480px) {

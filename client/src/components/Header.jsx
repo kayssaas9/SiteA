@@ -1,25 +1,41 @@
+import { Link } from "react-router-dom";
 import {
   SignInButton,
   SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
+  useUser,
 } from "@clerk/clerk-react";
+import { useUserData } from "../hooks/useUserData.js";
 import "./Header.css";
 
+function CreditsBadge() {
+  const { credits, plan, loading } = useUserData();
+  if (loading) return <span className="credits-badge skeleton" />;
+  return (
+    <Link to="/pricing" className="credits-badge" title="Voir les offres">
+      <span className="credits-icon">⚡</span>
+      <span className="credits-count">{credits.toLocaleString("fr-FR")}</span>
+      {plan !== "free" && <span className="credits-plan">{plan}</span>}
+    </Link>
+  );
+}
+
 export default function Header() {
+  const { isSignedIn } = useUser();
+
   return (
     <header className="header">
       <div className="header-inner">
-        <div className="logo">
+        <Link to="/" className="logo">
           <span className="logo-icon">🍌</span>
           <span className="logo-text">nano-banana</span>
-        </div>
-        <nav className="nav">
-          <a href="#" className="nav-link">Gallery</a>
-          <a href="#" className="nav-link">Pricing</a>
+        </Link>
 
-          {/* ── Not signed in ── */}
+        <nav className="nav">
+          <Link to="/pricing" className="nav-link">Tarifs</Link>
+
           <SignedOut>
             <SignInButton mode="modal">
               <button className="nav-btn-outline">Se connecter</button>
@@ -29,8 +45,8 @@ export default function Header() {
             </SignUpButton>
           </SignedOut>
 
-          {/* ── Signed in ── */}
           <SignedIn>
+            <CreditsBadge />
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
         </nav>
