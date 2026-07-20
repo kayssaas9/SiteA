@@ -10,7 +10,7 @@ const router = express.Router();
  * Configure in Stripe Dashboard → Webhooks → your endpoint.
  * Add STRIPE_WEBHOOK_SECRET to Replit Secrets.
  */
-router.post("/", async (req, res) => {
+router.post("/", express.raw({ type: "application/json" }), async (req, res) => {
   const sig     = req.headers["stripe-signature"];
   const secret  = process.env.STRIPE_WEBHOOK_SECRET;
 
