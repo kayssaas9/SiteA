@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from "react-router-dom";
 import Header from "./components/Header.jsx";
 import ModeSelector from "./components/ModeSelector.jsx";
 import OutfitGenerator from "./components/OutfitGenerator.jsx";
@@ -44,21 +44,40 @@ function Home() {
   );
 }
 
-export default function App() {
+function Layout() {
   return (
-    <BrowserRouter>
-      <div className="app">
-        <Header />
-        <Routes>
-          <Route path="/"          element={<Home />} />
-          <Route path="/pricing"   element={<Pricing />} />
-          <Route path="/snaprouge" element={<SnapRougeGuard><SnapRouge /></SnapRougeGuard>} />
-          <Route path="*"          element={<Navigate to="/" replace />} />
-        </Routes>
-        <footer className="footer">
-          <p>© 2025 nano-banana · AI Image Studio</p>
-        </footer>
-      </div>
-    </BrowserRouter>
+    <div className="app">
+      <Header />
+      <Outlet />
+      <footer className="footer">
+        <p>© 2025 nano-banana · AI Image Studio</p>
+      </footer>
+    </div>
   );
+}
+
+// Router is created once outside the render tree to avoid StrictMode
+// double-initialization issues and to keep history stable across hot reloads.
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "pricing", element: <Pricing /> },
+      {
+        path: "snaprouge",
+        element: (
+          <SnapRougeGuard>
+            <SnapRouge />
+          </SnapRougeGuard>
+        ),
+      },
+      { path: "*", element: <Navigate to="/" replace /> },
+    ],
+  },
+]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
