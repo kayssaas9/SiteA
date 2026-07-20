@@ -9,7 +9,7 @@ router.get("/:clerkUserId", async (req, res) => {
 
   const { data, error } = await supabaseAdmin
     .from("users")
-    .select("plan, credits, email")
+    .select("plan, credits, email, snaprouge_unlocked")
     .eq("clerk_user_id", clerkUserId)
     .single();
 

@@ -56,6 +56,15 @@
   color: var(--text);
 }
 
+.nav-link.snaprouge-link {
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+.nav-link.snaprouge-link:hover {
+  color: #ef4444;
+}
+
 .nav-btn {
   background: var(--accent-grad);
   color: #fff;

@@ -5,6 +5,8 @@ import ModeSelector from "./components/ModeSelector.jsx";
 import OutfitGenerator from "./components/OutfitGenerator.jsx";
 import CarReplacer from "./components/CarReplacer.jsx";
 import Pricing from "./pages/Pricing.jsx";
+import SnapRouge from "./pages/SnapRouge.jsx";
+import SnapRougeGuard from "./components/SnapRougeGuard.jsx";
 import "./App.css";
 
 function Home() {
@@ -48,9 +50,10 @@ export default function App() {
       <div className="app">
         <Header />
         <Routes>
-          <Route path="/"        element={<Home />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="*"        element={<Navigate to="/" replace />} />
+          <Route path="/"          element={<Home />} />
+          <Route path="/pricing"   element={<Pricing />} />
+          <Route path="/snaprouge" element={<SnapRougeGuard><SnapRouge /></SnapRougeGuard>} />
+          <Route path="*"          element={<Navigate to="/" replace />} />
         </Routes>
         <footer className="footer">
           <p>© 2025 nano-banana · AI Image Studio</p>

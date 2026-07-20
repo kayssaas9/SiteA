@@ -1,1 +1,2 @@
 - [Vite environment variable exposure](vite-env-exposure.md) — VITE_* secrets are auto-exposed to the client; no manual remapping needed in vite.config.js.
+- [Supabase migrations in this project](supabase-migrations.md) — Migrations must run in Supabase SQL Editor, not via Replit's built-in database skill.

@@ -27,5 +27,11 @@ export function useUserData() {
     if (isLoaded && user) fetch_();
   }, [isLoaded, user?.id]);
 
-  return { plan: data?.plan ?? "free", credits: data?.credits ?? 0, loading, refetch: fetch_ };
+  return {
+    plan: data?.plan ?? "free",
+    credits: data?.credits ?? 0,
+    snaprougeUnlocked: data?.snaprouge_unlocked ?? false,
+    loading,
+    refetch: fetch_,
+  };
 }

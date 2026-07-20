@@ -1,5 +1,5 @@
 import express from "express";
-import { stripe, PRICE_CREDITS, PRICE_PLANS } from "../lib/stripe.js";
+import { stripe, PRICE_CREDITS, PRICE_PLANS, SNAP_ROUGE_PRICE } from "../lib/stripe.js";
 import { supabaseAdmin } from "../lib/supabase.js";
 
 const router = express.Router();
@@ -40,8 +40,18 @@ router.post("/", async (req, res) => {
         expand: ["line_items"],
       });
       const priceId = session.line_items?.data?.[0]?.price?.id;
-      const credits = PRICE_CREDITS[priceId] ?? 0;
 
+      // SnapRouge access unlock
+      if (SNAP_ROUGE_PRICE && priceId === SNAP_ROUGE_PRICE) {
+        await supabaseAdmin
+          .from("users")
+          .update({ snaprouge_unlocked: true })
+          .eq("clerk_user_id", clerkUserId);
+        console.log(`🔓 SnapRouge unlocked → ${clerkUserId}`);
+        return res.json({ received: true });
+      }
+
+      const credits = PRICE_CREDITS[priceId] ?? 0;
       if (credits > 0) {
         await addCredits(clerkUserId, credits);
         console.log(`💳 +${credits} credits (pack) → ${clerkUserId}`);

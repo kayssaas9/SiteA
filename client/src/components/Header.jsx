@@ -22,6 +22,16 @@ function CreditsBadge() {
   );
 }
 
+function SnapRougeLink() {
+  const { snaprougeUnlocked, loading } = useUserData();
+  if (loading || !snaprougeUnlocked) return null;
+  return (
+    <Link to="/snaprouge" className="nav-link snaprouge-link">
+      🔴 SnapRouge
+    </Link>
+  );
+}
+
 export default function Header() {
   const { isSignedIn } = useUser();
 
@@ -35,6 +45,7 @@ export default function Header() {
 
         <nav className="nav">
           <Link to="/pricing" className="nav-link">Tarifs</Link>
+          <SnapRougeLink />
 
           <SignedOut>
             <SignInButton mode="modal">

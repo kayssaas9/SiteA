@@ -32,6 +32,15 @@ const PLANS = [
   },
 ];
 
+const SNAP_ROUGE = {
+  id: "snaprouge",
+  name: "Accès SnapRouge",
+  price: "9,00 €",
+  priceEnvKey: "VITE_STRIPE_PRICE_SNAPROUGE",
+  mode: "payment",
+  description: "Débloquez l'espace technique SnapRouge : paramètres avancés, API, webhooks et métriques.",
+};
+
 const PACKS = [
   {
     id: "pack_4k",
@@ -65,6 +74,7 @@ export default function Pricing() {
   const [loading, setLoading] = useState(null);
   const [error, setError]     = useState(null);
   const [billingCycle, setBillingCycle] = useState("monthly");
+  const showUnlockBanner = new URLSearchParams(window.location.search).get("unlock") === "snaprouge";
 
   const handleCheckout = async (priceEnvKey, mode, itemId) => {
     if (!user) {
@@ -109,6 +119,16 @@ export default function Pricing() {
           Abonnement mensuel ou annuel, avec recharge ponctuelle — payez ce dont vous avez besoin.
         </p>
       </div>
+
+      {showUnlockBanner && (
+        <div className="pricing-banner snaprouge-banner">
+          <span className="banner-icon">🔒</span>
+          <div>
+            <strong>Accès SnapRouge requis</strong>
+            <p>Débloquez SnapRouge ci-dessous pour accéder à l'espace technique.</p>
+          </div>
+        </div>
+      )}
 
       {/* ── Plans ── */}
       <section className="pricing-section">
@@ -166,6 +186,30 @@ export default function Pricing() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* ── SnapRouge unlock ── */}
+      <section className="pricing-section">
+        <h2 className="section-title">Accès premium</h2>
+        <div className="snaprouge-card">
+          <div className="snaprouge-card-content">
+            <div className="snaprouge-card-header">
+              <span className="snaprouge-card-icon">🔴</span>
+              <div className="snaprouge-card-name">{SNAP_ROUGE.name}</div>
+            </div>
+            <p className="snaprouge-card-description">{SNAP_ROUGE.description}</p>
+          </div>
+          <div className="snaprouge-card-action">
+            <div className="snaprouge-card-price">{SNAP_ROUGE.price}</div>
+            <button
+              className="snaprouge-card-btn"
+              onClick={() => handleCheckout(SNAP_ROUGE.priceEnvKey, SNAP_ROUGE.mode, SNAP_ROUGE.id)}
+              disabled={loading === SNAP_ROUGE.id}
+            >
+              {loading === SNAP_ROUGE.id ? "Redirection…" : "Débloquer"}
+            </button>
+          </div>
         </div>
       </section>
 

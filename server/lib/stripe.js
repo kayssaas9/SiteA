@@ -32,3 +32,6 @@ export const PRICE_PLANS = {
   [process.env.VITE_STRIPE_PRICE_EXPERT]:           "expert",
   [process.env.VITE_STRIPE_PRICE_EXPERT_ANNUEL]:  "expert",
 };
+
+// One-time SnapRouge access unlock price ID
+export const SNAP_ROUGE_PRICE = process.env.VITE_STRIPE_PRICE_SNAPROUGE;
