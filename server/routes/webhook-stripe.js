@@ -35,26 +35,32 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
     if (!clerkUserId) return res.json({ received: true });
 
     if (obj.mode === "payment") {
-      // One-time credit pack — find the price from the line items
-      const session = await stripe.checkout.sessions.retrieve(obj.id, {
-        expand: ["line_items"],
-      });
-      const priceId = session.line_items?.data?.[0]?.price?.id;
+      try {
+        // One-time credit pack — find the price from the line items
+        const session = await stripe.checkout.sessions.retrieve(obj.id, {
+          expand: ["line_items"],
+        });
+        const priceId = session.line_items?.data?.[0]?.price?.id;
 
-      // SnapRouge access unlock
-      if (SNAP_ROUGE_PRICE && priceId === SNAP_ROUGE_PRICE) {
-        await supabaseAdmin
-          .from("users")
-          .update({ snaprouge_unlocked: true })
-          .eq("clerk_user_id", clerkUserId);
-        console.log(`🔓 SnapRouge unlocked → ${clerkUserId}`);
-        return res.json({ received: true });
-      }
+        // SnapRouge access unlock
+        if (SNAP_ROUGE_PRICE && priceId === SNAP_ROUGE_PRICE) {
+          await supabaseAdmin
+            .from("users")
+            .update({ snaprouge_unlocked: true })
+            .eq("clerk_user_id", clerkUserId);
+          console.log(`🔓 SnapRouge unlocked → ${clerkUserId}`);
+          return res.json({ received: true });
+        }
 
-      const credits = PRICE_CREDITS[priceId] ?? 0;
-      if (credits > 0) {
-        await addCredits(clerkUserId, credits);
-        console.log(`💳 +${credits} credits (pack) → ${clerkUserId}`);
+        const credits = PRICE_CREDITS[priceId] ?? 0;
+        if (credits > 0) {
+          await addCredits(clerkUserId, credits);
+          console.log(`💳 +${credits} credits (pack) → ${clerkUserId}`);
+        }
+      } catch (err) {
+        console.error(`Stripe checkout session retrieve failed for ${obj.id}:`, err.message);
+        // Return 200 so Stripe doesn't retry a session we cannot resolve.
+        return res.json({ received: true, warning: err.message });
       }
     }
     // For subscriptions, wait for invoice.payment_succeeded / subscription.updated
