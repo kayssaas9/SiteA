@@ -9,7 +9,7 @@ router.get("/:clerkUserId", async (req, res) => {
 
   const { data, error } = await supabaseAdmin
     .from("users")
-    .select("plan, credits, email")
+    .select("plan, credits, email, snaprouge_unlocked, survey_completed")
     .eq("clerk_user_id", clerkUserId)
     .single();
 
@@ -33,10 +33,10 @@ router.post("/ensure", express.json(), async (req, res) => {
   const { data, error } = await supabaseAdmin
     .from("users")
     .upsert(
-      { clerk_user_id: clerkUserId, email, plan: "free", credits: 0 },
+      { clerk_user_id: clerkUserId, email, plan: "free", credits: 0, snaprouge_unlocked: false, survey_completed: false },
       { onConflict: "clerk_user_id" }
     )
-    .select("plan, credits, email")
+    .select("plan, credits, email, snaprouge_unlocked, survey_completed")
     .single();
 
   if (error) {

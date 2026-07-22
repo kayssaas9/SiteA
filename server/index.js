@@ -10,6 +10,7 @@ import webhookStripe from "./routes/webhook-stripe.js";
 import checkoutRoute from "./routes/checkout.js";
 import userRoute     from "./routes/user.js";
 import historyRoute  from "./routes/history.js";
+import surveyRoute   from "./routes/survey.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app  = express();
@@ -30,6 +31,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use("/api/checkout", checkoutRoute);
 app.use("/api/user",     userRoute);
 app.use("/api/history",  historyRoute);
+app.use("/api/survey",   surveyRoute);
 
 // ── OneShotAPI image generation proxy ────────────────────────────────────────
 const ONESHOT_BASE_URL = "https://oneshotapi.com";

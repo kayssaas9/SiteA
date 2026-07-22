@@ -7,6 +7,7 @@ import Account from "./pages/Account.jsx";
 import History from "./pages/History.jsx";
 import SnapRouge from "./pages/SnapRouge.jsx";
 import SnapRougeGuard from "./components/SnapRougeGuard.jsx";
+import Survey from "./pages/Survey.jsx";
 import "./App.css";
 
 function Layout() {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: "pricing", element: <Pricing /> },
       { path: "account", element: <Account /> },
       { path: "history", element: <History /> },
+      { path: "survey", element: <Survey /> },
       {
         path: "snaprouge",
         element: (

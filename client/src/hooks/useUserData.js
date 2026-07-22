@@ -51,6 +51,7 @@ export function useUserData() {
     plan: data?.plan ?? "free",
     credits: data?.credits ?? 0,
     snaprougeUnlocked: data?.snaprouge_unlocked ?? false,
+    surveyCompleted: data?.survey_completed ?? false,
     loading,
     refetch: fetch_,
   };

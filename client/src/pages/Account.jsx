@@ -12,7 +12,7 @@ const PLAN_LABELS = {
 
 export default function Account() {
   const { user } = useUser();
-  const { plan, credits, snaprougeUnlocked, loading } = useUserData();
+  const { plan, credits, snaprougeUnlocked, surveyCompleted, loading } = useUserData();
   const navigate = useNavigate();
 
   if (!user) {
@@ -88,6 +88,23 @@ export default function Account() {
             <span className="coming-soon">Bientôt</span>
           </div>
         </div>
+
+        {!surveyCompleted && (
+          <div className="survey-card card fade-up delay-3">
+            <div className="survey-card-header">
+              <span className="survey-icon">📋</span>
+              <div>
+                <h2 className="account-section-title">Questionnaire</h2>
+                <p className="survey-card-text">
+                  15 questions sur ton expérience · <span className="accent">+300 crédits</span> offerts
+                </p>
+              </div>
+            </div>
+            <Link to="/survey" className="btn btn-primary">
+              Répondre au questionnaire
+            </Link>
+          </div>
+        )}
 
         <div className="snaprouge-account card fade-up delay-3">
           <div className="snaprouge-account-header">
