@@ -4,21 +4,21 @@ import { supabaseAdmin } from "../lib/supabase.js";
 const router = express.Router();
 
 const QUESTIONS = [
-  { id: "q1", type: "rating", text: "Comment évalueriez-vous la qualité des images générées ?" },
-  { id: "q2", type: "rating", text: "L'interface est-elle facile à prendre en main ?" },
-  { id: "q3", type: "rating", text: "La vitesse de génération vous convient-elle ?" },
-  { id: "q4", type: "rating", text: "Les explications sur les crédits sont-elles claires ?" },
-  { id: "q5", type: "rating", text: "Le processus de paiement est-il satisfaisant ?" },
-  { id: "q6", type: "choice", text: "Quelle fonctionnalité utilisez-vous le plus ?", options: ["Tenues", "Voitures", "SnapRouge", "Je n'ai pas encore généré"] },
-  { id: "q7", type: "choice", text: "Sur quel appareil utilisez-vous principalement Vysion ?", options: ["Ordinateur", "Mobile", "Tablette"] },
-  { id: "q8", type: "choice", text: "Comment avez-vous découvert Vysion ?", options: ["Recherche", "Réseaux sociaux", "Bouche-à-oreille", "Publicité", "Autre"] },
-  { id: "q9", type: "choice", text: "Recommanderiez-vous Vysion à quelqu'un ?", options: ["Oui, certainement", "Probablement", "Peut-être", "Non"] },
-  { id: "q10", type: "choice", text: "Le plan tarifaire vous semble-t-il adapté ?", options: ["Très adapté", "Plutôt adapté", "Peu adapté", "Trop cher"] },
-  { id: "q11", type: "rating", text: "La page Historique est-elle utile ?" },
-  { id: "q12", type: "rating", text: "Les animations et le design sont-ils agréables ?" },
-  { id: "q13", type: "rating", text: "Le support client répond-il à vos attentes ?" },
-  { id: "q14", type: "open", text: "Qu'est-ce qui pourrait améliorer votre expérience sur Vysion ?" },
-  { id: "q15", type: "open", text: "Quelle fonctionnalité aimeriez-vous voir ajoutée ?" },
+  { id: "q1", text: "Comment évalueriez-vous la qualité des images générées ?" },
+  { id: "q2", text: "L'interface est-elle facile à prendre en main ? Expliquez pourquoi." },
+  { id: "q3", text: "La vitesse de génération vous convient-elle ?" },
+  { id: "q4", text: "Les explications sur les crédits sont-elles claires ?" },
+  { id: "q5", text: "Le processus de paiement est-il satisfaisant ?" },
+  { id: "q6", text: "Quelle fonctionnalité utilisez-vous le plus et pourquoi ?" },
+  { id: "q7", text: "Sur quel appareil utilisez-vous principalement Vysion ?" },
+  { id: "q8", text: "Comment avez-vous découvert Vysion ?" },
+  { id: "q9", text: "Recommanderiez-vous Vysion à quelqu'un ? Pourquoi ?" },
+  { id: "q10", text: "Le plan tarifaire vous semble-t-il adapté ?" },
+  { id: "q11", text: "La page Historique est-elle utile ? Que pourrait-on améliorer ?" },
+  { id: "q12", text: "Les animations et le design sont-ils agréables ?" },
+  { id: "q13", text: "Le support client répond-il à vos attentes ?" },
+  { id: "q14", text: "Qu'est-ce qui pourrait améliorer votre expérience sur Vysion ?" },
+  { id: "q15", text: "Quelle fonctionnalité aimeriez-vous voir ajoutée ?" },
 ];
 
 function validateOpenAnswer(text) {
@@ -39,7 +39,7 @@ function validateOpenAnswer(text) {
 
 /**
  * GET /api/survey/questions
- * Returns the survey question list (no answers).
+ * Returns the survey question list.
  */
 router.get("/questions", (_req, res) => {
   res.json(QUESTIONS);
@@ -91,19 +91,17 @@ router.post("/submit", express.json(), async (req, res) => {
     return res.status(403).json({ error: "Questionnaire déjà complété." });
   }
 
-  // Validate open-ended answers.
-  const openInvalid = {};
+  // Validate all open-ended answers.
+  const invalid = {};
   for (const q of QUESTIONS) {
-    if (q.type === "open") {
-      const text = answers[q.id];
-      if (!validateOpenAnswer(text)) {
-        openInvalid[q.id] = "Merci de détailler un peu plus ta réponse";
-      }
+    const text = answers[q.id];
+    if (!validateOpenAnswer(text)) {
+      invalid[q.id] = "Merci de détailler un peu plus ta réponse";
     }
   }
 
-  if (Object.keys(openInvalid).length > 0) {
-    return res.status(422).json({ invalid: openInvalid });
+  if (Object.keys(invalid).length > 0) {
+    return res.status(422).json({ invalid });
   }
 
   // Save the response.

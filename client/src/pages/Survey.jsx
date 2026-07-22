@@ -127,7 +127,7 @@ export default function Survey() {
         <div className="survey-header fade-up">
           <div className="badge">Questionnaire</div>
           <h1 className="page-title">Aide-nous à <span className="accent">mieux comprendre</span> ton expérience</h1>
-          <p className="page-subtitle">15 questions · Environ 2 minutes · +300 crédits offerts à la fin</p>
+          <p className="page-subtitle">15 questions ouvertes · +300 crédits offerts à la fin</p>
         </div>
 
         <div className="survey-form">
@@ -139,49 +139,18 @@ export default function Survey() {
               <div className="survey-question-number">Question {idx + 1}</div>
               <div className="survey-question-text">{q.text}</div>
 
-              {q.type === "rating" && (
-                <div className="rating-stars">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      className={`star ${answers[q.id] >= star ? "active" : ""}`}
-                      onClick={() => handleAnswer(q.id, star)}
-                      aria-label={`Note ${star}`}
-                    >
-                      ★
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {q.type === "choice" && (
-                <div className="choice-options">
-                  {q.options.map((opt) => (
-                    <button
-                      key={opt}
-                      className={`choice-chip ${answers[q.id] === opt ? "active" : ""}`}
-                      onClick={() => handleAnswer(q.id, opt)}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {q.type === "open" && (
-                <div className="open-answer">
-                  <textarea
-                    className="survey-textarea"
-                    rows={4}
-                    value={answers[q.id]}
-                    onChange={(e) => handleAnswer(q.id, e.target.value)}
-                    placeholder="Détaille ta réponse ici…"
-                  />
-                  {errors[q.id] && (
-                    <div className="survey-error">{errors[q.id]}</div>
-                  )}
-                </div>
-              )}
+              <div className="open-answer">
+                <textarea
+                  className="survey-textarea"
+                  rows={4}
+                  value={answers[q.id]}
+                  onChange={(e) => handleAnswer(q.id, e.target.value)}
+                  placeholder="Détaille ta réponse ici…"
+                />
+                {errors[q.id] && (
+                  <div className="survey-error">{errors[q.id]}</div>
+                )}
+              </div>
             </div>
           ))}
         </div>
