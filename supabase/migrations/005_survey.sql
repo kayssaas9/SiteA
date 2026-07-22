@@ -17,7 +17,20 @@ create index if not exists idx_survey_responses_user_id on public.survey_respons
 -- Row-level security: users can only read their own responses.
 alter table public.survey_responses enable row level security;
 
-create policy if not exists survey_responses_select_own
-  on public.survey_responses
-  for select
-  using (user_id = current_setting('request.clerk_user_id', true));
+-- Idempotent policy creation: PostgreSQL does not support IF NOT EXISTS on CREATE POLICY.
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_policies
+    where schemaname = 'public'
+      and tablename  = 'survey_responses'
+      and policyname = 'survey_responses_select_own'
+  ) then
+    create policy survey_responses_select_own
+      on public.survey_responses
+      for select
+      using (user_id = current_setting('request.clerk_user_id', true));
+  end if;
+end
+$$;
