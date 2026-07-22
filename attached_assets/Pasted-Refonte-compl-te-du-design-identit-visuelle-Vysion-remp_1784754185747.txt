@@ -1,0 +1,71 @@
+Refonte complète du design — identité visuelle "Vysion" (remplace ce nom par le tien si tu en as un autre)
+
+Important : le nom "nano-banana" ne doit apparaître NULLE PART sur le site visible par l'utilisateur — c'est uniquement un nom technique interne. Le site doit se présenter comme notre propre IA propriétaire, positionnée comme la meilleure du marché.
+
+Palette de couleurs :
+
+Fond principal : 
+#0E0F12 (noir profond, pas de dégradé de fond)
+Accent unique : 
+#8EC5E8 (bleu ciel désaturé, pas de rose/violet/vert)
+Texte principal : 
+#F0F2F5
+Texte secondaire : rgba(240,242,245,0.5) à 0.6
+Cartes/surfaces : rgba(255,255,255,0.03) avec bordure 0.5px solid rgba(255,255,255,0.1)
+Accent SnapRouge uniquement : rouge 
+#E8556B (dégradé vers noir au centre)
+
+Style général :
+
+Coins arrondis (12-16px), pas d'angles droits
+Formes floues animées en fond (blobs radiaux bleu clair, opacité ~0.1-0.15, animation de flottement lente en boucle ~8s)
+Animations d'apparition en fondu + léger décalage vertical au chargement de chaque page (fadeUp, ~0.5-0.6s, délais échelonnés par élément)
+Ton du texte : confiant et direct, sans emoji, sans familiarité excessive
+Pas de police "ronde et fun" — sans-serif sobre et moderne
+
+Pages à reproduire :
+
+1. Landing page (accueil)
+
+Nav : logo à gauche, liens Galerie/Tarifs au centre, boutons Connexion (outline) + Créer un compte (rempli bleu) à droite
+Hero centré : badge "L'IA visuelle la plus avancée du marché" en haut, titre principal avec un mot-clé en accent bleu, sous-titre, deux boutons CTA (Essayer gratuitement rempli + Voir des exemples outline)
+Bloc avant/après animé qui bascule automatiquement toutes les 2,2 secondes entre "Photo d'origine" et "Résultat généré par l'IA" (transition en fondu)
+3 stats clés en dessous : nombre d'images générées, note utilisateurs, temps de génération
+Section témoignages qui défile horizontalement en boucle automatique (vitesse lente, ~0.5px par frame)
+Espace réservé pour les vraies images (à intégrer plus tard, actuellement en dégradés placeholder)
+
+2. Page Tarifs
+
+3 cartes : Basique (9,99€/mois, 2500 crédits), Pro (19,99€/mois, 7500 crédits, mis en avant avec bordure bleue épaisse + badge "Le plus populaire"), Expert (39,99€/mois, 15000 crédits)
+Chaque carte liste ses caractéristiques avec icône check bleue, logique progressive "Tout [plan précédent], plus :" pour Pro et Expert
+Mention en bas : recharges ponctuelles disponibles sans abonnement (packs 4000/11,99€, 8500/24,99€, 20000/49,99€)
+
+3. Page Génération (outil principal)
+
+Header avec compteur de crédits restants (badge bleu clair)
+Sélecteur de mode : Tenues / Voiture / Autre (boutons avec icônes)
+Colonne gauche : zone d'upload de photo (drag & drop) + champ texte optionnel pour décrire le style
+Colonne droite : zone de résultat (vide par défaut) + bouton "Générer — X crédits" en bleu plein
+
+4. Page Compte/Paramètres
+
+Bloc profil : avatar initiales + nom + email
+2 cartes côte à côte : Plan actuel (mis en avant en bleu) + Crédits restants
+Liste d'options cliquables : Gérer l'abonnement / Recharger des crédits / Historique de facturation
+Encart dédié SnapRouge : affiche "Accès non débloqué" + bouton "Débloquer" SI l'utilisateur n'a ni Pro/Expert ni achat SnapRouge. Si Pro/Expert actif OU SnapRouge acheté séparément, afficher "Accès débloqué" à la place, sans bouton.
+Bouton déconnexion en bas
+
+5. Page SnapRouge (accès premium)
+
+Titre + sous-titre "SnapRouge — La méthode en 9 étapes"
+Grille de 9 rectangles au format 9:16, bordure dégradée rouge (
+#E8556B) qui s'estompe vers un fond noir/rouge très sombre au centre (radial-gradient centré)
+Chaque rectangle affiche juste "Étape 1" à "Étape 9" pour l'instant (contenu à ajouter plus tard)
+Logique d'accès : si l'utilisateur n'a ni abonnement Pro/Expert actif ni achat SnapRouge (9€), le clic sur la page redirige automatiquement vers le paiement Stripe SnapRouge. Si Pro/Expert actif, accès direct sans paiement supplémentaire — mets à jour la logique de vérification en conséquence (ne pas se baser uniquement sur snaprouge_unlocked, aussi vérifier plan IN ('pro','expert')).
+
+6. Page Historique
+
+Header avec titre + compteur total de générations
+Barre de recherche en haut (icône loupe) permettant de chercher par description/prompt (ex : taper "GT3RS" doit retrouver les générations où ce mot apparaît dans la description enregistrée)
+Important : il faut que chaque génération soit sauvegardée dans Supabase avec sa description/prompt texte associé, pas juste l'URL de l'image, pour que la recherche fonctionne.
+Grille de vignettes carrées (4 par ligne), au survol affiche deux icônes superposées : œil (agrandir) et téléchargement

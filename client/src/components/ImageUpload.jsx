@@ -27,11 +27,11 @@ export default function ImageUpload({ label, hint, onChange, value }) {
     >
       {value ? (
         <div className="upload-preview">
-          <img src={value.preview} alt="Uploaded" />
+          <img src={value.preview} alt="Image ajoutée" />
           <button
             className="upload-remove"
             onClick={(e) => { e.stopPropagation(); onChange(null); }}
-            title="Remove"
+            title="Supprimer"
           >
             ✕
           </button>
@@ -39,8 +39,8 @@ export default function ImageUpload({ label, hint, onChange, value }) {
       ) : (
         <div className="upload-placeholder">
           <div className="upload-icon">📁</div>
-          <div className="upload-label">{label || "Upload image"}</div>
-          <div className="upload-hint">{hint || "PNG, JPG up to 10 MB · Click or drag & drop"}</div>
+          <div className="upload-label">{label || "Ajouter une image"}</div>
+          <div className="upload-hint">{hint || "PNG, JPG jusqu'à 10 Mo · Cliquez ou glissez-déposez"}</div>
         </div>
       )}
       <input

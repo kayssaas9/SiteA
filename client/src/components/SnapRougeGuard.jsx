@@ -1,12 +1,15 @@
 import { Navigate } from "react-router-dom";
 import { useUserData } from "../hooks/useUserData.js";
+import "./SnapRougeGuard.css";
 
 /**
  * Wraps a route that requires SnapRouge access.
- * Redirects to /pricing if the user hasn't unlocked it.
+ * Access is granted if the user has an active Pro/Expert plan OR if they
+ * bought the SnapRouge one-time unlock.
  */
 export default function SnapRougeGuard({ children }) {
-  const { snaprougeUnlocked, loading } = useUserData();
+  const { plan, snaprougeUnlocked, loading } = useUserData();
+  const hasAccess = plan === "pro" || plan === "expert" || snaprougeUnlocked;
 
   if (loading) {
     return (
@@ -17,7 +20,7 @@ export default function SnapRougeGuard({ children }) {
     );
   }
 
-  if (!snaprougeUnlocked) {
+  if (!hasAccess) {
     return <Navigate to="/pricing?unlock=snaprouge" replace />;
   }
 

@@ -5,8 +5,8 @@ export default function ResultDisplay({ imageUrl, loading, error }) {
     return (
       <div className="result-box loading">
         <div className="spinner" />
-        <p className="result-status">Generating your image…</p>
-        <p className="result-sub">This usually takes 10–30 seconds</p>
+        <p className="result-status">Génération en cours…</p>
+        <p className="result-sub">Cela prend généralement 10 à 30 secondes</p>
       </div>
     );
   }
@@ -15,7 +15,7 @@ export default function ResultDisplay({ imageUrl, loading, error }) {
     return (
       <div className="result-box error">
         <div className="result-error-icon">⚠️</div>
-        <p className="result-status">Something went wrong</p>
+        <p className="result-status">Une erreur est survenue</p>
         <p className="result-sub">{error}</p>
       </div>
     );
@@ -25,16 +25,16 @@ export default function ResultDisplay({ imageUrl, loading, error }) {
 
   return (
     <div className="result-box success">
-      <div className="result-label">✨ Your result</div>
-      <img className="result-img" src={imageUrl} alt="Generated result" />
+      <div className="result-label">✨ Votre résultat</div>
+      <img className="result-img" src={imageUrl} alt="Résultat généré" />
       <a
         className="result-download"
         href={imageUrl}
-        download="nano-banana-result.jpg"
+        download="vysion-resultat.jpg"
         target="_blank"
         rel="noreferrer"
       >
-        ⬇ Download
+        ⬇ Télécharger
       </a>
     </div>
   );

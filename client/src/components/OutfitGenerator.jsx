@@ -1,14 +1,16 @@
 import { useState } from "react";
+import { useUser } from "@clerk/clerk-react";
 import ImageUpload from "./ImageUpload.jsx";
 import ResultDisplay from "./ResultDisplay.jsx";
 import "./Generator.css";
 
 const STYLE_PRESETS = [
-  "Streetwear", "Business casual", "Formal suit", "Summer dress",
-  "Athleisure", "Y2K", "Boho chic", "Minimalist",
+  "Streetwear", "Tenue de bureau", "Costume", "Robe d'été",
+  "Sportswear", "Y2K", "Bohème chic", "Minimaliste",
 ];
 
 export default function OutfitGenerator() {
+  const { user } = useUser();
   const [photo, setPhoto] = useState(null);
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState(null);
@@ -25,12 +27,13 @@ export default function OutfitGenerator() {
       const form = new FormData();
       form.append("mode", "outfit");
       form.append("prompt", prompt);
+      form.append("clerk_user_id", user?.id || "");
       if (photo?.file) form.append("image", photo.file);
 
       const res = await fetch("/api/generate", { method: "POST", body: form });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Generation failed");
+      if (!res.ok) throw new Error(data.error || "La génération a échoué");
       setResult(data.imageUrl);
     } catch (err) {
       setError(err.message);
@@ -42,19 +45,19 @@ export default function OutfitGenerator() {
   return (
     <div className="generator">
       <div className="gen-section">
-        <label className="gen-label">Your photo <span className="gen-opt">(optional)</span></label>
-        <p className="gen-hint">Upload a photo to visualise the outfit on you</p>
+        <label className="gen-label">Votre photo <span className="gen-opt">(optionnel)</span></label>
+        <p className="gen-hint">Ajoutez une photo pour visualiser la tenue sur vous</p>
         <ImageUpload
-          label="Upload your photo"
-          hint="Full-body or portrait works best"
+          label="Ajouter votre photo"
+          hint="Plein pied ou portrait recommandé"
           value={photo}
           onChange={setPhoto}
         />
       </div>
 
       <div className="gen-section">
-        <label className="gen-label">Outfit description</label>
-        <p className="gen-hint">Describe the look, or pick a style below</p>
+        <label className="gen-label">Description de la tenue</label>
+        <p className="gen-hint">Décrivez le look, ou choisissez un style ci-dessous</p>
         <div className="presets">
           {STYLE_PRESETS.map((p) => (
             <button
@@ -68,7 +71,7 @@ export default function OutfitGenerator() {
         </div>
         <textarea
           className="gen-textarea"
-          placeholder="e.g. A stylish all-black streetwear outfit with oversized hoodie and cargo pants"
+          placeholder="Ex. : une tenue streetwear toute noire avec un hoodie oversize et un cargo"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           rows={3}
@@ -80,7 +83,7 @@ export default function OutfitGenerator() {
         onClick={handleGenerate}
         disabled={loading || !prompt.trim()}
       >
-        {loading ? "Generating…" : "✨ Generate Outfit"}
+        {loading ? "Génération…" : "✨ Générer la tenue"}
       </button>
 
       <ResultDisplay imageUrl={result} loading={loading} error={error} />

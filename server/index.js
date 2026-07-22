@@ -9,6 +9,7 @@ import webhookClerk  from "./routes/webhook-clerk.js";
 import webhookStripe from "./routes/webhook-stripe.js";
 import checkoutRoute from "./routes/checkout.js";
 import userRoute     from "./routes/user.js";
+import historyRoute  from "./routes/history.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app  = express();
@@ -28,6 +29,7 @@ app.use(express.json({ limit: "10mb" }));
 // ── API routes ───────────────────────────────────────────────────────────────
 app.use("/api/checkout", checkoutRoute);
 app.use("/api/user",     userRoute);
+app.use("/api/history",  historyRoute);
 
 // ── OneShotAPI image generation proxy ────────────────────────────────────────
 const ONESHOT_BASE_URL = "https://oneshotapi.com";
@@ -35,10 +37,10 @@ const ONESHOT_API_KEY  = process.env.ONESHOT_API_KEY;
 
 app.post("/api/generate", upload.single("image"), async (req, res) => {
   try {
-    const { mode, prompt } = req.body;
+    const { mode, prompt, clerk_user_id } = req.body;
 
     if (!ONESHOT_API_KEY) {
-      return res.status(500).json({ error: "OneShotAPI key not configured." });
+      return res.status(500).json({ error: "Clé OneShotAPI non configurée." });
     }
 
     const endpoint =
@@ -64,7 +66,7 @@ app.post("/api/generate", upload.single("image"), async (req, res) => {
     if (!apiRes.ok) {
       const errText = await apiRes.text();
       return res.status(apiRes.status).json({
-        error: `OneShotAPI returned ${apiRes.status}: ${errText}`,
+        error: `OneShotAPI a retourné ${apiRes.status}: ${errText}`,
       });
     }
 
@@ -72,7 +74,15 @@ app.post("/api/generate", upload.single("image"), async (req, res) => {
     const imageUrl = data.url ?? data.image_url ?? data.output ?? data.result ?? null;
 
     if (!imageUrl) {
-      return res.status(500).json({ error: "Could not find image URL in OneShotAPI response.", raw: data });
+      return res.status(500).json({ error: "URL de l'image introuvable dans la réponse OneShotAPI.", raw: data });
+    }
+
+    // Save generation history if a user is identified.
+    if (clerk_user_id && clerk_user_id.trim() !== "") {
+      const { error: saveError } = await supabaseAdmin
+        .from("generations")
+        .insert({ clerk_user_id, mode, prompt: prompt || "", image_url: imageUrl });
+      if (saveError) console.error("Failed to save generation history:", saveError);
     }
 
     return res.json({ imageUrl });

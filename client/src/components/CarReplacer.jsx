@@ -1,15 +1,17 @@
 import { useState } from "react";
+import { useUser } from "@clerk/clerk-react";
 import ImageUpload from "./ImageUpload.jsx";
 import ResultDisplay from "./ResultDisplay.jsx";
 import "./Generator.css";
 
 const CAR_PRESETS = [
   "Lamborghini Urus", "Ferrari 488", "Porsche 911 GT3",
-  "Mercedes G-Wagon", "Rolls-Royce Phantom", "Tesla Model S Plaid",
+  "Mercedes Classe G", "Rolls-Royce Phantom", "Tesla Model S Plaid",
   "McLaren 720S", "Bentley Continental GT",
 ];
 
 export default function CarReplacer() {
+  const { user } = useUser();
   const [photo, setPhoto] = useState(null);
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState(null);
@@ -26,12 +28,13 @@ export default function CarReplacer() {
       const form = new FormData();
       form.append("mode", "car");
       form.append("prompt", prompt);
+      form.append("clerk_user_id", user?.id || "");
       if (photo?.file) form.append("image", photo.file);
 
       const res = await fetch("/api/generate", { method: "POST", body: form });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Generation failed");
+      if (!res.ok) throw new Error(data.error || "La génération a échoué");
       setResult(data.imageUrl);
     } catch (err) {
       setError(err.message);
@@ -43,19 +46,19 @@ export default function CarReplacer() {
   return (
     <div className="generator">
       <div className="gen-section">
-        <label className="gen-label">Your current car <span className="gen-opt">(optional)</span></label>
-        <p className="gen-hint">Upload a photo of your car or the scene you want to replace</p>
+        <label className="gen-label">Votre voiture actuelle <span className="gen-opt">(optionnel)</span></label>
+        <p className="gen-hint">Ajoutez une photo de votre voiture ou de la scène à modifier</p>
         <ImageUpload
-          label="Upload your car photo"
-          hint="Side or 3/4 angle works best"
+          label="Ajouter une photo de voiture"
+          hint="De profil ou en 3/4 avant recommandé"
           value={photo}
           onChange={setPhoto}
         />
       </div>
 
       <div className="gen-section">
-        <label className="gen-label">Dream car</label>
-        <p className="gen-hint">Pick a preset or describe the car you want</p>
+        <label className="gen-label">Voiture de rêve</label>
+        <p className="gen-hint">Choisissez un modèle ou décrivez la voiture souhaitée</p>
         <div className="presets">
           {CAR_PRESETS.map((c) => (
             <button
@@ -69,7 +72,7 @@ export default function CarReplacer() {
         </div>
         <textarea
           className="gen-textarea"
-          placeholder="e.g. A midnight blue Lamborghini Urus parked on a Monaco street at sunset"
+          placeholder="Ex. : une Lamborghini Urus bleue nuit garée à Monaco au coucher du soleil"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           rows={3}
@@ -81,7 +84,7 @@ export default function CarReplacer() {
         onClick={handleGenerate}
         disabled={loading || !prompt.trim()}
       >
-        {loading ? "Generating…" : "🚗 Upgrade My Car"}
+        {loading ? "Génération…" : "🚗 Générer la voiture"}
       </button>
 
       <ResultDisplay imageUrl={result} loading={loading} error={error} />

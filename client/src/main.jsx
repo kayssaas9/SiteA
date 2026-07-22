@@ -7,7 +7,7 @@ import "./index.css";
 const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!publishableKey) {
-  throw new Error("Missing Clerk publishable key (VITE_CLERK_PUBLISHABLE_KEY).");
+  throw new Error("Clé publique Clerk manquante (VITE_CLERK_PUBLISHABLE_KEY).");
 }
 
 createRoot(document.getElementById("root")).render(

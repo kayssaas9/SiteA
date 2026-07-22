@@ -1,60 +1,28 @@
-import { useUserData } from "../hooks/useUserData.js";
 import "./SnapRouge.css";
 
-export default function SnapRouge() {
-  const { plan } = useUserData();
+const STEPS = Array.from({ length: 9 }, (_, i) => i + 1);
 
+export default function SnapRouge() {
   return (
     <main className="snaprouge-page">
-      <div className="snaprouge-hero">
-        <div className="snaprouge-badge">🔒 Accès débloqué</div>
-        <h1 className="snaprouge-title">
-          SnapRouge <span className="gradient-text">Tech</span>
-        </h1>
-        <p className="snaprouge-sub">
-          Bienvenue dans l'espace technique réservé. Ici, vous trouvez les paramètres avancés,
-          les intégrations API et les outils de debug pour nano-banana.
-        </p>
+      <div className="blob blob-1" style={{ background: "var(--snaprouge)" }} />
+      <div className="blob blob-2" style={{ background: "var(--snaprouge)" }} />
+
+      <div className="page snaprouge-content">
+        <div className="snaprouge-hero-v2 fade-up">
+          <div className="snaprouge-badge-v2">Méthode exclusive</div>
+          <h1 className="page-title">SnapRouge</h1>
+          <p className="page-subtitle">La méthode en 9 étapes — du concept au rendu final.</p>
+        </div>
+
+        <div className="steps-grid">
+          {STEPS.map((step, idx) => (
+            <div key={step} className={`step-card fade-up delay-${Math.min(idx + 1, 4)}`}>
+              <span className="step-number">Étape {step}</span>
+            </div>
+          ))}
+        </div>
       </div>
-
-      <section className="snaprouge-section">
-        <h2 className="snaprouge-section-title">Paramètres avancés</h2>
-        <div className="snaprouge-grid">
-          <div className="snaprouge-card">
-            <div className="snaprouge-card-icon">🛠️</div>
-            <div className="snaprouge-card-title">API & Webhooks</div>
-            <p className="snaprouge-card-text">
-              Configuration des endpoints Stripe, Clerk et des secrets d'environnement.
-            </p>
-          </div>
-          <div className="snaprouge-card">
-            <div className="snaprouge-card-icon">📊</div>
-            <div className="snaprouge-card-title">Métriques</div>
-            <p className="snaprouge-card-text">
-              Suivi des crédits consommés, des conversions et de l'utilisation des modèles.
-            </p>
-          </div>
-          <div className="snaprouge-card">
-            <div className="snaprouge-card-icon">🔐</div>
-            <div className="snaprouge-card-title">Sécurité</div>
-            <p className="snaprouge-card-text">
-              Rotation des clés, audit des accès et logs des événements critiques.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="snaprouge-section">
-        <h2 className="snaprouge-section-title">Statut du compte</h2>
-        <div className="snaprouge-status">
-          <span className="snaprouge-status-label">Plan actuel :</span>
-          <span className="snaprouge-status-value">{plan || "free"}</span>
-        </div>
-        <div className="snaprouge-status">
-          <span className="snaprouge-status-label">Accès SnapRouge :</span>
-          <span className="snaprouge-status-value unlocked">débloqué</span>
-        </div>
-      </section>
     </main>
   );
 }
