@@ -11,6 +11,7 @@ import checkoutRoute from "./routes/checkout.js";
 import userRoute     from "./routes/user.js";
 import historyRoute  from "./routes/history.js";
 import surveyRoute   from "./routes/survey.js";
+import referralRoute from "./routes/referral.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app  = express();
@@ -32,6 +33,7 @@ app.use("/api/checkout", checkoutRoute);
 app.use("/api/user",     userRoute);
 app.use("/api/history",  historyRoute);
 app.use("/api/survey",   surveyRoute);
+app.use("/api/referral", referralRoute);
 
 // ── OneShotAPI image generation proxy ────────────────────────────────────────
 const ONESHOT_BASE_URL = "https://oneshotapi.com";
@@ -85,6 +87,39 @@ app.post("/api/generate", upload.single("image"), async (req, res) => {
         .from("generations")
         .insert({ clerk_user_id, mode, prompt: prompt || "", image_url: imageUrl });
       if (saveError) console.error("Failed to save generation history:", saveError);
+
+      // Grant referrer reward on the referee's first successful generation.
+      const { data: pendingReferral } = await supabaseAdmin
+        .from("referrals")
+        .select("id, referrer_id, reward_granted")
+        .eq("referred_id", clerk_user_id)
+        .eq("reward_granted", false)
+        .maybeSingle();
+
+      if (pendingReferral) {
+        const { data: referrer } = await supabaseAdmin
+          .from("users")
+          .select("credits")
+          .eq("clerk_user_id", pendingReferral.referrer_id)
+          .single();
+
+        if (referrer) {
+          const newReferrerCredits = (referrer.credits ?? 0) + 200;
+          const { error: creditError } = await supabaseAdmin
+            .from("users")
+            .update({ credits: newReferrerCredits })
+            .eq("clerk_user_id", pendingReferral.referrer_id);
+
+          if (!creditError) {
+            await supabaseAdmin
+              .from("referrals")
+              .update({ reward_granted: true })
+              .eq("id", pendingReferral.id);
+          } else {
+            console.error("referrer reward credit error:", creditError);
+          }
+        }
+      }
     }
 
     return res.json({ imageUrl });

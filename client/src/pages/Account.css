@@ -217,6 +217,129 @@
   margin-top: 4px;
 }
 
+.referral-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 20px;
+  border: 0.5px solid rgba(142, 197, 232, 0.2);
+  background: rgba(142, 197, 232, 0.04);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.referral-section:hover {
+  transform: translateY(-4px);
+  border-color: rgba(142, 197, 232, 0.35);
+  box-shadow: 0 0 40px rgba(142, 197, 232, 0.08);
+}
+
+.referral-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.referral-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.referral-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.referral-rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.referral-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.rule-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.referral-link-box {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.referral-link {
+  flex: 1;
+  min-width: 220px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.02);
+  border: 0.5px solid var(--border);
+  color: var(--text);
+  font-size: 14px;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.referral-link-box .btn {
+  white-space: nowrap;
+}
+
+.referral-stats {
+  display: flex;
+  gap: 32px;
+  padding-top: 8px;
+}
+
+.referral-stat {
+  text-align: left;
+}
+
+.referral-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.referral-stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .referral-link-box { flex-direction: column; }
+  .referral-link-box .btn { width: 100%; }
+  .referral-stats { gap: 24px; }
+}
+
 .account-signout {
   display: flex;
   justify-content: flex-start;

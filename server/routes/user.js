@@ -1,5 +1,6 @@
 import express from "express";
 import { supabaseAdmin } from "../lib/supabase.js";
+import { getOrCreateUserCode } from "./referral.js";
 
 const router = express.Router();
 
@@ -42,6 +43,13 @@ router.post("/ensure", express.json(), async (req, res) => {
   if (error) {
     console.error("ensure user error:", error);
     return res.status(500).json({ error: error.message });
+  }
+
+  // Ensure the user has a referral code (idempotent).
+  try {
+    await getOrCreateUserCode(clerkUserId);
+  } catch (codeErr) {
+    console.error("ensure referral code error:", codeErr);
   }
 
   res.json(data);

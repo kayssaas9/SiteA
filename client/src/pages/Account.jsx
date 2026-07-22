@@ -1,5 +1,6 @@
 import { useUser, SignOutButton } from "@clerk/clerk-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import "./Account.css";
 
@@ -12,8 +13,27 @@ const PLAN_LABELS = {
 
 export default function Account() {
   const { user } = useUser();
-  const { plan, credits, snaprougeUnlocked, surveyCompleted, loading } = useUserData();
+  const { plan, credits, snaprougeUnlocked, surveyCompleted, refetch } = useUserData();
   const navigate = useNavigate();
+  const [referral, setReferral] = useState({ code: "", count: 0, earned: 0, loading: true });
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    fetch(`/api/referral/${user.id}`)
+      .then((r) => r.json())
+      .then((data) => setReferral({ code: data.referralCode ?? "", count: data.referralCount ?? 0, earned: data.creditsEarned ?? 0, loading: false }))
+      .catch(() => setReferral((s) => ({ ...s, loading: false })));
+  }, [user?.id]);
+
+  const copyLink = () => {
+    if (!referral.code) return;
+    const url = `${window.location.origin}/r/${referral.code}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   if (!user) {
     return (
@@ -86,6 +106,47 @@ export default function Account() {
           <div className="account-row disabled">
             <span>Historique de facturation</span>
             <span className="coming-soon">Bientôt</span>
+          </div>
+        </div>
+
+        <div className="referral-section card fade-up delay-3">
+          <div className="referral-header">
+            <span className="referral-icon">🎁</span>
+            <div>
+              <h2 className="account-section-title">Parrainage</h2>
+              <p className="referral-subtitle">Partage ton lien et gagne des crédits</p>
+            </div>
+          </div>
+
+          <div className="referral-rules">
+            <div className="referral-rule">
+              <span className="rule-icon">+100</span>
+              <span>Ton filleul reçoit 100 crédits à son inscription</span>
+            </div>
+            <div className="referral-rule">
+              <span className="rule-icon">+200</span>
+              <span>Tu reçois 200 crédits après sa première génération</span>
+            </div>
+          </div>
+
+          <div className="referral-link-box">
+            <div className="referral-link">
+              {referral.loading ? "Chargement…" : `${window.location.origin}/r/${referral.code}`}
+            </div>
+            <button className="btn btn-primary" onClick={copyLink} disabled={referral.loading || !referral.code}>
+              {copied ? "Copié !" : "Copier le lien"}
+            </button>
+          </div>
+
+          <div className="referral-stats">
+            <div className="referral-stat">
+              <div className="referral-stat-value">{referral.count}</div>
+              <div className="referral-stat-label">ami{referral.count > 1 ? "s" : ""} parrainé{referral.count > 1 ? "s" : ""}</div>
+            </div>
+            <div className="referral-stat">
+              <div className="referral-stat-value">{referral.earned.toLocaleString("fr-FR")}</div>
+              <div className="referral-stat-label">crédits gagnés</div>
+            </div>
           </div>
         </div>
 

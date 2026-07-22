@@ -1,6 +1,7 @@
 import express from "express";
 import { Webhook } from "svix";
 import { supabaseAdmin } from "../lib/supabase.js";
+import { getOrCreateUserCode } from "./referral.js";
 
 const router = express.Router();
 
@@ -49,6 +50,13 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
     if (error) {
       console.error("Supabase upsert error:", error);
       return res.status(500).json({ error: error.message });
+    }
+
+    // Generate a unique referral code for the new user (idempotent).
+    try {
+      await getOrCreateUserCode(clerkUserId);
+    } catch (codeErr) {
+      console.error("Failed to generate referral code:", codeErr);
     }
 
     console.log(`✅ User created in Supabase: ${clerkUserId} (${email})`);

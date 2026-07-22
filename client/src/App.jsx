@@ -1,4 +1,6 @@
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
+import { useEffect } from "react";
 import Header from "./components/Header.jsx";
 import Landing from "./pages/Landing.jsx";
 import Generate from "./pages/Generate.jsx";
@@ -8,6 +10,7 @@ import History from "./pages/History.jsx";
 import SnapRouge from "./pages/SnapRouge.jsx";
 import SnapRougeGuard from "./components/SnapRougeGuard.jsx";
 import Survey from "./pages/Survey.jsx";
+import ReferralLanding from "./components/ReferralLanding.jsx";
 import "./App.css";
 
 function Layout() {
@@ -20,6 +23,26 @@ function Layout() {
       </footer>
     </div>
   );
+}
+
+function AppWithReferral() {
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (!user) return;
+    const pendingCode = localStorage.getItem("vysionReferralCode");
+    if (!pendingCode) return;
+
+    fetch("/api/referral/apply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clerkUserId: user.id, referralCode: pendingCode }),
+    }).then((res) => {
+      if (res.ok) localStorage.removeItem("vysionReferralCode");
+    });
+  }, [user?.id]);
+
+  return <RouterProvider router={router} />;
 }
 
 const router = createBrowserRouter([
@@ -44,8 +67,9 @@ const router = createBrowserRouter([
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
+  { path: "/r/:code", element: <ReferralLanding /> },
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return <AppWithReferral />;
 }
