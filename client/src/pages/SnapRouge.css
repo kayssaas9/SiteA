@@ -1,64 +1,65 @@
 .snaprouge-page {
   position: relative;
+  overflow: hidden;
+}
+
+.snaprouge-content {
+  position: relative;
+  z-index: 1;
 }
 
 .snaprouge-hero-v2 {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
 
 .snaprouge-badge-v2 {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
+  display: inline-block;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--snaprouge);
   padding: 6px 12px;
   border-radius: 100px;
-  border: 0.5px solid rgba(232, 85, 107, 0.35);
-  color: var(--snaprouge);
+  border: 0.5px solid rgba(232, 85, 107, 0.3);
   background: rgba(232, 85, 107, 0.08);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  animation: glowPulseRed 4s ease-in-out infinite;
+}
+
+@keyframes glowPulseRed {
+  0%, 100% { box-shadow: 0 0 0 rgba(232, 85, 107, 0); }
+  50% { box-shadow: 0 0 20px rgba(232, 85, 107, 0.15); }
 }
 
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
 }
 
 .step-card {
-  aspect-ratio: 9 / 16;
-  border-radius: var(--radius);
-  background: radial-gradient(circle at center, rgba(232, 85, 107, 0.15) 0%, rgba(14, 15, 18, 0.6) 55%, rgba(14, 15, 18, 0.9) 100%);
-  border: 0.5px solid rgba(232, 85, 107, 0.35);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  border: 0.5px solid var(--border);
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  transition: transform 0.2s, border-color 0.2s;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .step-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(232, 85, 107, 0.6);
+  transform: translateY(-6px);
+  border-color: rgba(232, 85, 107, 0.25);
+  box-shadow: 0 12px 40px rgba(232, 85, 107, 0.1);
 }
 
 .step-number {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--text);
-  text-align: center;
-  padding: 8px 16px;
-  border-radius: 100px;
-  background: rgba(14, 15, 18, 0.7);
-  border: 0.5px solid rgba(232, 85, 107, 0.25);
-}
-
-@media (max-width: 640px) {
-  .steps-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }

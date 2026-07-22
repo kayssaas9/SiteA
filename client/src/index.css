@@ -67,30 +67,75 @@ a {
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.12;
+  filter: blur(90px);
+  opacity: 0.18;
   pointer-events: none;
   animation: float 8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.blob-1 {
+  width: 420px;
+  height: 420px;
+  background: var(--accent);
+  top: -120px;
+  right: -120px;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 360px;
+  height: 360px;
+  background: var(--accent);
+  bottom: -80px;
+  left: -80px;
+  animation-delay: -4s;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-20px) scale(1.05); }
+  50% { transform: translateY(-28px) scale(1.06); }
 }
 
 /* Fade-up entrance animation */
 .fade-up {
   opacity: 0;
-  transform: translateY(16px);
-  animation: fadeUp 0.55s ease forwards;
+  transform: translateY(24px);
+  animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
 }
 
 @keyframes fadeUp {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
-.delay-4 { animation-delay: 0.4s; }
-.delay-5 { animation-delay: 0.5s; }
+.delay-1 { animation-delay: 0.08s; }
+.delay-2 { animation-delay: 0.16s; }
+.delay-3 { animation-delay: 0.24s; }
+.delay-4 { animation-delay: 0.32s; }
+.delay-5 { animation-delay: 0.4s; }
+.delay-6 { animation-delay: 0.48s; }
+.delay-7 { animation-delay: 0.56s; }
+.delay-8 { animation-delay: 0.64s; }
+
+/* Subtle scale-in for cards */
+.scale-in {
+  opacity: 0;
+  transform: scale(0.96) translateY(16px);
+  animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes scaleIn {
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Gentle glow pulse on accent elements */
+.glow-pulse {
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(142, 197, 232, 0); }
+  50% { box-shadow: 0 0 24px rgba(142, 197, 232, 0.15); }
+}

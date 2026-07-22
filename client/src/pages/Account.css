@@ -1,71 +1,79 @@
 .account-page {
   position: relative;
+  overflow: hidden;
 }
 
-.account-message {
-  text-align: center;
-  color: var(--text-muted);
-  padding: 60px 20px;
+.account-content {
+  position: relative;
+  z-index: 1;
 }
 
 .account-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
+}
+
+.account-grid .card,
+.account-actions,
+.snaprouge-account,
+.account-signout {
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.account-grid .card:hover,
+.account-actions:hover,
+.snaprouge-account:hover {
+  transform: translateY(-4px);
+  border-color: rgba(142, 197, 232, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
 .profile-card {
   display: flex;
   align-items: center;
   gap: 16px;
-  grid-column: 1 / -1;
 }
 
 .profile-avatar {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: var(--accent);
-  color: #0E0F12;
+  background: var(--accent-soft);
+  color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .profile-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
 }
 
 .profile-email {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
-  margin-top: 2px;
 }
 
-.plan-card,
+.plan-card .highlight,
 .credits-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.plan-card.highlight {
-  border-color: rgba(142, 197, 232, 0.35);
-  background: var(--accent-soft);
+  gap: 6px;
 }
 
 .plan-card-label,
 .credits-card-label {
-  font-size: 13px;
-  color: var(--text-muted);
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: var(--text-muted);
 }
 
 .plan-card-value,
@@ -73,47 +81,50 @@
   font-size: 28px;
   font-weight: 700;
   color: var(--text);
+  margin-bottom: 8px;
+}
+
+.plan-card.highlight .plan-card-value {
+  color: var(--accent);
 }
 
 .plan-card-btn {
-  margin-top: auto;
-  padding: 8px 14px;
-  font-size: 13px;
+  width: 100%;
 }
 
-.account-actions,
-.snaprouge-account {
-  margin-bottom: 24px;
+.account-actions {
+  margin-bottom: 20px;
 }
 
 .account-section-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .account-row {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 14px 0;
   border-bottom: 0.5px solid var(--border);
-  color: var(--text);
-  font-size: 15px;
-  transition: color 0.2s;
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: color 0.2s, padding-left 0.2s;
 }
 
 .account-row:last-child {
   border-bottom: none;
 }
 
-.account-row:hover:not(.disabled) {
-  color: var(--accent);
+.account-row:not(.disabled):hover {
+  color: var(--text);
+  padding-left: 4px;
 }
 
 .account-row.disabled {
-  color: var(--text-faint);
+  opacity: 0.5;
   cursor: default;
 }
 
@@ -123,13 +134,17 @@
 }
 
 .coming-soon {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 3px 8px;
   border-radius: 100px;
   background: var(--surface-hover);
   color: var(--text-faint);
+}
+
+.snaprouge-account {
+  margin-bottom: 20px;
 }
 
 .snaprouge-account-header {
@@ -139,36 +154,26 @@
   margin-bottom: 12px;
 }
 
-.snaprouge-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--snaprouge);
-  box-shadow: 0 0 10px rgba(232, 85, 107, 0.5);
-}
-
-.snaprouge-locked {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--text-muted);
-  font-size: 14px;
-}
-
 .snaprouge-status-text {
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
 .snaprouge-status-text.unlocked {
-  color: var(--text);
+  color: var(--accent);
 }
 
 .snaprouge-status-text a {
-  color: var(--accent);
   text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.snaprouge-locked {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 14px;
+  color: var(--text-muted);
 }
 
 .account-signout {
@@ -176,7 +181,8 @@
   justify-content: flex-start;
 }
 
-@media (max-width: 640px) {
-  .profile-card { grid-column: auto; }
-  .snaprouge-locked { flex-direction: column; align-items: flex-start; }
+.account-message {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-muted);
 }

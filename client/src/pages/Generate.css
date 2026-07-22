@@ -32,18 +32,20 @@
   color: var(--text-muted);
   font-size: 14px;
   font-weight: 600;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
 }
 
 .mode-btn:hover:not(:disabled) {
   border-color: var(--accent);
   color: var(--text);
+  transform: translateY(-2px);
 }
 
 .mode-btn.active {
   background: var(--accent-soft);
   border-color: rgba(142, 197, 232, 0.35);
   color: var(--accent);
+  box-shadow: 0 0 20px rgba(142, 197, 232, 0.1);
 }
 
 .mode-btn.disabled {
@@ -95,6 +97,12 @@
   border-radius: var(--radius-lg);
   border: 0.5px solid var(--border);
   background: var(--surface);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.generator:hover {
+  border-color: rgba(142, 197, 232, 0.15);
+  box-shadow: 0 0 40px rgba(142, 197, 232, 0.05);
 }
 
 .gen-section {
@@ -135,7 +143,7 @@
   color: var(--text-muted);
   font-size: 13px;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .preset-chip:hover,
@@ -143,6 +151,7 @@
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-soft);
+  transform: translateY(-1px);
 }
 
 .gen-textarea {
@@ -155,6 +164,7 @@
   line-height: 1.5;
   resize: vertical;
   min-height: 96px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .gen-textarea::placeholder {
@@ -163,6 +173,7 @@
 
 .gen-textarea:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(142, 197, 232, 0.1);
 }
 
 .gen-btn {
@@ -172,12 +183,13 @@
   color: #0E0F12;
   font-size: 15px;
   font-weight: 700;
-  transition: opacity 0.15s, transform 0.15s;
+  transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
 }
 
 .gen-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   opacity: 0.9;
+  box-shadow: 0 8px 24px rgba(142, 197, 232, 0.25);
 }
 
 .gen-btn:disabled {
