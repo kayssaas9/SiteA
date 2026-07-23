@@ -5,6 +5,7 @@ import fetch from "node-fetch";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import { supabaseAdmin } from "./lib/supabase.js";
 import webhookClerk  from "./routes/webhook-clerk.js";
 import webhookStripe from "./routes/webhook-stripe.js";
 import checkoutRoute from "./routes/checkout.js";
@@ -36,8 +37,104 @@ app.use("/api/survey",   surveyRoute);
 app.use("/api/referral", referralRoute);
 
 // ── OneShotAPI image generation proxy ────────────────────────────────────────
-const ONESHOT_BASE_URL = "https://oneshotapi.com";
+const ONESHOT_BASE_URL = "https://api.oneshotapi.com";
 const ONESHOT_API_KEY  = process.env.ONESHOT_API_KEY;
+const GENERATION_COST = 100;
+
+async function oneshotFetch(path, opts = {}) {
+  const res = await fetch(`${ONESHOT_BASE_URL}${path}`, {
+    ...opts,
+    headers: {
+      Authorization: `Bearer ${ONESHOT_API_KEY}`,
+      "Content-Type": "application/json",
+      ...opts.headers,
+    },
+  });
+
+  const text = await res.text();
+  let data;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = { __text: text };
+  }
+
+  if (!res.ok) {
+    const message = data?.error?.message || data?.__text || `Erreur ${res.status}`;
+    const error = new Error(message);
+    error.status = res.status;
+    error.body = data;
+    throw error;
+  }
+
+  return data;
+}
+
+async function uploadToOneShot(file) {
+  // 1. Request a signed upload URL.
+  const signData = await oneshotFetch("/v1/uploads/sign", {
+    method: "POST",
+    body: JSON.stringify({
+      filename: file.originalname || "reference.jpg",
+      contentType: file.mimetype,
+      sizeBytes: file.buffer.length,
+    }),
+  });
+
+  const { fileId, uploadUrl, requiredHeaders } = signData;
+
+  // 2. Upload the file to the signed URL.
+  const uploadRes = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: { ...requiredHeaders, "Content-Length": file.buffer.length },
+    body: file.buffer,
+  });
+  if (!uploadRes.ok) {
+    const uploadText = await uploadRes.text();
+    throw new Error(`Échec de l'upload de l'image de référence (${uploadRes.status}): ${uploadText}`);
+  }
+
+  // 3. Mark the upload as complete.
+  await oneshotFetch("/v1/uploads/complete", {
+    method: "POST",
+    body: JSON.stringify({ fileId }),
+  });
+
+  return fileId;
+}
+
+async function pollOneShotJob(jobId) {
+  const maxAttempts = 30;
+  const delayMs = 2000;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const job = await oneshotFetch(`/v1/jobs/${jobId}`);
+
+    if (job.status === "completed") {
+      const result = job.result || {};
+      const imageUrl =
+        result.url ||
+        result.image_url ||
+        result.imageUrl ||
+        result.output ||
+        result.image ||
+        null;
+      if (!imageUrl) {
+        throw new Error("URL de l'image introuvable dans le résultat du job.");
+      }
+      return imageUrl;
+    }
+
+    if (job.status === "failed") {
+      const error = job.error || {};
+      throw new Error(error.message || `Le job a échoué (${error.code || "unknown"}).`);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+
+  throw new Error("La génération a pris trop de temps. Réessayez plus tard.");
+}
 
 app.post("/api/generate", upload.fields([
   { name: "image", maxCount: 1 },
@@ -51,58 +148,30 @@ app.post("/api/generate", upload.fields([
       return res.status(500).json({ error: "Clé OneShotAPI non configurée." });
     }
 
-    const endpoint =
-      mode === "outfit"
-        ? `${ONESHOT_BASE_URL}/api/tryon`
-        : `${ONESHOT_BASE_URL}/api/generate`;
+    if (!prompt || !prompt.trim()) {
+      return res.status(400).json({ error: "Prompt manquant." });
+    }
 
-    const formData = new FormData();
-    formData.append("prompt", prompt || "");
-    formData.append("mode", mode || "outfit");
-
+    // Collect reference files and upload them.
     const files = req.files || {};
-    const mainFile = files.image?.[0];
-    const ref1 = files.reference_1?.[0];
-    const ref2 = files.reference_2?.[0];
+    const allFiles = [
+      files.image?.[0],
+      files.reference_1?.[0],
+      files.reference_2?.[0],
+    ].filter(Boolean);
 
-    if (mainFile) {
-      const blob = new Blob([mainFile.buffer], { type: mainFile.mimetype });
-      formData.append("image", blob, mainFile.originalname);
+    let referenceFileIds = [];
+    if (allFiles.length > 0) {
+      try {
+        referenceFileIds = await Promise.all(allFiles.map(uploadToOneShot));
+      } catch (uploadErr) {
+        console.error("OneShot upload error:", uploadErr);
+        return res.status(502).json({ error: uploadErr.message });
+      }
     }
 
-    if (ref1) {
-      const blob = new Blob([ref1.buffer], { type: ref1.mimetype });
-      formData.append("reference_1", blob, ref1.originalname);
-    }
-
-    if (ref2) {
-      const blob = new Blob([ref2.buffer], { type: ref2.mimetype });
-      formData.append("reference_2", blob, ref2.originalname);
-    }
-
-    const apiRes = await fetch(endpoint, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${ONESHOT_API_KEY}` },
-      body: formData,
-    });
-
-    if (!apiRes.ok) {
-      const errText = await apiRes.text();
-      return res.status(apiRes.status).json({
-        error: `OneShotAPI a retourné ${apiRes.status}: ${errText}`,
-      });
-    }
-
-    const data = await apiRes.json();
-    const imageUrl = data.url ?? data.image_url ?? data.output ?? data.result ?? null;
-
-    if (!imageUrl) {
-      return res.status(500).json({ error: "URL de l'image introuvable dans la réponse OneShotAPI.", raw: data });
-    }
-
-    // Deduct 100 credits from the user after a successful generation.
+    // Deduct credits before creating the job.
     if (clerk_user_id && clerk_user_id.trim() !== "") {
-      const COST = 100;
       const { data: userRow, error: userError } = await supabaseAdmin
         .from("users")
         .select("credits")
@@ -113,11 +182,11 @@ app.post("/api/generate", upload.fields([
         console.error("credit check error:", userError);
       } else if (userRow) {
         const currentCredits = userRow.credits ?? 0;
-        if (currentCredits < COST) {
+        if (currentCredits < GENERATION_COST) {
           return res.status(402).json({ error: "Crédits insuffisants. Rechargez votre compte pour générer." });
         }
 
-        const newCredits = currentCredits - COST;
+        const newCredits = currentCredits - GENERATION_COST;
         const { error: updateError } = await supabaseAdmin
           .from("users")
           .update({ credits: newCredits })
@@ -128,8 +197,39 @@ app.post("/api/generate", upload.fields([
           return res.status(500).json({ error: "Erreur lors de la déduction des crédits." });
         }
       }
+    }
 
-      // Save generation history.
+    // Create the generation job.
+    const jobPayload = {
+      prompt: prompt.trim(),
+      options: {
+        modelVariant: "default",
+        ...(referenceFileIds.length > 0 && { referenceFileIds }),
+      },
+    };
+
+    let job;
+    try {
+      job = await oneshotFetch("/v1/models/nano-banana/jobs", {
+        method: "POST",
+        body: JSON.stringify(jobPayload),
+      });
+    } catch (jobErr) {
+      console.error("OneShot job creation error:", jobErr);
+      return res.status(502).json({ error: jobErr.message });
+    }
+
+    // Poll until the job is finished.
+    let imageUrl;
+    try {
+      imageUrl = await pollOneShotJob(job.id);
+    } catch (pollErr) {
+      console.error("OneShot polling error:", pollErr);
+      return res.status(502).json({ error: pollErr.message });
+    }
+
+    // Save generation history if a user is identified.
+    if (clerk_user_id && clerk_user_id.trim() !== "") {
       const { error: saveError } = await supabaseAdmin
         .from("generations")
         .insert({ clerk_user_id, mode, prompt: prompt || "", image_url: imageUrl });
@@ -169,7 +269,7 @@ app.post("/api/generate", upload.fields([
       }
     }
 
-    return res.json({ imageUrl, cost: 100 });
+    return res.json({ imageUrl, cost: GENERATION_COST });
   } catch (err) {
     console.error("Server error:", err);
     return res.status(500).json({ error: err.message });
