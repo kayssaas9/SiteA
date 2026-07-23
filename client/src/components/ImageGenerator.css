@@ -140,3 +140,15 @@
     height: 220px;
   }
 }
+
+.gen-submit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.gen-cost {
+  font-size: 13px;
+  color: var(--text-muted);
+}

@@ -100,8 +100,36 @@ app.post("/api/generate", upload.fields([
       return res.status(500).json({ error: "URL de l'image introuvable dans la réponse OneShotAPI.", raw: data });
     }
 
-    // Save generation history if a user is identified.
+    // Deduct 100 credits from the user after a successful generation.
     if (clerk_user_id && clerk_user_id.trim() !== "") {
+      const COST = 100;
+      const { data: userRow, error: userError } = await supabaseAdmin
+        .from("users")
+        .select("credits")
+        .eq("clerk_user_id", clerk_user_id)
+        .single();
+
+      if (userError) {
+        console.error("credit check error:", userError);
+      } else if (userRow) {
+        const currentCredits = userRow.credits ?? 0;
+        if (currentCredits < COST) {
+          return res.status(402).json({ error: "Crédits insuffisants. Rechargez votre compte pour générer." });
+        }
+
+        const newCredits = currentCredits - COST;
+        const { error: updateError } = await supabaseAdmin
+          .from("users")
+          .update({ credits: newCredits })
+          .eq("clerk_user_id", clerk_user_id);
+
+        if (updateError) {
+          console.error("credit deduction error:", updateError);
+          return res.status(500).json({ error: "Erreur lors de la déduction des crédits." });
+        }
+      }
+
+      // Save generation history.
       const { error: saveError } = await supabaseAdmin
         .from("generations")
         .insert({ clerk_user_id, mode, prompt: prompt || "", image_url: imageUrl });
@@ -141,7 +169,7 @@ app.post("/api/generate", upload.fields([
       }
     }
 
-    return res.json({ imageUrl });
+    return res.json({ imageUrl, cost: 100 });
   } catch (err) {
     console.error("Server error:", err);
     return res.status(500).json({ error: err.message });

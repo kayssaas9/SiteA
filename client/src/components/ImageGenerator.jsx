@@ -144,13 +144,16 @@ export default function ImageGenerator({
         />
       </div>
 
-      <button
-        className="gen-btn"
-        onClick={handleGenerate}
-        disabled={loading || !prompt.trim()}
-      >
-        {loading ? "Génération…" : `✨ ${generateLabel}`}
-      </button>
+      <div className="gen-submit">
+        <button
+          className="gen-btn"
+          onClick={handleGenerate}
+          disabled={loading || !prompt.trim()}
+        >
+          {loading ? "Génération…" : `✨ ${generateLabel}`}
+        </button>
+        <span className="gen-cost">100 crédits par génération</span>
+      </div>
 
       <ResultDisplay imageUrl={result} loading={loading} error={error} />
     </div>
