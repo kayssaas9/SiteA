@@ -200,7 +200,8 @@ app.post("/api/generate", upload.fields([
       }
     }
 
-    // Create the generation job.
+    // Create the generation job. All uploaded images (main + refs) are sent as referenceFileIds
+    // so the model can see them. The API supports up to 4 referenceFileIds.
     const jobPayload = {
       prompt: finalPrompt,
       options: {
@@ -208,6 +209,7 @@ app.post("/api/generate", upload.fields([
         ...(referenceFileIds.length > 0 && { referenceFileIds }),
       },
     };
+    console.log(`Creating OneShot job with ${referenceFileIds.length} reference file(s): ${referenceFileIds.join(", ") || "none"}`);
 
     let job;
     try {
