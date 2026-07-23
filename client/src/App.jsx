@@ -11,6 +11,7 @@ import SnapRouge from "./pages/SnapRouge.jsx";
 import SnapRougeGuard from "./components/SnapRougeGuard.jsx";
 import Survey from "./pages/Survey.jsx";
 import ReferralLanding from "./components/ReferralLanding.jsx";
+import CrispChat from "./components/CrispChat.jsx";
 import "./App.css";
 
 function Layout() {
@@ -71,5 +72,10 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  return <AppWithReferral />;
+  return (
+    <>
+      <CrispChat />
+      <AppWithReferral />
+    </>
+  );
 }

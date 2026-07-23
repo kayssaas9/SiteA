@@ -17,6 +17,9 @@ export default defineConfig({
     "import.meta.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
     ),
+    "import.meta.env.VITE_CRISP_WEBSITE_ID": JSON.stringify(
+      process.env.CRISP_WEBSITE_ID ?? ""
+    ),
     // Vite expose automatiquement les variables d'environnement préfixées par VITE_
     // aux fichiers clients (ex: VITE_STRIPE_PRICE_*). Aucun remapping n'est nécessaire.
   },
