@@ -40,16 +40,34 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
     const email =
       data.email_addresses?.[0]?.email_address ?? "";
 
-    const { error } = await supabaseAdmin
+    // Only insert the user if it doesn't already exist; never overwrite
+    // credits, survey completion, or other user progress on webhook retries.
+    const { data: existing } = await supabaseAdmin
       .from("users")
-      .upsert(
-        { clerk_user_id: clerkUserId, email, plan: "free", credits: 0 },
-        { onConflict: "clerk_user_id" }
-      );
+      .select("clerk_user_id")
+      .eq("clerk_user_id", clerkUserId)
+      .maybeSingle();
 
-    if (error) {
-      console.error("Supabase upsert error:", error);
-      return res.status(500).json({ error: error.message });
+    if (!existing) {
+      const { error } = await supabaseAdmin
+        .from("users")
+        .insert({
+          clerk_user_id: clerkUserId,
+          email,
+          plan: "free",
+          credits: 0,
+          snaprouge_unlocked: false,
+          survey_completed: false,
+        });
+
+      if (error) {
+        console.error("Supabase insert error:", error);
+        return res.status(500).json({ error: error.message });
+      }
+
+      console.log(`✅ User created in Supabase: ${clerkUserId} (${email})`);
+    } else {
+      console.log(`User already exists in Supabase: ${clerkUserId}`);
     }
 
     // Generate a unique referral code for the new user (idempotent).
@@ -58,8 +76,6 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
     } catch (codeErr) {
       console.error("Failed to generate referral code:", codeErr);
     }
-
-    console.log(`✅ User created in Supabase: ${clerkUserId} (${email})`);
   }
 
   if (type === "user.deleted") {

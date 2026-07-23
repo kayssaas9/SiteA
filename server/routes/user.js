@@ -31,18 +31,38 @@ router.post("/ensure", express.json(), async (req, res) => {
     return res.status(400).json({ error: "clerkUserId and email are required" });
   }
 
-  const { data, error } = await supabaseAdmin
+  // Only create the user if it does not exist; never overwrite existing credits,
+  // survey completion status, or other progress.
+  let userRow = await supabaseAdmin
     .from("users")
-    .upsert(
-      { clerk_user_id: clerkUserId, email, plan: "free", credits: 0, snaprouge_unlocked: false, survey_completed: false },
-      { onConflict: "clerk_user_id" }
-    )
     .select("plan, credits, email, snaprouge_unlocked, survey_completed")
+    .eq("clerk_user_id", clerkUserId)
     .single();
 
-  if (error) {
-    console.error("ensure user error:", error);
-    return res.status(500).json({ error: error.message });
+  if (userRow.error && userRow.error.code !== "PGRST116") {
+    console.error("ensure user error:", userRow.error);
+    return res.status(500).json({ error: userRow.error.message });
+  }
+
+  if (!userRow.data) {
+    const insertRes = await supabaseAdmin
+      .from("users")
+      .insert({
+        clerk_user_id: clerkUserId,
+        email,
+        plan: "free",
+        credits: 0,
+        snaprouge_unlocked: false,
+        survey_completed: false,
+      })
+      .select("plan, credits, email, snaprouge_unlocked, survey_completed")
+      .single();
+
+    if (insertRes.error) {
+      console.error("ensure user insert error:", insertRes.error);
+      return res.status(500).json({ error: insertRes.error.message });
+    }
+    userRow = insertRes;
   }
 
   // Ensure the user has a referral code (idempotent).
@@ -52,7 +72,7 @@ router.post("/ensure", express.json(), async (req, res) => {
     console.error("ensure referral code error:", codeErr);
   }
 
-  res.json(data);
+  res.json(userRow.data);
 });
 
 export default router;

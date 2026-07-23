@@ -115,7 +115,9 @@ router.post("/submit", express.json(), async (req, res) => {
   }
 
   // Mark user as completed and credit 300 credits.
-  const newCredits = (userRow.credits ?? 0) + 300;
+  const previousCredits = userRow.credits ?? 0;
+  const newCredits = previousCredits + 300;
+  console.log(`Crediting survey reward: ${clerkUserId}: ${previousCredits} → ${newCredits}`);
   const { error: updateError } = await supabaseAdmin
     .from("users")
     .update({ survey_completed: true, credits: newCredits })
@@ -125,6 +127,7 @@ router.post("/submit", express.json(), async (req, res) => {
     console.error("survey credit update error:", updateError);
     return res.status(500).json({ error: "Erreur lors du crédit des points." });
   }
+  console.log(`✅ Survey reward credited: ${clerkUserId} now has ${newCredits} credits`);
 
   res.json({ success: true, creditsEarned: 300, newCredits });
 });

@@ -79,12 +79,21 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
     const credits = PRICE_CREDITS[priceId] ?? 0;
 
     if (plan && credits > 0) {
+      // Add plan credits to the existing balance rather than replacing it,
+      // so survey rewards, referral bonuses, and packs are preserved.
+      await addCredits(clerkUserId, credits);
       await supabaseAdmin
         .from("users")
-        .update({ plan, credits })
+        .update({ plan })
         .eq("clerk_user_id", clerkUserId);
 
-      console.log(`🔄 Plan → ${plan}, credits set to ${credits} for ${clerkUserId}`);
+      console.log(`🔄 Plan → ${plan}, +${credits} credits added for ${clerkUserId}`);
+    } else if (plan) {
+      await supabaseAdmin
+        .from("users")
+        .update({ plan })
+        .eq("clerk_user_id", clerkUserId);
+      console.log(`🔄 Plan → ${plan} for ${clerkUserId}`);
     }
   }
 
