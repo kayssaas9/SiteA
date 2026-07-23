@@ -15,7 +15,20 @@ create index if not exists idx_generations_prompt on public.generations using gi
 -- Row-level security: service role bypasses automatically; users can only read their own rows.
 alter table public.generations enable row level security;
 
-create policy if not exists generations_select_own
-  on public.generations
-  for select
-  using (clerk_user_id = current_setting('request.clerk_user_id', true));
+-- Idempotent policy creation: PostgreSQL does not support IF NOT EXISTS on CREATE POLICY.
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_policies
+    where schemaname = 'public'
+      and tablename  = 'generations'
+      and policyname = 'generations_select_own'
+  ) then
+    create policy generations_select_own
+      on public.generations
+      for select
+      using (clerk_user_id = current_setting('request.clerk_user_id', true));
+  end if;
+end
+$$;
