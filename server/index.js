@@ -39,7 +39,11 @@ app.use("/api/referral", referralRoute);
 const ONESHOT_BASE_URL = "https://oneshotapi.com";
 const ONESHOT_API_KEY  = process.env.ONESHOT_API_KEY;
 
-app.post("/api/generate", upload.single("image"), async (req, res) => {
+app.post("/api/generate", upload.fields([
+  { name: "image", maxCount: 1 },
+  { name: "reference_1", maxCount: 1 },
+  { name: "reference_2", maxCount: 1 },
+]), async (req, res) => {
   try {
     const { mode, prompt, clerk_user_id } = req.body;
 
@@ -56,9 +60,24 @@ app.post("/api/generate", upload.single("image"), async (req, res) => {
     formData.append("prompt", prompt || "");
     formData.append("mode", mode || "outfit");
 
-    if (req.file) {
-      const blob = new Blob([req.file.buffer], { type: req.file.mimetype });
-      formData.append("image", blob, req.file.originalname);
+    const files = req.files || {};
+    const mainFile = files.image?.[0];
+    const ref1 = files.reference_1?.[0];
+    const ref2 = files.reference_2?.[0];
+
+    if (mainFile) {
+      const blob = new Blob([mainFile.buffer], { type: mainFile.mimetype });
+      formData.append("image", blob, mainFile.originalname);
+    }
+
+    if (ref1) {
+      const blob = new Blob([ref1.buffer], { type: ref1.mimetype });
+      formData.append("reference_1", blob, ref1.originalname);
+    }
+
+    if (ref2) {
+      const blob = new Blob([ref2.buffer], { type: ref2.mimetype });
+      formData.append("reference_2", blob, ref2.originalname);
     }
 
     const apiRes = await fetch(endpoint, {
