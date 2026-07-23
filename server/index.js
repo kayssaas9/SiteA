@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import multer from "multer";
 import fetch from "node-fetch";
+import sharp from "sharp";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -70,15 +71,32 @@ async function oneshotFetch(path, opts = {}) {
   return data;
 }
 
+async function normalizeImage(buffer) {
+  // Auto-orient using EXIF and strip metadata so the image is stored upright.
+  return sharp(buffer)
+    .rotate() // applies EXIF Orientation and removes the tag
+    .jpeg({ quality: 92, progressive: true })
+    .toBuffer();
+}
+
 async function uploadToOneShot(file) {
+  // Normalize image orientation before uploading.
+  let normalizedBuffer;
+  try {
+    normalizedBuffer = await normalizeImage(file.buffer);
+  } catch (normalizeErr) {
+    console.warn("Image normalization failed, using original buffer:", normalizeErr.message);
+    normalizedBuffer = file.buffer;
+  }
+
+  const filename = file.originalname ? file.originalname.replace(/\.[^.]+$/, ".jpg") : "reference.jpg";
+  const contentType = "image/jpeg";
+  const sizeBytes = normalizedBuffer.length;
+
   // 1. Request a signed upload URL.
   const signData = await oneshotFetch("/v1/uploads/sign", {
     method: "POST",
-    body: JSON.stringify({
-      filename: file.originalname || "reference.jpg",
-      contentType: file.mimetype,
-      sizeBytes: file.buffer.length,
-    }),
+    body: JSON.stringify({ filename, contentType, sizeBytes }),
   });
 
   const { fileId, uploadUrl, requiredHeaders } = signData;
@@ -86,8 +104,8 @@ async function uploadToOneShot(file) {
   // 2. Upload the file to the signed URL.
   const uploadRes = await fetch(uploadUrl, {
     method: "PUT",
-    headers: { ...requiredHeaders, "Content-Length": file.buffer.length },
-    body: file.buffer,
+    headers: { ...requiredHeaders, "Content-Length": sizeBytes },
+    body: normalizedBuffer,
   });
   if (!uploadRes.ok) {
     const uploadText = await uploadRes.text();
@@ -104,11 +122,12 @@ async function uploadToOneShot(file) {
 }
 
 async function pollOneShotJob(jobId) {
-  const maxAttempts = 30;
+  const maxAttempts = 60; // up to ~2 minutes
   const delayMs = 2000;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const job = await oneshotFetch(`/v1/jobs/${jobId}`);
+    console.log(`OneShot job ${jobId} status: ${job.status} (attempt ${attempt + 1}/${maxAttempts})`);
 
     if (job.status === "completed") {
       const result = job.result || {};
@@ -199,9 +218,20 @@ app.post("/api/generate", upload.fields([
       }
     }
 
+    // Build an explicit prompt so the model understands the transformation intent.
+    const trimmedPrompt = prompt.trim();
+    let finalPrompt = trimmedPrompt;
+    if (referenceFileIds.length > 0) {
+      if (mode === "car") {
+        finalPrompt = `Replace the main vehicle in the reference image completely with: ${trimmedPrompt}. Preserve the background, lighting, and camera angle. Do not keep the original car body or add superficial details on top of it — the vehicle must be fully replaced.`;
+      } else if (mode === "outfit") {
+        finalPrompt = `Apply the following outfit to the person in the reference image: ${trimmedPrompt}. Preserve the person's pose, body shape, background, and lighting. The original clothing should be fully replaced, not just covered with accessories.`;
+      }
+    }
+
     // Create the generation job.
     const jobPayload = {
-      prompt: prompt.trim(),
+      prompt: finalPrompt,
       options: {
         modelVariant: "default",
         ...(referenceFileIds.length > 0 && { referenceFileIds }),

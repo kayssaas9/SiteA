@@ -1,0 +1,14 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "-i2gZ5nxIrEv-L687z0XX"
+uri = "file://test_cayenne.jpg"
+type = "image"
+title = "Image test envoyée (Porsche Cayenne stylisé, 400×700)"
+
+[[outputs]]
+id = "7AQXDq0msb4j_toJswC4t"
+uri = "file://result_car_test.png"
+type = "image"
+title = "Résultat généré (768×1376, orientation conservée)"
