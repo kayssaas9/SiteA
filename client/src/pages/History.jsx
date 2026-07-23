@@ -29,6 +29,19 @@ export default function History() {
     fetchHistory();
   }, [user?.id, query]);
 
+  // Refresh history when the user comes back to this tab/page.
+  useEffect(() => {
+    const onVisible = () => {
+      if (!document.hidden) fetchHistory();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
+  }, [user?.id]);
+
   if (!user) {
     return (
       <main className="history-page">

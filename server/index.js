@@ -189,35 +189,6 @@ app.post("/api/generate", upload.fields([
       }
     }
 
-    // Deduct credits before creating the job.
-    if (clerk_user_id && clerk_user_id.trim() !== "") {
-      const { data: userRow, error: userError } = await supabaseAdmin
-        .from("users")
-        .select("credits")
-        .eq("clerk_user_id", clerk_user_id)
-        .single();
-
-      if (userError) {
-        console.error("credit check error:", userError);
-      } else if (userRow) {
-        const currentCredits = userRow.credits ?? 0;
-        if (currentCredits < GENERATION_COST) {
-          return res.status(402).json({ error: "Crédits insuffisants. Rechargez votre compte pour générer." });
-        }
-
-        const newCredits = currentCredits - GENERATION_COST;
-        const { error: updateError } = await supabaseAdmin
-          .from("users")
-          .update({ credits: newCredits })
-          .eq("clerk_user_id", clerk_user_id);
-
-        if (updateError) {
-          console.error("credit deduction error:", updateError);
-          return res.status(500).json({ error: "Erreur lors de la déduction des crédits." });
-        }
-      }
-    }
-
     // Build an explicit prompt so the model understands the transformation intent.
     const trimmedPrompt = prompt.trim();
     let finalPrompt = trimmedPrompt;
@@ -258,12 +229,60 @@ app.post("/api/generate", upload.fields([
       return res.status(502).json({ error: pollErr.message });
     }
 
-    // Save generation history if a user is identified.
+    // ── Generation succeeded: deduct credits, save history, handle referrals. ──
     if (clerk_user_id && clerk_user_id.trim() !== "") {
+      // Ensure the user row exists (idempotent fallback if Clerk webhook missed).
+      const { data: existingUser } = await supabaseAdmin
+        .from("users")
+        .select("clerk_user_id")
+        .eq("clerk_user_id", clerk_user_id)
+        .maybeSingle();
+
+      if (!existingUser) {
+        const { error: createError } = await supabaseAdmin
+          .from("users")
+          .insert({ clerk_user_id, plan: "free", credits: 0, snaprouge_unlocked: false, survey_completed: false });
+        if (createError) {
+          console.error("failed to create user row during generation:", createError);
+        }
+      }
+
+      // Deduct credits.
+      const { data: userRow, error: userError } = await supabaseAdmin
+        .from("users")
+        .select("credits")
+        .eq("clerk_user_id", clerk_user_id)
+        .single();
+
+      if (userError) {
+        console.error("credit check error:", userError);
+      } else if (userRow) {
+        const currentCredits = userRow.credits ?? 0;
+        if (currentCredits < GENERATION_COST) {
+          return res.status(402).json({ error: "Crédits insuffisants. Rechargez votre compte pour générer." });
+        }
+
+        const newCredits = currentCredits - GENERATION_COST;
+        const { error: updateError } = await supabaseAdmin
+          .from("users")
+          .update({ credits: newCredits })
+          .eq("clerk_user_id", clerk_user_id);
+
+        if (updateError) {
+          console.error("credit deduction error:", updateError);
+          return res.status(500).json({ error: "Erreur lors de la déduction des crédits." });
+        }
+      }
+
+      // Save generation history.
       const { error: saveError } = await supabaseAdmin
         .from("generations")
         .insert({ clerk_user_id, mode, prompt: prompt || "", image_url: imageUrl });
-      if (saveError) console.error("Failed to save generation history:", saveError);
+      if (saveError) {
+        console.error("Failed to save generation history:", saveError);
+        return res.status(500).json({ error: "Erreur lors de l'enregistrement dans l'historique." });
+      }
+      console.log(`✅ Saved generation history for ${clerk_user_id}: ${imageUrl}`);
 
       // Grant referrer reward on the referee's first successful generation.
       const { data: pendingReferral } = await supabaseAdmin
