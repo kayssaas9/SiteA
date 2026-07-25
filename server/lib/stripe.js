@@ -12,15 +12,18 @@ export const PRICE_CREDITS = {
   // Monthly subscriptions
   [process.env.VITE_STRIPE_PRICE_BASIQUE]: 2500,
   [process.env.VITE_STRIPE_PRICE_PRO]:     7500,
-  [process.env.VITE_STRIPE_PRICE_EXPERT]:  15000,
+  [process.env.VITE_STRIPE_PRICE_EXPERT]:  18000,
   // Annual subscriptions (same monthly credit grant)
   [process.env.VITE_STRIPE_PRICE_BASIQUE_ANNUEL]: 2500,
   [process.env.VITE_STRIPE_PRICE_PRO_ANNUEL]:     7500,
-  [process.env.VITE_STRIPE_PRICE_EXPERT_ANNUEL]:  15000,
-  // One-time credit packs
-  [process.env.VITE_STRIPE_PRICE_PACK_4K]:  4000,
-  [process.env.VITE_STRIPE_PRICE_PACK_8K]:  8500,
+  [process.env.VITE_STRIPE_PRICE_EXPERT_ANNUEL]:  18000,
+  // One-time credit packs for subscribers
+  [process.env.VITE_STRIPE_PRICE_PACK_4K]:  4500,
+  [process.env.VITE_STRIPE_PRICE_PACK_10K]: 10000,
   [process.env.VITE_STRIPE_PRICE_PACK_20K]: 20000,
+  // One-time credit packs for non-subscribers
+  [process.env.VITE_STRIPE_PRICE_PACK_800]: 800,
+  [process.env.VITE_STRIPE_PRICE_PACK_2K]: 2000,
 };
 
 // Plans keyed by price ID (monthly and annual variants map to the same plan)

@@ -1,5 +1,6 @@
 import { useUser } from "@clerk/clerk-react";
 import { useState } from "react";
+import { useUserData } from "../hooks/useUserData.js";
 import "./Pricing.css";
 
 const PLANS = [
@@ -30,17 +31,22 @@ const PLANS = [
     name: "Expert",
     price: "39,99 €",
     period: "/mois",
-    credits: 15000,
+    credits: 18000,
     priceEnvKey: "VITE_STRIPE_PRICE_EXPERT",
-    features: ["15 000 crédits / mois", "Génération ultra HD", "Accès SnapRouge inclus", "Résultats exclusifs", "Support dédié 24/7"],
+    features: ["18 000 crédits / mois", "Génération ultra HD", "Accès SnapRouge inclus", "Résultats exclusifs", "Support dédié 24/7"],
     previous: "Pro",
   },
 ];
 
-const PACKS = [
-  { id: "pack_4k", name: "Pack Starter", credits: 4000, price: "11,99 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_4K" },
-  { id: "pack_8k", name: "Pack Plus", credits: 8500, price: "24,99 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_8K" },
-  { id: "pack_20k", name: "Pack Max", credits: 20000, price: "49,99 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_20K" },
+const SUBSCRIBER_PACKS = [
+  { id: "pack_4k", name: "Pack Starter", credits: 4500, price: "15,00 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_4K" },
+  { id: "pack_10k", name: "Pack Standard", credits: 10000, price: "30,00 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_10K" },
+  { id: "pack_20k", name: "Pack Max", credits: 20000, price: "49,00 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_20K" },
+];
+
+const NON_SUBSCRIBER_PACKS = [
+  { id: "pack_800", name: "Pack Découverte", credits: 800, price: "9,99 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_800" },
+  { id: "pack_2k", name: "Pack Starter", credits: 2000, price: "19,99 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_2K" },
 ];
 
 const SNAP_ROUGE = {
@@ -53,9 +59,13 @@ const SNAP_ROUGE = {
 
 export default function Pricing() {
   const { user } = useUser();
+  const { plan } = useUserData();
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
   const showUnlockBanner = new URLSearchParams(window.location.search).get("unlock") === "snaprouge";
+
+  const hasSubscription = ["basic", "pro", "expert"].includes(plan);
+  const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
 
   const handleCheckout = async (priceEnvKey, mode, itemId) => {
     if (!user) {
@@ -161,10 +171,16 @@ export default function Pricing() {
           </div>
 
           <div className="packs-section">
-            <h2 className="packs-title">Recharges ponctuelles</h2>
-            <p className="packs-subtitle">Sans abonnement, crédits sans expiration.</p>
+            <h2 className="packs-title">
+              {hasSubscription ? "Recharges abonnés" : "Recharges sans abonnement"}
+            </h2>
+            <p className="packs-subtitle">
+              {hasSubscription
+                ? "Crédits sans expiration, réservés aux abonnés."
+                : "Crédits sans expiration, sans abonnement."}
+            </p>
             <div className="packs-grid-v2">
-              {PACKS.map((pack) => (
+              {activePacks.map((pack) => (
                 <div key={pack.id} className="pack-card-v2 card">
                   <div className="pack-name-v2">{pack.name}</div>
                   <div className="pack-credits-v2">{pack.credits.toLocaleString("fr-FR")} crédits</div>
