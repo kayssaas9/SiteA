@@ -204,6 +204,14 @@
   color: var(--text);
 }
 
+.snaprouge-pricing-price.unlocked {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--snaprouge);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .packs-title {
   font-size: 20px;
   font-weight: 600;

@@ -2,6 +2,7 @@ import { useUser, SignOutButton } from "@clerk/clerk-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useUserData } from "../hooks/useUserData.js";
+import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Account.css";
 
 const PLAN_LABELS = {
@@ -13,7 +14,8 @@ const PLAN_LABELS = {
 
 export default function Account() {
   const { user } = useUser();
-  const { plan, credits, snaprougeUnlocked, surveyCompleted, refetch } = useUserData();
+  const { plan, credits, surveyCompleted, refetch } = useUserData();
+  const { hasAccess: snapRougeAccess, loading: snapRougeLoading } = useSnapRougeAccess();
   const navigate = useNavigate();
   const [referral, setReferral] = useState({ code: "", count: 0, earned: 0, loading: true });
   const [copied, setCopied] = useState(false);
@@ -48,7 +50,6 @@ export default function Account() {
   }
 
   const initials = `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase() || user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() || "?";
-  const snapRougeAccess = plan === "pro" || plan === "expert" || snaprougeUnlocked;
 
   return (
     <main className="account-page">
@@ -172,7 +173,9 @@ export default function Account() {
             <span className="snaprouge-dot" />
             <h2 className="account-section-title">SnapRouge</h2>
           </div>
-          {snapRougeAccess ? (
+          {snapRougeLoading ? (
+            <p className="snaprouge-status-text">Vérification de l'accès…</p>
+          ) : snapRougeAccess ? (
             <p className="snaprouge-status-text unlocked">
               Accès débloqué — <Link to="/snaprouge">ouvrir SnapRouge</Link>
             </p>

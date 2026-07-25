@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { useEffect, useRef, useState } from "react";
-import { useUserData } from "../hooks/useUserData.js";
+import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./SnapRougeGuard.css";
 
 const SNAP_ROUGE_PRICE_KEY = "VITE_STRIPE_PRICE_SNAPROUGE";
@@ -17,14 +17,21 @@ const SNAP_ROUGE_PRICE_KEY = "VITE_STRIPE_PRICE_SNAPROUGE";
  */
 export default function SnapRougeGuard({ children }) {
   const { user } = useUser();
-  const { plan, snaprougeUnlocked, loading } = useUserData();
+  const { hasAccess, loading } = useSnapRougeAccess();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState(null);
-  const hasAccess = plan === "pro" || plan === "expert" || snaprougeUnlocked;
+  const [ready, setReady] = useState(false);
   const initiated = useRef(false);
 
+  // Wait for the first access check to complete before deciding to redirect.
+  // This prevents initiating a checkout on the very first render while user data
+  // is still loading (useSnapRougeAccess starts with hasAccess=false).
   useEffect(() => {
-    if (loading || hasAccess || !user || initiated.current) return;
+    if (!loading) setReady(true);
+  }, [loading]);
+
+  useEffect(() => {
+    if (!ready || loading || hasAccess || !user || initiated.current) return;
     initiated.current = true;
     setCheckoutLoading(true);
 
@@ -55,7 +62,7 @@ export default function SnapRougeGuard({ children }) {
         setCheckoutError(err.message);
         setCheckoutLoading(false);
       });
-  }, [loading, hasAccess, user]);
+  }, [ready, loading, hasAccess, user]);
 
   if (loading || checkoutLoading) {
     return (

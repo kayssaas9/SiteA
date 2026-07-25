@@ -1,6 +1,8 @@
 import { useUser } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useUserData } from "../hooks/useUserData.js";
+import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Pricing.css";
 
 const PLANS = [
@@ -60,6 +62,7 @@ const SNAP_ROUGE = {
 export default function Pricing() {
   const { user } = useUser();
   const { plan } = useUserData();
+  const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
   const showUnlockBanner = new URLSearchParams(window.location.search).get("unlock") === "snaprouge";
@@ -159,14 +162,22 @@ export default function Pricing() {
               <p className="snaprouge-pricing-desc">{SNAP_ROUGE.description}</p>
             </div>
             <div className="snaprouge-pricing-action">
-              <div className="snaprouge-pricing-price">{SNAP_ROUGE.price}</div>
-              <button
-                className="btn btn-snaprouge"
-                onClick={() => handleCheckout(SNAP_ROUGE.priceEnvKey, "payment", SNAP_ROUGE.id)}
-                disabled={loading === SNAP_ROUGE.id}
-              >
-                {loading === SNAP_ROUGE.id ? "Redirection…" : "Débloquer"}
-              </button>
+              <div className={`snaprouge-pricing-price ${snapRougeAccess ? "unlocked" : ""}`}>
+                {snapRougeAccess ? "Inclus avec Pro/Expert" : SNAP_ROUGE.price}
+              </div>
+              {snapRougeAccess ? (
+                <Link to="/snaprouge" className="btn btn-snaprouge">
+                  Accéder
+                </Link>
+              ) : (
+                <button
+                  className="btn btn-snaprouge"
+                  onClick={() => handleCheckout(SNAP_ROUGE.priceEnvKey, "payment", SNAP_ROUGE.id)}
+                  disabled={loading === SNAP_ROUGE.id}
+                >
+                  {loading === SNAP_ROUGE.id ? "Redirection…" : "Débloquer"}
+                </button>
+              )}
             </div>
           </div>
 
