@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 import ImageGenerator from "../components/ImageGenerator.jsx";
 import "./Generate.css";
 
@@ -83,9 +84,9 @@ export default function Generate() {
         <SignedOut>
           <div className="generate-auth fade-up delay-2">
             <p>Connectez-vous pour générer des images.</p>
-            <SignInButton mode="modal">
-              <button className="btn btn-primary">Se connecter</button>
-            </SignInButton>
+            <Link to="/sign-in" className="btn btn-primary">
+              Se connecter
+            </Link>
           </div>
         </SignedOut>
       </div>

@@ -8,6 +8,9 @@ import Pricing from "./pages/Pricing.jsx";
 import Account from "./pages/Account.jsx";
 import History from "./pages/History.jsx";
 import SnapRouge from "./pages/SnapRouge.jsx";
+import SignIn from "./pages/SignIn.jsx";
+import SignUp from "./pages/SignUp.jsx";
+import SsoCallback from "./pages/SsoCallback.jsx";
 import SnapRougeGuard from "./components/SnapRougeGuard.jsx";
 import Survey from "./pages/Survey.jsx";
 import ReferralLanding from "./components/ReferralLanding.jsx";
@@ -68,6 +71,9 @@ const router = createBrowserRouter([
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
+  { path: "/sign-in", element: <SignIn /> },
+  { path: "/sign-up", element: <SignUp /> },
+  { path: "/sso-callback", element: <SsoCallback /> },
   { path: "/r/:code", element: <ReferralLanding /> },
 ]);
 

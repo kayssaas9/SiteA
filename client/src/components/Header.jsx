@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
@@ -62,12 +62,12 @@ export default function Header() {
 
         <div className="nav-right">
           <SignedOut>
-            <SignInButton mode="modal">
-              <button className="btn btn-outline header-btn">Connexion</button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button className="btn btn-primary header-btn">Créer un compte</button>
-            </SignUpButton>
+            <Link to="/sign-in" className="btn btn-outline header-btn">
+              Connexion
+            </Link>
+            <Link to="/sign-up" className="btn btn-primary header-btn">
+              Créer un compte
+            </Link>
           </SignedOut>
 
           <SignedIn>
@@ -103,12 +103,12 @@ export default function Header() {
 
           <div className="mobile-menu-actions">
             <SignedOut>
-              <SignInButton mode="modal">
-                <button className="btn btn-outline mobile-menu-btn">Connexion</button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="btn btn-primary mobile-menu-btn">Créer un compte</button>
-              </SignUpButton>
+              <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
+                Connexion
+              </Link>
+              <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
+                Créer un compte
+              </Link>
             </SignedOut>
 
             <SignedIn>
