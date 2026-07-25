@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { useUserData } from "../hooks/useUserData.js";
+import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Header.css";
 
 function CreditsBadge() {
@@ -18,16 +19,17 @@ function CreditsBadge() {
 export default function Header() {
   const { isSignedIn } = useUser();
   const { pathname } = useLocation();
+  const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
-  const navLink = (to, label) => (
+  const navLink = (to, label, className = "") => (
     <Link
       to={to}
-      className={`nav-link ${pathname === to ? "active" : ""}`}
+      className={`nav-link ${className} ${pathname === to ? "active" : ""}`}
       onClick={() => setMenuOpen(false)}
     >
       {label}
@@ -37,6 +39,7 @@ export default function Header() {
   const navItems = [
     { to: "/generate", label: "Générer" },
     { to: "/pricing", label: "Tarifs" },
+    { to: "/snaprouge", label: "SnapRouge", className: "snaprouge-nav-link" },
     ...(isSignedIn ? [{ to: "/history", label: "Historique" }] : []),
     ...(isSignedIn ? [{ to: "/account", label: "Compte" }] : []),
   ];
@@ -52,6 +55,7 @@ export default function Header() {
         <nav className="nav-center">
           {navLink("/generate", "Générer")}
           {navLink("/pricing", "Tarifs")}
+          {navLink("/snaprouge", "SnapRouge", "snaprouge-nav-link")}
           {isSignedIn && navLink("/history", "Historique")}
           {isSignedIn && navLink("/account", "Compte")}
         </nav>
@@ -90,7 +94,7 @@ export default function Header() {
             <Link
               key={item.to}
               to={item.to}
-              className={`mobile-nav-link ${pathname === item.to ? "active" : ""}`}
+              className={`mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
               onClick={() => setMenuOpen(false)}
             >
               {item.label}

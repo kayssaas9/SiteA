@@ -59,6 +59,15 @@
   color: var(--text);
 }
 
+.snaprouge-nav-link {
+  color: var(--snaprouge);
+}
+
+.snaprouge-nav-link:hover,
+.snaprouge-nav-link.active {
+  color: #ff7a8f;
+}
+
 .nav-right {
   display: flex;
   align-items: center;
