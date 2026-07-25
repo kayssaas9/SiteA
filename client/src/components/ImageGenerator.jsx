@@ -5,16 +5,19 @@ import ResultDisplay from "./ResultDisplay.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import "./ImageGenerator.css";
 
-export default function ImageGenerator({
-  mode,
-  presets = [],
-  mainLabel = "Photo principale",
-  mainHint = "Image à modifier ou utiliser comme référence principale",
-  promptLabel = "Ta demande",
-  promptHint = "Décris ce que tu veux générer",
-  promptPlaceholder = "Ex. : une tenue streetwear noire avec un hoodie oversize et un cargo",
-  generateLabel = "Générer",
-}) {
+const PlusIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+const MinusIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+    <path d="M5 12h14" />
+  </svg>
+);
+
+export default function ImageGenerator() {
   const { user } = useUser();
   const { plan } = useUserData();
   const [mainPhoto, setMainPhoto] = useState(null);
@@ -39,7 +42,7 @@ export default function ImageGenerator({
 
     try {
       const form = new FormData();
-      form.append("mode", mode);
+      form.append("mode", "car");
       form.append("prompt", prompt);
       form.append("clerk_user_id", user?.id || "");
       if (mainPhoto?.file) form.append("image", mainPhoto.file);
@@ -85,15 +88,10 @@ export default function ImageGenerator({
   };
 
   return (
-    <div className="generator image-generator">
+    <div className="image-generator-v2">
       <div className="gen-section main-upload-section">
-        <label className="gen-label">
-          {mainLabel} <span className="gen-opt">(optionnel)</span>
-        </label>
-        <p className="gen-hint">{mainHint}</p>
         <ImageUpload
-          label="Ajouter une image"
-          hint="Plein pied, profil ou 3/4 avant recommandé"
+          variant="main"
           value={mainPhoto}
           onChange={setMainPhoto}
         />
@@ -105,7 +103,9 @@ export default function ImageGenerator({
           onClick={() => setShowRefs((s) => !s)}
           type="button"
         >
-          <span>{showRefs ? "−" : "+"}</span> Ajouter des références
+          <span>{showRefs ? <MinusIcon /> : <PlusIcon />}</span>
+          Ajouter des références
+          <span className="refs-badge">OPTIONNEL</span>
         </button>
 
         {showRefs && (
@@ -120,27 +120,12 @@ export default function ImageGenerator({
       </div>
 
       <div className="gen-section">
-        <label className="gen-label">{promptLabel}</label>
-        <p className="gen-hint">{promptHint}</p>
-        {presets.length > 0 && (
-          <div className="presets">
-            {presets.map((p) => (
-              <button
-                key={p}
-                className={`preset-chip ${prompt === p ? "active" : ""}`}
-                onClick={() => setPrompt(p)}
-              >
-                {p}
-              </button>
-            ))}
-          </div>
-        )}
         <textarea
           className="gen-textarea"
-          placeholder={promptPlaceholder}
+          placeholder="Décris précisément le résultat (ex : remplace par une GT3RS noire, jantes forgées)..."
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          rows={3}
+          rows={4}
         />
       </div>
 
@@ -150,9 +135,8 @@ export default function ImageGenerator({
           onClick={handleGenerate}
           disabled={loading || !prompt.trim()}
         >
-          {loading ? "Génération…" : `✨ ${generateLabel}`}
+          {loading ? "Génération…" : "Générer — 100 crédits"}
         </button>
-        <span className="gen-cost">100 crédits par génération</span>
       </div>
 
       <ResultDisplay imageUrl={result} loading={loading} error={error} />
