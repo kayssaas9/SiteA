@@ -7,7 +7,7 @@ import { useUserData } from "./useUserData.js";
  * or if they purchased the one-time SnapRouge unlock.
  */
 export function useSnapRougeAccess() {
-  const { plan, snaprougeUnlocked, loading } = useUserData();
+  const { plan, snaprougeUnlocked, loading, refetch } = useUserData();
   const hasAccess = plan === "pro" || plan === "expert" || snaprougeUnlocked;
-  return { hasAccess, loading };
+  return { hasAccess, loading, refetch };
 }

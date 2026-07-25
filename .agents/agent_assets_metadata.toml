@@ -12,3 +12,15 @@ id = "7AQXDq0msb4j_toJswC4t"
 uri = "file://result_car_test.png"
 type = "image"
 title = "Résultat généré (768×1376, orientation conservée)"
+
+[[outputs]]
+id = "cXNfM18GEJNRwarpVH4vi"
+uri = "file://screenshots/snaprouge_access.jpg"
+type = "image"
+title = "SnapRouge access paywall screenshot"
+
+[[outputs]]
+id = "PmxvCXc_er_n_eA4y40Xu"
+uri = "file://screenshots/snaprouge_paywall.jpg"
+type = "image"
+title = "SnapRouge paywall"

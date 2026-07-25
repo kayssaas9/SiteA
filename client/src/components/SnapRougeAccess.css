@@ -1,0 +1,328 @@
+.snaprouge-access-page {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 68px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--bg);
+}
+
+.snaprouge-access-page .blob {
+  opacity: 0.12;
+}
+
+.snaprouge-access-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Hero */
+.snaprouge-access-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.snaprouge-access-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232, 85, 107, 0.12);
+  color: var(--snaprouge);
+  margin-bottom: 18px;
+}
+
+.snaprouge-access-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.snaprouge-access-title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.snaprouge-access-subtitle {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 360px;
+}
+
+/* Main card */
+.snaprouge-access-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.025);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
+
+.snaprouge-access-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.snaprouge-access-lifetime {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.snaprouge-access-price {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.snaprouge-access-checklist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.snaprouge-access-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.snaprouge-access-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232, 85, 107, 0.12);
+  color: var(--snaprouge);
+}
+
+.snaprouge-access-check svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* CTA button */
+.snaprouge-access-btn {
+  width: 100%;
+  padding: 15px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: linear-gradient(135deg, #FF3355 0%, #FF0033 100%);
+  box-shadow: 0 8px 24px rgba(255, 0, 51, 0.25), 0 0 0 1px rgba(255, 0, 51, 0.15) inset;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.snaprouge-access-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255, 0, 51, 0.35), 0 0 0 1px rgba(255, 0, 51, 0.2) inset;
+  filter: brightness(1.05);
+}
+
+.snaprouge-access-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
+
+.snaprouge-access-error {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--snaprouge);
+}
+
+.snaprouge-access-secondary {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.snaprouge-access-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.snaprouge-access-link:hover {
+  color: #b8dffa;
+}
+
+/* Plans card */
+.snaprouge-access-plans {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(142, 197, 232, 0.08) 0%, rgba(142, 197, 232, 0.03) 100%);
+  border: 0.5px solid rgba(142, 197, 232, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.snaprouge-access-plans-blur {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(142, 197, 232, 0.22);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.snaprouge-access-plans-title {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.snaprouge-access-plans-title svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+
+.snaprouge-access-plans-list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.snaprouge-access-plan {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.snaprouge-access-plan-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(142, 197, 232, 0.12);
+  color: var(--accent);
+}
+
+.snaprouge-access-plan-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.snaprouge-access-plan-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.snaprouge-access-plan-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.snaprouge-access-plan-price {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.snaprouge-access-plan-credits {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.snaprouge-access-plans-btn {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0E0F12;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #A8D4F2 0%, #8EC5E8 100%);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.snaprouge-access-plans-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.snaprouge-access-plans-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+  .snaprouge-access-page {
+    padding: 32px 16px;
+  }
+
+  .snaprouge-access-title {
+    font-size: 28px;
+  }
+
+  .snaprouge-access-price {
+    font-size: 30px;
+  }
+
+  .snaprouge-access-card,
+  .snaprouge-access-plans {
+    padding: 22px;
+  }
+}
