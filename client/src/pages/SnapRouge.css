@@ -10,7 +10,7 @@
 
 .snaprouge-hero-v2 {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
 .snaprouge-badge-v2 {
@@ -35,28 +35,90 @@
 
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .step-card {
-  aspect-ratio: 4 / 3;
+  position: relative;
+  aspect-ratio: 9 / 16;
   border-radius: var(--radius-lg);
-  border: 0.5px solid var(--border);
-  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark black/red center background */
+.step-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(var(--radius-lg) - 1px);
+  background: radial-gradient(
+    circle at center,
+    #0a0505 0%,
+    #120808 40%,
+    #1a0c0c 75%,
+    #0E0F12 100%
+  );
+  z-index: 1;
+}
+
+/* Gradient red border that fades toward the dark center */
+.step-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  padding: 1px;
+  background: radial-gradient(
+    circle at center,
+    rgba(232, 85, 107, 0) 0%,
+    rgba(232, 85, 107, 0.15) 45%,
+    rgba(232, 85, 107, 0.55) 85%,
+    rgba(232, 85, 107, 0.8) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .step-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(232, 85, 107, 0.25);
-  box-shadow: 0 12px 40px rgba(232, 85, 107, 0.1);
+  box-shadow: 0 16px 48px rgba(232, 85, 107, 0.12);
+}
+
+.step-card:hover::before {
+  background: radial-gradient(
+    circle at center,
+    rgba(232, 85, 107, 0) 0%,
+    rgba(232, 85, 107, 0.25) 45%,
+    rgba(232, 85, 107, 0.7) 85%,
+    rgba(232, 85, 107, 0.95) 100%
+  );
 }
 
 .step-number {
+  position: relative;
+  z-index: 3;
   font-size: 18px;
   font-weight: 700;
   color: var(--text);

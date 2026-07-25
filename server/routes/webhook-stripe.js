@@ -63,7 +63,23 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
         return res.json({ received: true, warning: err.message });
       }
     }
-    // For subscriptions, wait for invoice.payment_succeeded / subscription.updated
+
+    // For subscriptions, also process credits here as a fallback/reliability layer.
+    // The subscription webhook events are still handled below for non-Checkout flows.
+    if (obj.mode === "subscription") {
+      try {
+        const session = await stripe.checkout.sessions.retrieve(obj.id, {
+          expand: ["subscription"],
+        });
+        const subscription = session.subscription;
+        if (subscription) {
+          await processSubscription(subscription, clerkUserId);
+        }
+      } catch (err) {
+        console.error(`Subscription checkout session retrieve failed for ${obj.id}:`, err.message);
+        return res.json({ received: true, warning: err.message });
+      }
+    }
   }
 
   // ── customer.subscription.updated / created ──────────────────────────────
@@ -71,30 +87,10 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
     event.type === "customer.subscription.updated" ||
     event.type === "customer.subscription.created"
   ) {
-    const priceId     = obj.items?.data?.[0]?.price?.id;
     const clerkUserId = obj.metadata?.clerk_user_id;
-    if (!clerkUserId || !priceId) return res.json({ received: true });
+    if (!clerkUserId) return res.json({ received: true });
 
-    const plan    = PRICE_PLANS[priceId];
-    const credits = PRICE_CREDITS[priceId] ?? 0;
-
-    if (plan && credits > 0) {
-      // Add plan credits to the existing balance rather than replacing it,
-      // so survey rewards, referral bonuses, and packs are preserved.
-      await addCredits(clerkUserId, credits);
-      await supabaseAdmin
-        .from("users")
-        .update({ plan })
-        .eq("clerk_user_id", clerkUserId);
-
-      console.log(`🔄 Plan → ${plan}, +${credits} credits added for ${clerkUserId}`);
-    } else if (plan) {
-      await supabaseAdmin
-        .from("users")
-        .update({ plan })
-        .eq("clerk_user_id", clerkUserId);
-      console.log(`🔄 Plan → ${plan} for ${clerkUserId}`);
-    }
+    await processSubscription(obj, clerkUserId);
   }
 
   // ── customer.subscription.deleted ───────────────────────────────────────
@@ -114,6 +110,51 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
 });
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+async function processSubscription(subscription, clerkUserId) {
+  const priceId = subscription.items?.data?.[0]?.price?.id;
+  if (!priceId) return false;
+
+  const plan = PRICE_PLANS[priceId];
+  const credits = PRICE_CREDITS[priceId] ?? 0;
+
+  if (!plan) return false;
+
+  // Idempotency: record the subscription so we never credit the same one twice
+  // across checkout.session.completed and customer.subscription.updated events.
+  const { error: insertError } = await supabaseAdmin
+    .from("subscription_credits")
+    .insert({
+      subscription_id: subscription.id,
+      clerk_user_id: clerkUserId,
+      plan,
+      credits_added: credits,
+    });
+
+  if (insertError && insertError.code === "23505") {
+    console.log(`⏭ Subscription ${subscription.id} already credited, skipping.`);
+    // Still ensure the plan field is up to date in case it was changed manually.
+    await supabaseAdmin.from("users").update({ plan }).eq("clerk_user_id", clerkUserId);
+    return true;
+  }
+
+  if (insertError) {
+    console.error("Failed to record subscription credit:", insertError);
+    return false;
+  }
+
+  if (credits > 0) {
+    await addCredits(clerkUserId, credits);
+  }
+
+  await supabaseAdmin
+    .from("users")
+    .update({ plan })
+    .eq("clerk_user_id", clerkUserId);
+
+  console.log(`🔄 Plan → ${plan}, +${credits} credits added for ${clerkUserId} (subscription ${subscription.id})`);
+  return true;
+}
+
 async function addCredits(clerkUserId, amount) {
   // Use a Postgres function to atomically increment credits
   const { error } = await supabaseAdmin.rpc("increment_credits", {
