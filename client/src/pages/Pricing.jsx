@@ -65,7 +65,6 @@ export default function Pricing() {
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
-  const showUnlockBanner = new URLSearchParams(window.location.search).get("unlock") === "snaprouge";
 
   const hasSubscription = ["basic", "pro", "expert"].includes(plan);
   const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
@@ -107,16 +106,6 @@ export default function Pricing() {
       <div className="blob blob-2" />
 
       <div className="page pricing-content">
-        {showUnlockBanner && (
-          <div className="unlock-banner fade-up">
-            <span className="unlock-icon">🔒</span>
-            <div>
-              <strong>Accès SnapRouge requis</strong>
-              <p>Débloquez SnapRouge ci-dessous ou choisissez un abonnement Pro/Expert.</p>
-            </div>
-          </div>
-        )}
-
         <div className="pricing-header fade-up">
           <div className="badge">Tarifs</div>
           <h1 className="page-title">Choisissez votre <span className="accent">formule</span></h1>
