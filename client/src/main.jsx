@@ -10,9 +10,19 @@ if (!publishableKey) {
   throw new Error("Clé publique Clerk manquante (VITE_CLERK_PUBLISHABLE_KEY).");
 }
 
+const clerkAppearance = {
+  variables: {
+    colorPrimary: "#8EC5E8",
+  },
+};
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ClerkProvider publishableKey={publishableKey} afterSignOutUrl="/">
+    <ClerkProvider
+      publishableKey={publishableKey}
+      afterSignOutUrl="/"
+      appearance={clerkAppearance}
+    >
       <App />
     </ClerkProvider>
   </StrictMode>
