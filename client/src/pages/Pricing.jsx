@@ -143,7 +143,9 @@ export default function Pricing() {
       const el = document.getElementById(id);
       if (el) {
         clearInterval(timer);
-        el.scrollIntoView({ behavior: "smooth", block: "end" });
+        setTimeout(() => {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+        }, 100);
       } else if (attempts >= maxAttempts) {
         clearInterval(timer);
       }
