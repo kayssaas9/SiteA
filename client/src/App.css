@@ -36,7 +36,8 @@
   font-size: 16px;
   max-width: 600px;
   line-height: 1.5;
-  margin-bottom: 40px;
+  margin: 0 auto 40px;
+  text-align: center;
 }
 
 .accent {
