@@ -77,6 +77,7 @@ export default function ImageGenerator() {
           </div>
         ) : (
           <ImageUpload
+            variant="reference"
             label={`Référence ${index}`}
             hint="PNG, JPG · Jusqu'à 10 Mo"
             value={value}

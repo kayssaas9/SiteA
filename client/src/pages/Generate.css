@@ -317,6 +317,8 @@
 }
 
 .recharge-btn {
+  position: relative;
+  overflow: hidden;
   width: 100%;
   padding: 10px 16px;
   border-radius: var(--radius-sm);
@@ -329,6 +331,29 @@
   transition: transform 0.15s, filter 0.15s;
 }
 
+.recharge-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  animation: shimmer 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
 .recharge-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   filter: brightness(1.05);
@@ -337,6 +362,10 @@
 .recharge-btn:disabled {
   opacity: 0.6;
   cursor: wait;
+}
+
+.recharge-btn:disabled::before {
+  animation: none;
 }
 
 .recharge-error {

@@ -8,6 +8,14 @@ const CameraIcon = () => (
   </svg>
 );
 
+const PhotoPlusIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="32" height="32">
+    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+    <circle cx="12" cy="13" r="3" />
+    <path d="M18 8v6M15 11h6" strokeWidth="2" />
+  </svg>
+);
+
 export default function ImageUpload({ label, hint, onChange, value, variant = "default" }) {
   const inputRef = useRef(null);
   const [dragging, setDragging] = useState(false);
@@ -25,10 +33,11 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
   };
 
   const isMain = variant === "main";
+  const isReference = variant === "reference";
 
   return (
     <div
-      className={`upload-zone ${isMain ? "upload-zone-main" : ""} ${dragging ? "dragging" : ""} ${value ? "has-image" : ""}`}
+      className={`upload-zone ${isMain ? "upload-zone-main" : ""} ${isReference ? "upload-zone-reference" : ""} ${dragging ? "dragging" : ""} ${value ? "has-image" : ""}`}
       onClick={() => !value && inputRef.current.click()}
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
       onDragLeave={() => setDragging(false)}
@@ -50,6 +59,12 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
           <div className="upload-icon-main"><CameraIcon /></div>
           <div className="upload-label-main">TA PHOTO</div>
           <div className="upload-hint-main">Touche pour importer</div>
+        </div>
+      ) : isReference ? (
+        <div className="upload-placeholder-reference">
+          <div className="upload-icon-reference"><PhotoPlusIcon /></div>
+          <div className="upload-label-reference">{label || "Référence"}</div>
+          <div className="upload-hint-reference">{hint || "PNG, JPG · Cliquez ou glissez"}</div>
         </div>
       ) : (
         <div className="upload-placeholder">

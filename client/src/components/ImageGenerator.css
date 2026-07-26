@@ -30,6 +30,32 @@
   font-size: 11px;
 }
 
+/* Violet reference upload for unlocked slots */
+.ref-slot:not(.locked) {
+  border: 0.5px solid rgba(168, 142, 232, 0.35);
+  background: rgba(168, 142, 232, 0.05);
+}
+
+.ref-slot:not(.locked) .upload-zone-reference {
+  background: rgba(168, 142, 232, 0.03);
+  border-color: rgba(168, 142, 232, 0.35);
+}
+
+.ref-slot:not(.locked) .upload-zone-reference:hover {
+  border-color: #A88EE8;
+  background: rgba(168, 142, 232, 0.07);
+}
+
+.ref-slot:not(.locked) .upload-zone-reference.dragging {
+  border-color: #A88EE8;
+  background: rgba(168, 142, 232, 0.1);
+  box-shadow: 0 0 0 3px rgba(168, 142, 232, 0.1);
+}
+
+.ref-slot:not(.locked) .upload-placeholder-reference {
+  color: #A88EE8;
+}
+
 .ref-slot.locked {
   border: 0.5px dashed var(--border);
   background: rgba(255, 255, 255, 0.02);

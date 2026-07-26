@@ -85,9 +85,6 @@ export default function Generate() {
 
         <div className="generate-header fade-up delay-1">
           <h1 className="page-title">Transforme ta <span className="accent">voiture</span></h1>
-          <p className="page-subtitle">
-            Importe une photo, décris le résultat voulu et laisse l'IA générer le rendu.
-          </p>
         </div>
 
         <SignedIn>
