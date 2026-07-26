@@ -83,7 +83,7 @@ export default function Account() {
 
           <div className="credits-card card">
             <div className="credits-card-label">Crédits restants</div>
-            <div className="credits-card-value">{credits.toLocaleString("fr-FR")}</div>
+            <div className="credits-card-value">{plan === "expert" ? "Illimités" : credits.toLocaleString("fr-FR")}</div>
             <Link to="/pricing" className="btn btn-outline plan-card-btn">
               Recharger
             </Link>

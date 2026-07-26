@@ -181,7 +181,7 @@ export default function SnapRougeAccess() {
                     {plan.name} <span className="snaprouge-access-plan-price">{plan.price}</span>
                   </div>
                   <div className="snaprouge-access-plan-credits">
-                    SnapRouge inclus + {plan.credits.toLocaleString("fr-FR")} crédits/mois
+                    SnapRouge inclus + {plan.id === "expert" ? "Illimités" : `${plan.credits.toLocaleString("fr-FR")} crédits/mois`}
                   </div>
                 </div>
               </div>

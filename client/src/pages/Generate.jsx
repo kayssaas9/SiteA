@@ -79,7 +79,7 @@ export default function Generate() {
       <div className="page generate-content">
         <div className="generate-credits-badge fade-up">
           <ZapIcon />
-          <span className="generate-credits-value">{loading ? "—" : credits.toLocaleString("fr-FR")}</span>
+          <span className="generate-credits-value">{loading ? "—" : plan === "expert" ? "Illimités" : credits.toLocaleString("fr-FR")}</span>
           <span className="generate-credits-label">crédits</span>
         </div>
 

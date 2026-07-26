@@ -48,7 +48,7 @@ const PLANS = [
     period: "/mois",
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 399€/an",
-    credits: 18000,
+    credits: 20000,
     creditsDisplay: "Illimités",
     creditDescription: "Pour les pros de la génération",
     monthlyPriceEnvKey: "VITE_STRIPE_PRICE_EXPERT",

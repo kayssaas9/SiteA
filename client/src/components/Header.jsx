@@ -6,11 +6,11 @@ import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Header.css";
 
 function CreditsBadge() {
-  const { credits, loading } = useUserData();
+  const { plan, credits, loading } = useUserData();
   if (loading) return <span className="credits-badge skeleton" />;
   return (
     <Link to="/pricing" className="credits-badge" title="Voir les crédits">
-      <span className="credits-count">{credits.toLocaleString("fr-FR")}</span>
+      <span className="credits-count">{plan === "expert" ? "Illimités" : credits.toLocaleString("fr-FR")}</span>
       <span className="credits-label">crédits</span>
     </Link>
   );
