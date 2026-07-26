@@ -209,6 +209,11 @@
   color: #34C759;
   font-size: 12px;
   font-weight: 700;
+  margin-bottom: -6px;
+}
+
+.plan-billing {
+  margin-bottom: -6px;
 }
 
 .plan-period-v2 {

@@ -170,11 +170,11 @@ export default function Pricing() {
                   <div className="plan-price-v2">
                     {plan.price}<span className="plan-period-v2">{plan.period}</span>
                   </div>
-                  <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
                 </div>
                 <div className="plan-guarantee">
                   <ShieldIcon /> Satisfait ou remboursé
                 </div>
+                <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
                 <div className="plan-credits-v2">{plan.credits.toLocaleString("fr-FR")} crédits / mois</div>
                 {plan.previous && <div className="plan-includes">Tout {plan.previous}, plus :</div>}
                 <ul className="plan-features-v2">
