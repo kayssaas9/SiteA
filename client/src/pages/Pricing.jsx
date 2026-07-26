@@ -187,7 +187,12 @@ export default function Pricing() {
                   <div className="plan-credits-desc">{plan.creditDescription}</div>
                 </div>
                 {plan.id !== "basic" && (
-                  <div className="plan-snaprouge-box">Accès SnapRouge inclus</div>
+                  <div className="plan-snaprouge-box">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                    </svg>
+                    Accès SnapRouge inclus
+                  </div>
                 )}
                 {plan.previous && <div className="plan-includes">Tout {plan.previous}, plus :</div>}
                 <ul className="plan-features-v2">

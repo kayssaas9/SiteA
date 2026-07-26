@@ -236,8 +236,9 @@
   gap: 4px;
   padding: 16px;
   border-radius: var(--radius);
-  border: 1px solid rgba(142, 197, 232, 0.35);
-  background: rgba(142, 197, 232, 0.06);
+  border: 1.5px solid rgba(232, 180, 85, 0.6);
+  background: rgba(232, 180, 85, 0.08);
+  box-shadow: 0 0 20px rgba(232, 180, 85, 0.08);
   text-align: center;
 }
 
@@ -257,7 +258,7 @@
 .plan-credits-unit {
   font-size: 13px;
   font-weight: 600;
-  color: var(--accent);
+  color: #E8B455;
 }
 
 .plan-credits-desc {
@@ -270,14 +271,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   padding: 10px 14px;
   border-radius: var(--radius);
-  background: linear-gradient(135deg, rgba(232, 85, 107, 0.2) 0%, rgba(232, 85, 107, 0.08) 100%);
-  border: 1px solid rgba(232, 85, 107, 0.35);
-  color: var(--snaprouge);
+  background: linear-gradient(135deg, #E8556B 0%, #B53047 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
   font-size: 12px;
   font-weight: 700;
   text-align: center;
+  box-shadow: 0 4px 16px rgba(232, 85, 107, 0.25);
 }
 
 .plan-includes {
