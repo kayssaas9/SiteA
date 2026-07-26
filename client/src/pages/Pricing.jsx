@@ -140,7 +140,7 @@ export default function Pricing() {
       const el = document.getElementById(id);
       if (el) {
         setTimeout(() => {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          el.scrollIntoView({ behavior: "smooth", block: "end" });
         }, 100);
       }
     }
