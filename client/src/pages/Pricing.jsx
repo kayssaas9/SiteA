@@ -15,9 +15,10 @@ const PLANS = [
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 99€/an",
     credits: 2500,
+    creditDescription: "Parfait pour débuter",
     monthlyPriceEnvKey: "VITE_STRIPE_PRICE_BASIQUE",
     annualPriceEnvKey: "VITE_STRIPE_PRICE_BASIQUE_ANNUEL",
-    features: ["2 500 crédits / mois", "Génération tenue", "Remplacement voiture", "Support email"],
+    features: ["Génération tenue", "Remplacement voiture", "Support email"],
     previous: null,
   },
   {
@@ -29,9 +30,10 @@ const PLANS = [
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 199€/an",
     credits: 7500,
+    creditDescription: "Pour les créateurs réguliers",
     monthlyPriceEnvKey: "VITE_STRIPE_PRICE_PRO",
     annualPriceEnvKey: "VITE_STRIPE_PRICE_PRO_ANNUEL",
-    features: ["7 500 crédits / mois", "Génération tenue HD", "Remplacement voiture HD", "Priorité file d'attente", "Support prioritaire"],
+    features: ["Génération tenue HD", "Remplacement voiture HD", "Priorité file d'attente", "Support prioritaire"],
     previous: "Basique",
     highlight: true,
     badge: "Le plus populaire",
@@ -45,9 +47,10 @@ const PLANS = [
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 399€/an",
     credits: 18000,
+    creditDescription: "Pour les pros de la génération",
     monthlyPriceEnvKey: "VITE_STRIPE_PRICE_EXPERT",
     annualPriceEnvKey: "VITE_STRIPE_PRICE_EXPERT_ANNUEL",
-    features: ["18 000 crédits / mois", "Génération ultra HD", "Accès SnapRouge inclus", "Résultats exclusifs", "Support dédié 24/7"],
+    features: ["Génération ultra HD", "Résultats exclusifs", "Support dédié 24/7"],
     previous: "Pro",
     badge: "Exclusif",
   },
@@ -175,7 +178,17 @@ export default function Pricing() {
                   <ShieldIcon /> Satisfait ou remboursé immédiatement
                 </div>
                 <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
-                <div className="plan-credits-v2">{plan.credits.toLocaleString("fr-FR")} crédits / mois</div>
+                <div className="plan-includes-title">Votre forfait inclut :</div>
+                <div className="plan-credits-box">
+                  <div className="plan-credits-main">
+                    <span className="plan-credits-number">{plan.credits.toLocaleString("fr-FR")}</span>
+                    <span className="plan-credits-unit">crédits / mois</span>
+                  </div>
+                  <div className="plan-credits-desc">{plan.creditDescription}</div>
+                </div>
+                {plan.id !== "basic" && (
+                  <div className="plan-snaprouge-box">Accès SnapRouge inclus</div>
+                )}
                 {plan.previous && <div className="plan-includes">Tout {plan.previous}, plus :</div>}
                 <ul className="plan-features-v2">
                   {plan.features.map((f) => (
