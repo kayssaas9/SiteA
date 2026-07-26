@@ -126,8 +126,7 @@ export default function Pricing() {
 
       <div className="page pricing-content">
         <div className="pricing-header fade-up">
-          <div className="badge">Tarifs</div>
-          <h1 className="page-title">Choisissez votre <span className="accent">formule</span></h1>
+          <h1 className="page-title pricing-title">Choisissez votre <span className="accent">formule</span></h1>
           <p className="page-subtitle">Abonnement résiliable à tout moment dans les paramètres.</p>
         </div>
 
