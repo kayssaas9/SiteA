@@ -26,7 +26,13 @@ export default function Header() {
     setMenuOpen(false);
   }, [pathname]);
 
-  const navLink = (to, label, className = "") => (
+  const userButtonAppearance = {
+  layout: {
+    logoPlacement: "none",
+  },
+};
+
+const navLink = (to, label, className = "") => (
     <Link
       to={to}
       className={`nav-link ${className} ${pathname === to ? "active" : ""}`}
@@ -72,7 +78,7 @@ export default function Header() {
 
           <SignedIn>
             <CreditsBadge />
-            <UserButton afterSignOutUrl="/" />
+            <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
           </SignedIn>
 
           <button
