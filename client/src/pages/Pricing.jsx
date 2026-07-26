@@ -77,10 +77,10 @@ const NON_SUBSCRIBER_PACKS = [
 
 const SNAP_ROUGE = {
   id: "snaprouge",
-  name: "Accès SnapRouge",
-  price: "9,00 €",
+  name: "Tuto Snap Rouge",
+  price: "9 €",
   priceEnvKey: "VITE_STRIPE_PRICE_SNAPROUGE",
-  description: "Méthode exclusive en 9 étapes. Débloqué gratuitement avec Pro ou Expert.",
+  description: "Decouvre comment envoyer tes photos IA généré sur le site en snap rouge indetectable.",
 };
 
 export default function Pricing() {
@@ -264,19 +264,24 @@ export default function Pricing() {
           </div>
 
           <div className="snaprouge-pricing card">
+            <div className="snaprouge-pricing-glow" />
             <div className="snaprouge-pricing-content">
-              <div className="snaprouge-pricing-header">
-                <span className="snaprouge-dot" />
-                <div className="snaprouge-pricing-name">{SNAP_ROUGE.name}</div>
+              <div className="snaprouge-pricing-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
               </div>
-              <p className="snaprouge-pricing-desc">{SNAP_ROUGE.description}</p>
+              <div>
+                <div className="snaprouge-pricing-name">{SNAP_ROUGE.name}</div>
+                <p className="snaprouge-pricing-desc">{SNAP_ROUGE.description}</p>
+              </div>
             </div>
             <div className="snaprouge-pricing-action">
-              <div className={`snaprouge-pricing-price ${snapRougeAccess ? "unlocked" : ""}`}>
-                {snapRougeAccess ? "Inclus avec Pro/Expert" : SNAP_ROUGE.price}
-              </div>
               {snapRougeAccess ? (
                 <Link to="/snaprouge" className="btn btn-snaprouge">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>
                   Accéder
                 </Link>
               ) : (
@@ -285,7 +290,16 @@ export default function Pricing() {
                   onClick={() => handleCheckout(SNAP_ROUGE.priceEnvKey, "payment", SNAP_ROUGE.id)}
                   disabled={loading === SNAP_ROUGE.id}
                 >
-                  {loading === SNAP_ROUGE.id ? "Redirection…" : "Débloquer"}
+                  {loading === SNAP_ROUGE.id ? (
+                    "Redirection…"
+                  ) : (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                      </svg>
+                      Débloquer - {SNAP_ROUGE.price}
+                    </>
+                  )}
                 </button>
               )}
             </div>

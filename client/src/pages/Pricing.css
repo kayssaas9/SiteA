@@ -382,47 +382,73 @@
 }
 
 .snaprouge-pricing {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
   flex-wrap: wrap;
+  border: 1px solid rgba(232, 85, 107, 0.55);
+  background: rgba(0, 0, 0, 0.2);
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .snaprouge-pricing:hover {
-  border-color: rgba(232, 85, 107, 0.25);
-  box-shadow: 0 0 30px rgba(232, 85, 107, 0.08);
+  border-color: rgba(232, 85, 107, 0.75);
+  box-shadow: 0 0 30px rgba(232, 85, 107, 0.15);
 }
 
-.snaprouge-pricing-header {
+.snaprouge-pricing-glow {
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 85, 107, 0.35) 0%, rgba(232, 85, 107, 0.08) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.snaprouge-pricing-content {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
+  gap: 14px;
 }
 
-.snaprouge-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--snaprouge);
-  box-shadow: 0 0 10px rgba(232, 85, 107, 0.5);
+.snaprouge-pricing-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #E8556B 0%, #B53047 100%);
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(232, 85, 107, 0.35);
 }
 
 .snaprouge-pricing-name {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   color: var(--text);
+  margin-bottom: 4px;
 }
 
 .snaprouge-pricing-desc {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
-  max-width: 400px;
+  max-width: 420px;
+  line-height: 1.4;
 }
 
 .snaprouge-pricing-action {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -440,6 +466,12 @@
   color: var(--snaprouge);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.snaprouge-pricing .btn-snaprouge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .packs-title {
