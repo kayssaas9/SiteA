@@ -44,6 +44,39 @@
   box-shadow: 0 0 60px rgba(142, 197, 232, 0.15);
 }
 
+.plan-card-v2.current {
+  border: 2px solid rgba(142, 197, 232, 0.35);
+  background: rgba(142, 197, 232, 0.04);
+}
+
+.current-plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 0.5px solid var(--border);
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.plan-card-v2.current .plan-badge-v2 {
+  top: -36px;
+}
+
+.plan-cta-current {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 0.5px solid var(--border) !important;
+  color: var(--text-muted) !important;
+  cursor: default;
+  opacity: 0.9;
+}
+
 .pricing-title {
   font-size: 56px;
   line-height: 1.05;

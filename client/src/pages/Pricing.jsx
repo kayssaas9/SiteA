@@ -80,13 +80,13 @@ const SNAP_ROUGE = {
 
 export default function Pricing() {
   const { user } = useUser();
-  const { plan } = useUserData();
+  const { plan: userPlan } = useUserData();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
   const [isAnnual, setIsAnnual] = useState(true);
 
-  const hasSubscription = ["basic", "pro", "expert"].includes(plan);
+  const hasSubscription = ["basic", "pro", "expert"].includes(userPlan);
   const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
 
   const handleCheckout = async (priceEnvKey, mode, itemId) => {
@@ -149,47 +149,58 @@ export default function Pricing() {
         </div>
 
         <div className="plans-grid">
-          {PLANS.map((plan, idx) => (
-            <div
-              key={plan.id}
-              className={`plan-card-v2 card ${plan.highlight ? "highlight" : ""} fade-up delay-${idx + 1}`}
-            >
-              {plan.badge && (
-                <div className={`plan-badge-v2 ${plan.badge === "Exclusif" ? "exclusive" : ""}`}>
-                  {plan.badge}
-                </div>
-              )}
-              <div className="plan-name-v2">{plan.name}</div>
-              <div className="plan-price-block">
-                <div className="plan-original-price">{plan.originalPrice}</div>
-                <div className="plan-price-v2">
-                  {plan.price}<span className="plan-period-v2">{plan.period}</span>
-                </div>
-                <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
-              </div>
-              <div className="plan-guarantee">
-                <ShieldIcon /> Satisfait ou remboursé
-              </div>
-              <div className="plan-credits-v2">{plan.credits.toLocaleString("fr-FR")} crédits / mois</div>
-              {plan.previous && <div className="plan-includes">Tout {plan.previous}, plus :</div>}
-              <ul className="plan-features-v2">
-                {plan.features.map((f) => (
-                  <li key={f}><span className="check">✓</span> {f}</li>
-                ))}
-              </ul>
-              <button
-                className={`btn ${plan.highlight ? "btn-primary" : "btn-outline"} plan-cta`}
-                onClick={() => handleCheckout(
-                  isAnnual ? plan.annualPriceEnvKey : plan.monthlyPriceEnvKey,
-                  "subscription",
-                  plan.id
-                )}
-                disabled={loading === plan.id}
+          {PLANS.map((plan, idx) => {
+            const isCurrentPlan = plan.id === userPlan;
+            return (
+              <div
+                key={plan.id}
+                className={`plan-card-v2 card ${plan.highlight ? "highlight" : ""} ${isCurrentPlan ? "current" : ""} fade-up delay-${idx + 1}`}
               >
-                {loading === plan.id ? "Redirection…" : "Choisir ce plan"}
-              </button>
-            </div>
-          ))}
+                {plan.badge && (
+                  <div className={`plan-badge-v2 ${plan.badge === "Exclusif" ? "exclusive" : ""}`}>
+                    {plan.badge}
+                  </div>
+                )}
+                {isCurrentPlan && <div className="current-plan-badge">Abonnement en cours</div>}
+                <div className="plan-name-v2">{plan.name}</div>
+                <div className="plan-price-block">
+                  <div className="plan-original-price">{plan.originalPrice}</div>
+                  <div className="plan-price-v2">
+                    {plan.price}<span className="plan-period-v2">{plan.period}</span>
+                  </div>
+                  <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
+                </div>
+                <div className="plan-guarantee">
+                  <ShieldIcon /> Satisfait ou remboursé
+                </div>
+                <div className="plan-credits-v2">{plan.credits.toLocaleString("fr-FR")} crédits / mois</div>
+                {plan.previous && <div className="plan-includes">Tout {plan.previous}, plus :</div>}
+                <ul className="plan-features-v2">
+                  {plan.features.map((f) => (
+                    <li key={f}><span className="check">✓</span> {f}</li>
+                  ))}
+                </ul>
+                {isCurrentPlan ? (
+                  <button className="btn plan-cta plan-cta-current" disabled type="button">
+                    Abonnement en cours
+                  </button>
+                ) : (
+                  <button
+                    className={`btn ${plan.highlight ? "btn-primary" : "btn-outline"} plan-cta`}
+                    onClick={() => handleCheckout(
+                      isAnnual ? plan.annualPriceEnvKey : plan.monthlyPriceEnvKey,
+                      "subscription",
+                      plan.id
+                    )}
+                    disabled={loading === plan.id}
+                    type="button"
+                  >
+                    {loading === plan.id ? "Redirection…" : "Choisir ce plan"}
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div className="pricing-extra fade-up delay-4">
