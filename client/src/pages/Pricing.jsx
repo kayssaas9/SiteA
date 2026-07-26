@@ -81,7 +81,7 @@ const SNAP_ROUGE = {
   name: "Tuto Snap Rouge",
   price: "9 €",
   priceEnvKey: "VITE_STRIPE_PRICE_SNAPROUGE",
-  description: "Decouvre comment envoyer tes photos IA généré sur le site en snap rouge indetectable.",
+  description: "Découvre comment envoyer tes photos IA générées sur le site en snap rouge indétectable.",
 };
 
 export default function Pricing() {
