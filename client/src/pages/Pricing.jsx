@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/clerk-react";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Pricing.css";
@@ -134,24 +134,13 @@ export default function Pricing() {
   const [isAnnual, setIsAnnual] = useState(true);
   const location = useLocation();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!location.hash) return;
     const id = location.hash.replace("#", "");
-    let attempts = 0;
-    const maxAttempts = 30;
-    const timer = setInterval(() => {
-      const el = document.getElementById(id);
-      if (el) {
-        clearInterval(timer);
-        setTimeout(() => {
-          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-        }, 100);
-      } else if (attempts >= maxAttempts) {
-        clearInterval(timer);
-      }
-      attempts++;
-    }, 100);
-    return () => clearInterval(timer);
+    const el = document.getElementById(id);
+    if (el) {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
   }, [location, userPlan]);
 
   const hasSubscription = ["basic", "pro", "expert"].includes(userPlan);
