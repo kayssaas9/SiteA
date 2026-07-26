@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
@@ -26,11 +26,18 @@ export default function Header() {
     setMenuOpen(false);
   }, [pathname]);
 
-  const userButtonAppearance = {
-  layout: {
-    logoPlacement: "none",
-  },
-};
+function SignOutButton() {
+  const { signOut } = useClerk();
+  return (
+    <button
+      className="btn btn-outline signout-btn"
+      onClick={() => signOut({ redirectUrl: "/" })}
+      type="button"
+    >
+      Déconnexion
+    </button>
+  );
+}
 
 const navLink = (to, label, className = "") => (
     <Link
@@ -78,7 +85,7 @@ const navLink = (to, label, className = "") => (
 
           <SignedIn>
             <CreditsBadge />
-            <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
+            <SignOutButton />
           </SignedIn>
 
           <button
@@ -119,6 +126,7 @@ const navLink = (to, label, className = "") => (
 
             <SignedIn>
               <CreditsBadge />
+              <SignOutButton />
             </SignedIn>
           </div>
         </div>
