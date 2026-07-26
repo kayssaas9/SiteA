@@ -14,6 +14,9 @@ const clerkAppearance = {
   variables: {
     colorPrimary: "#8EC5E8",
   },
+  layout: {
+    logoPlacement: "none",
+  },
 };
 
 createRoot(document.getElementById("root")).render(
