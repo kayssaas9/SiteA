@@ -130,7 +130,7 @@ export default function Pricing() {
           <h1 className="page-title pricing-title">Choisissez votre <span className="accent">formule</span></h1>
           <p className="page-subtitle">Abonnement résiliable à tout moment dans les paramètres.</p>
           <div className="pricing-guarantee fade-up">
-            <ShieldIcon /> Satisfait ou remboursé
+            <ShieldIcon /> Satisfait ou remboursé immédiatement
           </div>
         </div>
 
@@ -172,7 +172,7 @@ export default function Pricing() {
                   </div>
                 </div>
                 <div className="plan-guarantee">
-                  <ShieldIcon /> Satisfait ou remboursé
+                  <ShieldIcon /> Satisfait ou remboursé immédiatement
                 </div>
                 <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
                 <div className="plan-credits-v2">{plan.credits.toLocaleString("fr-FR")} crédits / mois</div>
