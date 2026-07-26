@@ -164,7 +164,6 @@ export default function Pricing() {
                     {plan.badge}
                   </div>
                 )}
-                {isCurrentPlan && <div className="current-plan-badge">Abonnement en cours</div>}
                 <div className="plan-name-v2">{plan.name}</div>
                 <div className="plan-price-block">
                   <div className="plan-original-price">{plan.originalPrice}</div>
