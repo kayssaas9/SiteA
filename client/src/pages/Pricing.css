@@ -389,14 +389,15 @@
   justify-content: space-between;
   gap: 24px;
   flex-wrap: wrap;
-  border: 1px solid rgba(232, 85, 107, 0.55);
+  border: 1.5px solid rgba(232, 85, 107, 0.8);
   background: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 20px rgba(232, 85, 107, 0.1);
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .snaprouge-pricing:hover {
-  border-color: rgba(232, 85, 107, 0.75);
-  box-shadow: 0 0 30px rgba(232, 85, 107, 0.15);
+  border-color: rgba(232, 85, 107, 0.95);
+  box-shadow: 0 0 30px rgba(232, 85, 107, 0.2);
 }
 
 .snaprouge-pricing-glow {
