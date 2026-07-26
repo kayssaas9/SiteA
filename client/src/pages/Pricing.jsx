@@ -30,6 +30,7 @@ const PLANS = [
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 199€/an",
     credits: 7500,
+    creditBonus: "+2 500 crédits offerts",
     creditDescription: "Pour les créateurs réguliers",
     monthlyPriceEnvKey: "VITE_STRIPE_PRICE_PRO",
     annualPriceEnvKey: "VITE_STRIPE_PRICE_PRO_ANNUEL",
@@ -47,6 +48,7 @@ const PLANS = [
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 399€/an",
     credits: 18000,
+    creditBonus: "+8 000 crédits offerts",
     creditDescription: "Pour les pros de la génération",
     monthlyPriceEnvKey: "VITE_STRIPE_PRICE_EXPERT",
     annualPriceEnvKey: "VITE_STRIPE_PRICE_EXPERT_ANNUEL",
@@ -184,6 +186,9 @@ export default function Pricing() {
                     <span className="plan-credits-number">{plan.credits.toLocaleString("fr-FR")}</span>
                     <span className="plan-credits-unit">crédits / mois</span>
                   </div>
+                  {plan.creditBonus && (
+                    <div className="plan-credits-bonus">{plan.creditBonus}</div>
+                  )}
                   <div className="plan-credits-desc">{plan.creditDescription}</div>
                 </div>
                 {plan.id !== "basic" && (

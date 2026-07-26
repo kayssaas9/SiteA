@@ -221,7 +221,7 @@
 }
 
 .plan-includes-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -237,8 +237,7 @@
   padding: 16px;
   border-radius: var(--radius);
   border: 1.5px solid rgba(232, 180, 85, 0.6);
-  background: rgba(232, 180, 85, 0.08);
-  box-shadow: 0 0 20px rgba(232, 180, 85, 0.08);
+  background: rgba(142, 197, 232, 0.06);
   text-align: center;
 }
 
@@ -258,7 +257,19 @@
 .plan-credits-unit {
   font-size: 13px;
   font-weight: 600;
+  color: var(--text-muted);
+}
+
+.plan-credits-bonus {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(232, 180, 85, 0.15);
+  border: 0.5px solid rgba(232, 180, 85, 0.35);
   color: #E8B455;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .plan-credits-desc {
