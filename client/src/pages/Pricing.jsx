@@ -186,20 +186,27 @@ export default function Pricing() {
                     <span className="plan-credits-number">{plan.credits.toLocaleString("fr-FR")}</span>
                     <span className="plan-credits-unit">crédits / mois</span>
                   </div>
-                  {plan.creditBonus && (
-                    <div className="plan-credits-bonus">{plan.creditBonus}</div>
-                  )}
-                  <div className="plan-credits-desc">{plan.creditDescription}</div>
+                  <div className="plan-credits-meta">
+                    {plan.creditBonus && (
+                      <div className="plan-credits-bonus">{plan.creditBonus}</div>
+                    )}
+                    <div className="plan-credits-desc">{plan.creditDescription}</div>
+                  </div>
                 </div>
                 {plan.id !== "basic" && (
                   <div className="plan-snaprouge-box">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                    </svg>
-                    Accès SnapRouge inclus
+                    <div className="plan-snaprouge-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                      </svg>
+                    </div>
+                    <div className="plan-snaprouge-content">
+                      <div className="plan-snaprouge-title">Tutoriel Snap Rouge inclus</div>
+                      <div className="plan-snaprouge-desc">Envoie tes photos IA en snap rouge sans média ni filtre à l'infini</div>
+                    </div>
                   </div>
                 )}
-                {plan.previous && <div className="plan-includes">Tout {plan.previous}, plus :</div>}
+                <div className="plan-includes">Inclus dans le plan :</div>
                 <ul className="plan-features-v2">
                   {plan.features.map((f) => (
                     <li key={f}><span className="check">✓</span> {f}</li>
@@ -229,6 +236,33 @@ export default function Pricing() {
         </div>
 
         <div className="pricing-extra fade-up delay-4">
+          <div className="packs-section">
+            <h2 className="packs-title">
+              {hasSubscription ? "Recharge crédits" : "Recharges sans abonnement"}
+            </h2>
+            <p className="packs-subtitle">
+              {hasSubscription
+                ? "Crédits sans expiration, réservés aux abonnés."
+                : "Crédits sans expiration, sans abonnement."}
+            </p>
+            <div className="packs-grid-v2">
+              {activePacks.map((pack) => (
+                <div key={pack.id} className="pack-card-v2 card">
+                  <div className="pack-name-v2">{pack.name}</div>
+                  <div className="pack-credits-v2">{pack.credits.toLocaleString("fr-FR")} crédits</div>
+                  <div className="pack-price-v2">{pack.price}</div>
+                  <button
+                    className="btn btn-outline pack-cta"
+                    onClick={() => handleCheckout(pack.priceEnvKey, "payment", pack.id)}
+                    disabled={loading === pack.id}
+                  >
+                    {loading === pack.id ? "Redirection…" : "Acheter"}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="snaprouge-pricing card">
             <div className="snaprouge-pricing-content">
               <div className="snaprouge-pricing-header">
@@ -254,33 +288,6 @@ export default function Pricing() {
                   {loading === SNAP_ROUGE.id ? "Redirection…" : "Débloquer"}
                 </button>
               )}
-            </div>
-          </div>
-
-          <div className="packs-section">
-            <h2 className="packs-title">
-              {hasSubscription ? "Recharges abonnés" : "Recharges sans abonnement"}
-            </h2>
-            <p className="packs-subtitle">
-              {hasSubscription
-                ? "Crédits sans expiration, réservés aux abonnés."
-                : "Crédits sans expiration, sans abonnement."}
-            </p>
-            <div className="packs-grid-v2">
-              {activePacks.map((pack) => (
-                <div key={pack.id} className="pack-card-v2 card">
-                  <div className="pack-name-v2">{pack.name}</div>
-                  <div className="pack-credits-v2">{pack.credits.toLocaleString("fr-FR")} crédits</div>
-                  <div className="pack-price-v2">{pack.price}</div>
-                  <button
-                    className="btn btn-outline pack-cta"
-                    onClick={() => handleCheckout(pack.priceEnvKey, "payment", pack.id)}
-                    disabled={loading === pack.id}
-                  >
-                    {loading === pack.id ? "Redirection…" : "Acheter"}
-                  </button>
-                </div>
-              ))}
             </div>
           </div>
         </div>
