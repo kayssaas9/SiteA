@@ -49,6 +49,7 @@ const PLANS = [
     annualPriceEnvKey: "VITE_STRIPE_PRICE_EXPERT_ANNUEL",
     features: ["18 000 crédits / mois", "Génération ultra HD", "Accès SnapRouge inclus", "Résultats exclusifs", "Support dédié 24/7"],
     previous: "Pro",
+    badge: "Exclusif",
   },
 ];
 
