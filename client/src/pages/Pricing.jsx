@@ -129,6 +129,9 @@ export default function Pricing() {
         <div className="pricing-header fade-up">
           <h1 className="page-title pricing-title">Choisissez votre <span className="accent">formule</span></h1>
           <p className="page-subtitle">Abonnement résiliable à tout moment dans les paramètres.</p>
+          <div className="pricing-guarantee fade-up">
+            <ShieldIcon /> Satisfait ou remboursé
+          </div>
         </div>
 
         <div className="billing-toggle fade-up">
