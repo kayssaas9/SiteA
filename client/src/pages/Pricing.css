@@ -44,6 +44,38 @@
   box-shadow: 0 0 60px rgba(142, 197, 232, 0.15);
 }
 
+.billing-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid var(--border);
+  border-radius: 100px;
+  padding: 4px;
+  margin-bottom: 32px;
+}
+
+.billing-toggle button {
+  padding: 8px 20px;
+  border-radius: 100px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.billing-toggle button:hover {
+  color: var(--text);
+}
+
+.billing-toggle button.active {
+  background: var(--accent);
+  color: #0E0F12;
+}
+
 .plan-badge-v2 {
   position: absolute;
   top: -12px;
@@ -63,11 +95,45 @@
   color: var(--text);
 }
 
+.plan-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plan-original-price {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
 .plan-price-v2 {
   font-size: 36px;
   font-weight: 700;
   color: var(--text);
   line-height: 1;
+}
+
+.plan-billing {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.plan-guarantee {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 100px;
+  background: rgba(52, 199, 89, 0.12);
+  border: 0.5px solid rgba(52, 199, 89, 0.25);
+  color: #34C759;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .plan-period-v2 {

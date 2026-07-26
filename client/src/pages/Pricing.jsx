@@ -9,20 +9,28 @@ const PLANS = [
   {
     id: "basic",
     name: "Basique",
+    originalPrice: "11,99 €",
     price: "9,99 €",
     period: "/mois",
+    monthlyBilling: "Facturé mensuellement",
+    annualBilling: "Facturé 99€/an",
     credits: 2500,
-    priceEnvKey: "VITE_STRIPE_PRICE_BASIQUE",
+    monthlyPriceEnvKey: "VITE_STRIPE_PRICE_BASIQUE",
+    annualPriceEnvKey: "VITE_STRIPE_PRICE_BASIQUE_ANNUEL",
     features: ["2 500 crédits / mois", "Génération tenue", "Remplacement voiture", "Support email"],
     previous: null,
   },
   {
     id: "pro",
     name: "Pro",
+    originalPrice: "24,99 €",
     price: "19,99 €",
     period: "/mois",
+    monthlyBilling: "Facturé mensuellement",
+    annualBilling: "Facturé 199€/an",
     credits: 7500,
-    priceEnvKey: "VITE_STRIPE_PRICE_PRO",
+    monthlyPriceEnvKey: "VITE_STRIPE_PRICE_PRO",
+    annualPriceEnvKey: "VITE_STRIPE_PRICE_PRO_ANNUEL",
     features: ["7 500 crédits / mois", "Génération tenue HD", "Remplacement voiture HD", "Priorité file d'attente", "Support prioritaire"],
     previous: "Basique",
     highlight: true,
@@ -31,14 +39,24 @@ const PLANS = [
   {
     id: "expert",
     name: "Expert",
+    originalPrice: "49,99 €",
     price: "39,99 €",
     period: "/mois",
+    monthlyBilling: "Facturé mensuellement",
+    annualBilling: "Facturé 399€/an",
     credits: 18000,
-    priceEnvKey: "VITE_STRIPE_PRICE_EXPERT",
+    monthlyPriceEnvKey: "VITE_STRIPE_PRICE_EXPERT",
+    annualPriceEnvKey: "VITE_STRIPE_PRICE_EXPERT_ANNUEL",
     features: ["18 000 crédits / mois", "Génération ultra HD", "Accès SnapRouge inclus", "Résultats exclusifs", "Support dédié 24/7"],
     previous: "Pro",
   },
 ];
+
+const ShieldIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
 
 const SUBSCRIBER_PACKS = [
   { id: "pack_4k", name: "Pack Starter", credits: 4500, price: "15,00 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_4K" },
@@ -65,6 +83,7 @@ export default function Pricing() {
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
+  const [isAnnual, setIsAnnual] = useState(true);
 
   const hasSubscription = ["basic", "pro", "expert"].includes(plan);
   const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
@@ -112,6 +131,23 @@ export default function Pricing() {
           <p className="page-subtitle">Abonnement mensuel simple, avec recharges ponctuelles à la carte.</p>
         </div>
 
+        <div className="billing-toggle fade-up">
+          <button
+            className={!isAnnual ? "active" : ""}
+            onClick={() => setIsAnnual(false)}
+            type="button"
+          >
+            Mensuel
+          </button>
+          <button
+            className={isAnnual ? "active" : ""}
+            onClick={() => setIsAnnual(true)}
+            type="button"
+          >
+            Annuel
+          </button>
+        </div>
+
         <div className="plans-grid">
           {PLANS.map((plan, idx) => (
             <div
@@ -120,8 +156,15 @@ export default function Pricing() {
             >
               {plan.badge && <div className="plan-badge-v2">{plan.badge}</div>}
               <div className="plan-name-v2">{plan.name}</div>
-              <div className="plan-price-v2">
-                {plan.price}<span className="plan-period-v2">{plan.period}</span>
+              <div className="plan-price-block">
+                <div className="plan-original-price">{plan.originalPrice}</div>
+                <div className="plan-price-v2">
+                  {plan.price}<span className="plan-period-v2">{plan.period}</span>
+                </div>
+                <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
+              </div>
+              <div className="plan-guarantee">
+                <ShieldIcon /> Satisfait ou remboursé
               </div>
               <div className="plan-credits-v2">{plan.credits.toLocaleString("fr-FR")} crédits / mois</div>
               {plan.previous && <div className="plan-includes">Tout {plan.previous}, plus :</div>}
@@ -132,7 +175,11 @@ export default function Pricing() {
               </ul>
               <button
                 className={`btn ${plan.highlight ? "btn-primary" : "btn-outline"} plan-cta`}
-                onClick={() => handleCheckout(plan.priceEnvKey, "subscription", plan.id)}
+                onClick={() => handleCheckout(
+                  isAnnual ? plan.annualPriceEnvKey : plan.monthlyPriceEnvKey,
+                  "subscription",
+                  plan.id
+                )}
                 disabled={loading === plan.id}
               >
                 {loading === plan.id ? "Redirection…" : "Choisir ce plan"}
