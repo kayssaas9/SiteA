@@ -381,7 +381,7 @@
   gap: 32px;
 }
 
-.snaprouge-pricing {
+.snaprouge-pricing.card {
   position: relative;
   overflow: hidden;
   display: flex;
@@ -389,14 +389,14 @@
   justify-content: space-between;
   gap: 24px;
   flex-wrap: wrap;
-  border: 2px solid #E8556B;
+  border: 2px solid #E8556B !important;
   background: rgba(0, 0, 0, 0.2);
   box-shadow: 0 0 28px rgba(232, 85, 107, 0.25);
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.snaprouge-pricing:hover {
-  border-color: #FF6B80;
+.snaprouge-pricing.card:hover {
+  border-color: #FF6B80 !important;
   box-shadow: 0 0 40px rgba(232, 85, 107, 0.35);
 }
 
