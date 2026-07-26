@@ -99,6 +99,12 @@
   white-space: nowrap;
 }
 
+.plan-badge-v2.exclusive {
+  background: linear-gradient(135deg, #F5A623 0%, #D4A853 100%);
+  color: #0E0F12;
+  box-shadow: 0 0 16px rgba(245, 166, 35, 0.25);
+}
+
 .plan-name-v2 {
   font-size: 18px;
   font-weight: 700;

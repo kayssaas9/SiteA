@@ -154,7 +154,11 @@ export default function Pricing() {
               key={plan.id}
               className={`plan-card-v2 card ${plan.highlight ? "highlight" : ""} fade-up delay-${idx + 1}`}
             >
-              {plan.badge && <div className="plan-badge-v2">{plan.badge}</div>}
+              {plan.badge && (
+                <div className={`plan-badge-v2 ${plan.badge === "Exclusif" ? "exclusive" : ""}`}>
+                  {plan.badge}
+                </div>
+              )}
               <div className="plan-name-v2">{plan.name}</div>
               <div className="plan-price-block">
                 <div className="plan-original-price">{plan.originalPrice}</div>
