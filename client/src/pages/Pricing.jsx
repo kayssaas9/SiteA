@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/clerk-react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Pricing.css";
@@ -132,6 +132,19 @@ export default function Pricing() {
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
   const [isAnnual, setIsAnnual] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    }
+  }, [location]);
 
   const hasSubscription = ["basic", "pro", "expert"].includes(userPlan);
   const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
@@ -278,7 +291,7 @@ export default function Pricing() {
         </div>
 
         <div className="pricing-extra fade-up delay-4">
-          <div className="packs-section">
+          <div id="recharge-credits" className="packs-section">
             <h2 className="packs-title">
               {hasSubscription ? "Recharge crédits" : "Recharges sans abonnement"}
             </h2>
