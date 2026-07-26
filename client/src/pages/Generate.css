@@ -346,7 +346,7 @@
     transparent 100%
   );
   transform: skewX(-20deg);
-  animation: shimmer 1.6s linear infinite;
+  animation: shimmer 1.2s linear infinite;
   pointer-events: none;
 }
 
