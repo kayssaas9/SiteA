@@ -135,16 +135,22 @@ export default function Pricing() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace("#", "");
+    if (!location.hash) return;
+    const id = location.hash.replace("#", "");
+    let attempts = 0;
+    const maxAttempts = 30;
+    const timer = setInterval(() => {
       const el = document.getElementById(id);
       if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: "smooth", block: "end" });
-        }, 100);
+        clearInterval(timer);
+        el.scrollIntoView({ behavior: "smooth", block: "end" });
+      } else if (attempts >= maxAttempts) {
+        clearInterval(timer);
       }
-    }
-  }, [location]);
+      attempts++;
+    }, 100);
+    return () => clearInterval(timer);
+  }, [location, userPlan]);
 
   const hasSubscription = ["basic", "pro", "expert"].includes(userPlan);
   const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
