@@ -329,10 +329,6 @@
   will-change: transform;
 }
 
-.reviews-track:hover .reviews-items {
-  animation-play-state: paused;
-}
-
 .review-card {
   width: 310px;
   min-height: 142px;
