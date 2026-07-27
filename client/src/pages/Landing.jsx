@@ -98,35 +98,24 @@ export default function Landing() {
   );
 }
 
-const EXAMPLES = [
-  { title: "Nouvelle couleur", beforeLabel: "Avant", afterLabel: "Après" },
-  { title: "Jantes forgées", beforeLabel: "Avant", afterLabel: "Après" },
-  { title: "Kit large", beforeLabel: "Avant", afterLabel: "Après" },
-  { title: "Tuning complet", beforeLabel: "Avant", afterLabel: "Après" },
-  { title: "Peinture mate", beforeLabel: "Avant", afterLabel: "Après" },
-  { title: "Ligne d'échappement", beforeLabel: "Avant", afterLabel: "Après" },
-];
-
 function Examples() {
-  const [index, setIndex] = useState(0);
-  const current = EXAMPLES[index];
-
-  const nextExample = () => {
-    setIndex((prev) => (prev + 1) % EXAMPLES.length);
-  };
-
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
-      <h2 className="examples-title">Exemples</h2>
-      <p className="examples-subtitle">La transformation en un clic</p>
-      <div className="example-showcase card" key={index}>
-        <div className="example-showcase-title">{current.title}</div>
+      <h2 className="examples-title">
+        La différence <span className="examples-title-accent">Vysion</span>
+      </h2>
+
+      <div className="example-showcase">
         <div className="example-showcase-comparison">
           <div className="example-side">
             <span className="example-badge example-badge-before">AVANT</span>
             <div className="example-image example-before" />
-            <span className="example-caption">Photo originale</span>
+            <div className="example-caption">
+              <strong>Photo originale :</strong>{" "}
+              <span className="example-caption-detail">[description du véhicule]</span>
+            </div>
           </div>
+
           <div className="example-side">
             <span className="example-badge example-badge-after">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -134,19 +123,30 @@ function Examples() {
               </svg>
               APRÈS
             </span>
-            <div className="example-image example-after" />
-            <span className="example-caption">Résultat généré par l'IA</span>
+            <div className="example-image example-after">
+              <span className="example-quality-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                ULTRA-RÉALISTE
+              </span>
+            </div>
+            <div className="example-caption">
+              <div className="example-caption-title">Ultra-réalisme Vysion ✨</div>
+              <strong>Résultat Vysion :</strong> Transformation en{" "}
+              <span className="example-caption-detail">[modèle cible]</span>, décor identique.
+            </div>
           </div>
         </div>
       </div>
-      <div className="examples-actions">
-        <button className="btn btn-outline examples-next" onClick={nextExample} type="button">
-          Voir plus d'exemples
-        </button>
-        <Link to="/generate" className="btn btn-primary examples-cta">
-          Essayer
-        </Link>
-      </div>
+
+      <button className="examples-more" type="button">
+        Voir plus d'exemples
+      </button>
+
+      <Link to="/generate" className="btn btn-primary examples-cta">
+        Démarrer avec Vysion
+      </Link>
     </section>
   );
 }
