@@ -314,7 +314,7 @@
 .example-image {
   width: 100%;
   aspect-ratio: 3 / 4;
-  max-height: 720px;
+  max-height: 600px;
   border-radius: var(--radius);
   position: relative;
   overflow: hidden;
@@ -355,7 +355,7 @@
   right: 0;
   padding: 36px 24px 24px;
   font-size: 14px;
-  color: var(--text);
+  color: var(--text-muted);
   line-height: 1.5;
   background: linear-gradient(to top, rgba(14, 15, 18, 0.95) 0%, rgba(14, 15, 18, 0.65) 55%, transparent 100%);
   border-radius: 0 0 var(--radius) var(--radius);
@@ -363,18 +363,18 @@
 }
 
 .example-caption strong {
-  color: var(--text);
+  color: var(--text-muted);
   font-weight: 600;
 }
 
 .example-caption-title {
-  color: var(--accent);
+  color: var(--text);
   font-weight: 700;
   margin-bottom: 6px;
 }
 
 .example-caption-detail {
-  color: var(--accent);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -412,7 +412,7 @@
 @media (max-width: 640px) {
   .examples-section { padding: 60px 16px 60px; }
   .example-showcase-comparison { grid-template-columns: 1fr; gap: 24px; }
-  .example-image { max-height: 540px; }
+  .example-image { max-height: 460px; }
   .example-quality-badge { top: 12px; right: 12px; }
   .example-caption { padding: 28px 20px 20px; }
 }
