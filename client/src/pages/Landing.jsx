@@ -36,6 +36,15 @@ const STATS = [
   { value: "< 8s", label: "temps de génération" },
 ];
 
+const CUSTOMER_REVIEWS = [
+  { username: "@meca_matteo", review: "Le rendu de ma Golf en full black est juste incroyable, on dirait une vraie photo de shooting.", rating: 5 },
+  { username: "@ines.cars", review: "J'ai enfin pu tester mes idées de jantes avant de les acheter. Le résultat est ultra propre.", rating: 5 },
+  { username: "@slammed_yno", review: "La transformation est folle. Même mes potes n'ont pas capté que c'était généré.", rating: 5 },
+  { username: "@nox_rsx", review: "Super rapide et hyper réaliste, surtout les reflets sur la carrosserie.", rating: 5 },
+  { username: "@lil_turbo", review: "Vysion m'a permis de visualiser exactement le look que je voulais pour ma caisse.", rating: 5 },
+  { username: "@drift.max", review: "Le avant/après est tellement convaincant que je l'ai posté direct en story.", rating: 5 },
+];
+
 function BeforeAfter() {
   const [showResult, setShowResult] = useState(false);
 
@@ -114,6 +123,28 @@ export default function Landing() {
                   </span>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="reviews-section fade-up delay-5" aria-label="Avis clients">
+        <div className="reviews-header">
+          <span className="reviews-eyebrow">ILS ONT TESTÉ VYSION</span>
+          <h2 className="reviews-title">Des rendus qui font tourner les têtes</h2>
+        </div>
+        <div className="reviews-track">
+          <div className="reviews-items">
+            {[...CUSTOMER_REVIEWS, ...CUSTOMER_REVIEWS].map((review, index) => (
+              <article className="review-card" key={`${review.username}-${index}`}>
+                <div className="review-card-top">
+                  <strong>{review.username}</strong>
+                  <span className="review-stars" aria-label={`${review.rating} étoiles`}>
+                    {"★".repeat(review.rating)}
+                  </span>
+                </div>
+                <p>“{review.review}”</p>
+              </article>
             ))}
           </div>
         </div>
