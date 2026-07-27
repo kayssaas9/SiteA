@@ -90,6 +90,55 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      <FaqAccordion />
     </main>
+  );
+}
+
+const FAQS = [
+  {
+    question: "Comment fonctionne la modification de voiture ?",
+    answer: "Tu uploades une photo de ta voiture, tu décris la modification souhaitée (couleur, jantes, kit carrosserie...) et notre IA génère un rendu réaliste en quelques secondes.",
+  },
+  {
+    question: "Les crédits expirent-ils ?",
+    answer: "Les crédits achetés via les packs de recharge n'expirent pas. Les crédits inclus dans les abonnements se renouvellent chaque mois.",
+  },
+  {
+    question: "Puis-je utiliser les images générées commercialement ?",
+    answer: "Oui, tu as tous les droits sur les images que tu génères avec Vysion, que ce soit pour un usage personnel ou commercial.",
+  },
+  {
+    question: "Quelle est la qualité des rendus ?",
+    answer: "Nos modèles produisent des images en haute définition, avec un rendu photoréaliste adapté à la couleur, l'éclairage et les proportions de ta voiture originale.",
+  },
+  {
+    question: "Comment fonctionne le tutoriel Snap Rouge ?",
+    answer: "Le tutoriel Snap Rouge est un guide premium qui t'explique étape par étape comment envoyer tes photos IA générées en snap rouge, sans être détecté.",
+  },
+];
+
+function FaqAccordion() {
+  const [openIndex, setOpenIndex] = useState(null);
+  const toggle = (idx) => setOpenIndex(openIndex === idx ? null : idx);
+
+  return (
+    <section id="faq" className="faq-section fade-up delay-5">
+      <h2 className="faq-title">Questions fréquentes</h2>
+      <div className="faq-list">
+        {FAQS.map((item, idx) => (
+          <div key={idx} className={`faq-item ${openIndex === idx ? "open" : ""}`}>
+            <button className="faq-question" onClick={() => toggle(idx)} type="button">
+              {item.question}
+              <span className="faq-icon">+</span>
+            </button>
+            <div className="faq-answer">
+              <div className="faq-answer-inner">{item.answer}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
