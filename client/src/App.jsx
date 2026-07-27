@@ -15,12 +15,14 @@ import SnapRougeGuard from "./components/SnapRougeGuard.jsx";
 import Survey from "./pages/Survey.jsx";
 import ReferralLanding from "./components/ReferralLanding.jsx";
 import CrispChat from "./components/CrispChat.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 import "./App.css";
 
 function Layout() {
   return (
     <div className="app">
       <Header />
+      <ScrollToTop />
       <Outlet />
       <footer className="footer">
         <p>© 2026 Vysion · IA visuelle propriétaire</p>

@@ -43,7 +43,12 @@ const navLink = (to, label, className = "") => (
     <Link
       to={to}
       className={`nav-link ${className} ${pathname === to ? "active" : ""}`}
-      onClick={() => setMenuOpen(false)}
+      onClick={() => {
+        setMenuOpen(false);
+        if (pathname === to) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }}
     >
       {label}
     </Link>
