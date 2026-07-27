@@ -118,23 +118,35 @@ function Examples() {
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
       <h2 className="examples-title">Exemples</h2>
-      <p className="examples-subtitle">Découvre ce que Vysion peut faire</p>
+      <p className="examples-subtitle">La transformation en un clic</p>
       <div className="example-showcase card" key={index}>
         <div className="example-showcase-title">{current.title}</div>
         <div className="example-showcase-comparison">
           <div className="example-side">
-            <div className="placeholder example-before" />
-            <span className="example-label">{current.beforeLabel}</span>
+            <span className="example-badge example-badge-before">AVANT</span>
+            <div className="example-image example-before" />
+            <span className="example-caption">Photo originale</span>
           </div>
           <div className="example-side">
-            <div className="placeholder example-after" />
-            <span className="example-label">{current.afterLabel}</span>
+            <span className="example-badge example-badge-after">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+              APRÈS
+            </span>
+            <div className="example-image example-after" />
+            <span className="example-caption">Résultat généré par l'IA</span>
           </div>
         </div>
       </div>
-      <button className="btn btn-outline examples-next" onClick={nextExample} type="button">
-        D'autres exemples
-      </button>
+      <div className="examples-actions">
+        <button className="btn btn-outline examples-next" onClick={nextExample} type="button">
+          Voir plus d'exemples
+        </button>
+        <Link to="/generate" className="btn btn-primary examples-cta">
+          Essayer
+        </Link>
+      </div>
     </section>
   );
 }
