@@ -239,7 +239,7 @@
 
 .examples-section {
   padding: 100px 20px 80px;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -261,7 +261,7 @@
 }
 
 .example-showcase {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0;
   background: transparent;
@@ -279,7 +279,7 @@
 .example-showcase-comparison {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  gap: 24px;
   align-items: start;
   text-align: left;
 }
@@ -288,7 +288,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
 }
 
 .example-badge {
@@ -314,9 +314,10 @@
 .example-image {
   width: 100%;
   aspect-ratio: 3 / 4;
-  max-height: 520px;
+  max-height: 720px;
   border-radius: var(--radius);
   position: relative;
+  overflow: hidden;
 }
 
 .example-before {
@@ -348,10 +349,17 @@
 }
 
 .example-caption {
-  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 36px 24px 24px;
   font-size: 14px;
-  color: var(--text-muted);
+  color: var(--text);
   line-height: 1.5;
+  background: linear-gradient(to top, rgba(14, 15, 18, 0.95) 0%, rgba(14, 15, 18, 0.65) 55%, transparent 100%);
+  border-radius: 0 0 var(--radius) var(--radius);
+  z-index: 2;
 }
 
 .example-caption strong {
@@ -366,7 +374,7 @@
 }
 
 .example-caption-detail {
-  color: var(--text);
+  color: var(--accent);
   font-weight: 500;
 }
 
@@ -404,8 +412,9 @@
 @media (max-width: 640px) {
   .examples-section { padding: 60px 16px 60px; }
   .example-showcase-comparison { grid-template-columns: 1fr; gap: 24px; }
-  .example-image { max-height: 420px; }
+  .example-image { max-height: 540px; }
   .example-quality-badge { top: 12px; right: 12px; }
+  .example-caption { padding: 28px 20px 20px; }
 }
 
 .faq-section {

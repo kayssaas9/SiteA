@@ -109,10 +109,11 @@ function Examples() {
         <div className="example-showcase-comparison">
           <div className="example-side">
             <span className="example-badge example-badge-before">AVANT</span>
-            <div className="example-image example-before" />
-            <div className="example-caption">
-              <strong>Photo originale :</strong>{" "}
-              <span className="example-caption-detail">[description du véhicule]</span>
+            <div className="example-image example-before">
+              <div className="example-caption">
+                <strong>Photo originale :</strong>{" "}
+                <span className="example-caption-detail">[description du véhicule]</span>
+              </div>
             </div>
           </div>
 
@@ -130,11 +131,11 @@ function Examples() {
                 </svg>
                 ULTRA-RÉALISTE
               </span>
-            </div>
-            <div className="example-caption">
-              <div className="example-caption-title">Ultra-réalisme Vysion ✨</div>
-              <strong>Résultat Vysion :</strong> Transformation en{" "}
-              <span className="example-caption-detail">[modèle cible]</span>, décor identique.
+              <div className="example-caption">
+                <div className="example-caption-title">Ultra-réalisme Vysion ✨</div>
+                <strong>Résultat Vysion :</strong> Transformation en{" "}
+                <span className="example-caption-detail">[modèle cible]</span>, décor identique.
+              </div>
             </div>
           </div>
         </div>
