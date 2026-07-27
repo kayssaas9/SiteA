@@ -32,6 +32,7 @@
 
 .hero .badge {
   margin-bottom: 24px;
+  gap: 10px;
 }
 
 .badge-dot {
