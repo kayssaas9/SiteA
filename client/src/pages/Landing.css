@@ -50,12 +50,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  font-size: clamp(40px, 6vw, 68px);
+  gap: 10px;
+  font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+  font-size: clamp(52px, 8vw, 92px);
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  margin-bottom: 20px;
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  margin-bottom: 24px;
 }
 
 .hero-title-line {
