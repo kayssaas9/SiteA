@@ -1,8 +1,10 @@
 .header {
   width: 100%;
   padding: 16px 20px 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   background: transparent;
   border-bottom: none;
@@ -203,6 +205,10 @@
   transform: translateY(0);
   opacity: 1;
   pointer-events: auto;
+}
+
+.mobile-menu {
+  pointer-events: none;
 }
 
 .mobile-menu-inner {
