@@ -263,11 +263,11 @@
 .example-showcase {
   max-width: 900px;
   margin: 0 auto;
-  padding: 32px;
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
   animation: example-fade 0.4s ease;
 }
 
@@ -316,7 +316,6 @@
   aspect-ratio: 3 / 4;
   max-height: 520px;
   border-radius: var(--radius);
-  border: 0.5px solid var(--border);
   position: relative;
 }
 
@@ -372,7 +371,8 @@
 }
 
 .examples-more {
-  display: inline-block;
+  display: block;
+  width: fit-content;
   margin: 40px auto 24px;
   font-size: 13px;
   font-weight: 600;
@@ -392,7 +392,8 @@
 }
 
 .examples-cta {
-  display: inline-flex;
+  display: block;
+  width: fit-content;
   margin: 0 auto;
   font-size: 16px;
   padding: 16px 32px;
@@ -402,7 +403,6 @@
 
 @media (max-width: 640px) {
   .examples-section { padding: 60px 16px 60px; }
-  .example-showcase { padding: 20px; }
   .example-showcase-comparison { grid-template-columns: 1fr; gap: 24px; }
   .example-image { max-height: 420px; }
   .example-quality-badge { top: 12px; right: 12px; }
