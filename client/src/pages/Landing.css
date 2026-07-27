@@ -34,6 +34,15 @@
   margin-bottom: 24px;
 }
 
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
 .hero-title {
   display: flex;
   flex-direction: column;
