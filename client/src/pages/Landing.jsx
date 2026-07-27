@@ -47,10 +47,12 @@ export default function Landing() {
       <section className="hero">
         <div className="badge fade-up">L'IA visuelle la plus avancée du marché</div>
         <h1 className="hero-title fade-up delay-1">
-          Visualisez l'impossible avec <span className="accent">Vysion</span>
+          <span className="hero-title-line">Modifie ta voiture</span>
+          <span className="hero-title-breath">Et</span>
+          <span className="hero-title-line">Rend dingue tes potes</span>
         </h1>
         <p className="hero-sub fade-up delay-2">
-          Essayez des tenues sur vous-même. Transformez votre voiture. Générez des visuels professionnels en quelques secondes, sans équipe, sans studio.
+          Envoie une photo, décris ta vision — nouvelle couleur, jantes forgées, kit large — et regarde ta voiture de rêve prendre vie en quelques secondes. Le rendu est tellement bluffant que tes potes n'y croiront pas.
         </p>
         <div className="hero-cta fade-up delay-3">
           <Link to="/generate" className="btn btn-primary">Essayer gratuitement</Link>
