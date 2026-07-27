@@ -91,8 +91,43 @@ export default function Landing() {
         </div>
       </section>
 
+      <Examples />
+
       <FaqAccordion />
     </main>
+  );
+}
+
+const EXAMPLES = [
+  { title: "Nouvelle couleur", beforeLabel: "Avant", afterLabel: "Après" },
+  { title: "Jantes forgées", beforeLabel: "Avant", afterLabel: "Après" },
+  { title: "Kit large", beforeLabel: "Avant", afterLabel: "Après" },
+  { title: "Tuning complet", beforeLabel: "Avant", afterLabel: "Après" },
+];
+
+function Examples() {
+  return (
+    <section id="exemples" className="examples-section fade-up delay-5">
+      <h2 className="examples-title">Exemples</h2>
+      <p className="examples-subtitle">Découvre ce que Vysion peut faire</p>
+      <div className="examples-grid">
+        {EXAMPLES.map((ex, idx) => (
+          <div key={idx} className="example-card card">
+            <div className="example-card-title">{ex.title}</div>
+            <div className="example-comparison">
+              <div className="example-side">
+                <div className="placeholder example-before" />
+                <span className="example-label">{ex.beforeLabel}</span>
+              </div>
+              <div className="example-side">
+                <div className="placeholder example-after" />
+                <span className="example-label">{ex.afterLabel}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
