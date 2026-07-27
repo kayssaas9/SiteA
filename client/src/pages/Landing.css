@@ -263,37 +263,33 @@
   margin-bottom: 48px;
 }
 
-.examples-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.example-card {
-  padding: 20px;
+.example-showcase {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px;
   background: var(--surface);
   border: 0.5px solid var(--border);
   border-radius: var(--radius-lg);
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  animation: example-fade 0.4s ease;
 }
 
-.example-card:hover {
-  border-color: rgba(142, 197, 232, 0.25);
-  transform: translateY(-2px);
+@keyframes example-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.example-card-title {
-  font-size: 16px;
+.example-showcase-title {
+  font-size: 18px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   text-align: center;
 }
 
-.example-comparison {
+.example-showcase-comparison {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 16px;
 }
 
 .example-side {
@@ -301,12 +297,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .example-side .placeholder {
   width: 100%;
-  height: 160px;
+  height: 220px;
   border-radius: var(--radius);
   border: 0.5px solid var(--border);
 }
@@ -317,23 +313,28 @@
 
 .example-after {
   background: radial-gradient(circle at center, rgba(142,197,232,0.25), rgba(142,197,232,0.05));
-  box-shadow: 0 0 30px rgba(142, 197, 232, 0.15);
+  box-shadow: 0 0 40px rgba(142, 197, 232, 0.15);
 }
 
 .example-label {
   font-size: 12px;
   color: var(--text-muted);
   font-weight: 500;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 100px;
   border: 0.5px solid var(--border);
   background: rgba(14, 15, 18, 0.7);
 }
 
+.examples-next {
+  margin: 28px auto 0;
+  display: block;
+}
+
 @media (max-width: 640px) {
-  .examples-grid {
-    grid-template-columns: 1fr;
-  }
+  .example-showcase { padding: 20px; }
+  .example-showcase-comparison { gap: 12px; }
+  .example-side .placeholder { height: 160px; }
   .examples-section { padding: 60px 16px 40px; }
 }
 

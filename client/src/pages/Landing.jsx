@@ -103,30 +103,38 @@ const EXAMPLES = [
   { title: "Jantes forgées", beforeLabel: "Avant", afterLabel: "Après" },
   { title: "Kit large", beforeLabel: "Avant", afterLabel: "Après" },
   { title: "Tuning complet", beforeLabel: "Avant", afterLabel: "Après" },
+  { title: "Peinture mate", beforeLabel: "Avant", afterLabel: "Après" },
+  { title: "Ligne d'échappement", beforeLabel: "Avant", afterLabel: "Après" },
 ];
 
 function Examples() {
+  const [index, setIndex] = useState(0);
+  const current = EXAMPLES[index];
+
+  const nextExample = () => {
+    setIndex((prev) => (prev + 1) % EXAMPLES.length);
+  };
+
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
       <h2 className="examples-title">Exemples</h2>
       <p className="examples-subtitle">Découvre ce que Vysion peut faire</p>
-      <div className="examples-grid">
-        {EXAMPLES.map((ex, idx) => (
-          <div key={idx} className="example-card card">
-            <div className="example-card-title">{ex.title}</div>
-            <div className="example-comparison">
-              <div className="example-side">
-                <div className="placeholder example-before" />
-                <span className="example-label">{ex.beforeLabel}</span>
-              </div>
-              <div className="example-side">
-                <div className="placeholder example-after" />
-                <span className="example-label">{ex.afterLabel}</span>
-              </div>
-            </div>
+      <div className="example-showcase card" key={index}>
+        <div className="example-showcase-title">{current.title}</div>
+        <div className="example-showcase-comparison">
+          <div className="example-side">
+            <div className="placeholder example-before" />
+            <span className="example-label">{current.beforeLabel}</span>
           </div>
-        ))}
+          <div className="example-side">
+            <div className="placeholder example-after" />
+            <span className="example-label">{current.afterLabel}</span>
+          </div>
+        </div>
       </div>
+      <button className="btn btn-outline examples-next" onClick={nextExample} type="button">
+        D'autres exemples
+      </button>
     </section>
   );
 }
