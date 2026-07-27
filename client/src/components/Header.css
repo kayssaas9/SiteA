@@ -1,21 +1,29 @@
 .header {
   width: 100%;
-  border-bottom: 0.5px solid var(--border);
-  background: rgba(14, 15, 18, 0.85);
-  backdrop-filter: blur(16px);
+  padding: 16px 20px 0;
   position: sticky;
   top: 0;
   z-index: 100;
+  background: transparent;
+  border-bottom: none;
+  pointer-events: none;
 }
 
 .header-inner {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-  height: 68px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: rgba(14, 15, 18, 0.60);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 0.5px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
 }
 
 .logo {
@@ -178,7 +186,7 @@
 .mobile-menu {
   display: none;
   position: absolute;
-  top: 68px;
+  top: 76px;
   left: 0;
   right: 0;
   background: rgba(14, 15, 18, 0.97);
