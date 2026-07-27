@@ -58,7 +58,7 @@ export default function Landing() {
           Envoie une photo, décris ta vision — nouvelle couleur, jantes forgées, kit large — et regarde ta voiture de rêve prendre vie en quelques secondes. Le rendu est tellement bluffant que tes potes n'y croiront pas.
         </p>
         <div className="hero-cta fade-up delay-3">
-          <Link to="/generate" className="btn btn-primary">Essayer gratuitement</Link>
+          <Link to="/generate" className="btn btn-primary">Essayer</Link>
           <Link to="/pricing" className="btn btn-outline">Voir les tarifs</Link>
         </div>
 
