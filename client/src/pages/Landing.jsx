@@ -130,6 +130,7 @@ function FaqAccordion() {
   return (
     <section id="faq" className="faq-section fade-up delay-5">
       <h2 className="faq-title">Questions fréquentes</h2>
+      <p className="faq-subtitle">Tout ce que vous devez savoir sur Vysion</p>
       <div className="faq-list">
         {FAQS.map((item, idx) => (
           <div key={idx} className={`faq-item ${openIndex === idx ? "open" : ""}`}>
