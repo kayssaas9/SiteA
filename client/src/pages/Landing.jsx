@@ -45,7 +45,7 @@ export default function Landing() {
       <div className="blob blob-2" />
 
       <section className="hero">
-        <div className="badge fade-up">L'IA visuelle la plus avancée du marché</div>
+        <div className="badge fade-up">· La V3 est maintenant disponible</div>
         <h1 className="hero-title fade-up delay-1">
           <span className="hero-title-line">Modifie ta voiture</span>
           <span className="hero-title-breath">Et</span>
