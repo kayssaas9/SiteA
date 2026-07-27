@@ -300,17 +300,14 @@
 }
 
 .faq-icon {
-  font-size: 22px;
-  font-weight: 500;
   color: var(--accent);
   transition: transform 0.35s ease;
   flex-shrink: 0;
   margin-left: 20px;
-  line-height: 1;
 }
 
 .faq-item.open .faq-icon {
-  transform: rotate(45deg);
+  transform: rotate(180deg);
 }
 
 .faq-answer {

@@ -98,24 +98,28 @@ export default function Landing() {
 
 const FAQS = [
   {
-    question: "Comment fonctionne la modification de voiture ?",
-    answer: "Tu uploades une photo de ta voiture, tu décris la modification souhaitée (couleur, jantes, kit carrosserie...) et notre IA génère un rendu réaliste en quelques secondes.",
+    question: "Comment fonctionne la génération d'images ?",
+    answer: "Vysion utilise les modèles d'IA les plus avancés au monde pour transformer vos photos et descriptions en rendus photoréalistes. Il vous suffit d'envoyer une photo de votre voiture et de décrire ce que vous voulez, notre IA s'occupe du reste.",
   },
   {
-    question: "Les crédits expirent-ils ?",
-    answer: "Les crédits achetés via les packs de recharge n'expirent pas. Les crédits inclus dans les abonnements se renouvellent chaque mois.",
+    question: "Les photos m'appartiennent-elles ?",
+    answer: "Oui, vous disposez d'une licence commerciale complète sur toutes les images que vous générez avec un abonnement actif.",
   },
   {
-    question: "Puis-je utiliser les images générées commercialement ?",
-    answer: "Oui, tu as tous les droits sur les images que tu génères avec Vysion, que ce soit pour un usage personnel ou commercial.",
+    question: "Puis-je annuler mon abonnement ?",
+    answer: "Bien sûr. Vous pouvez annuler votre abonnement à tout moment depuis votre espace client. Vous conserverez vos accès jusqu'à la fin de la période facturée.",
   },
   {
-    question: "Quelle est la qualité des rendus ?",
-    answer: "Nos modèles produisent des images en haute définition, avec un rendu photoréaliste adapté à la couleur, l'éclairage et les proportions de ta voiture originale.",
+    question: "Qu'est-ce que le système SnapRouge ?",
+    answer: "C'est une fonctionnalité exclusive de Vysion qui permet d'envoyer vos photos générées par IA sur Snapchat de manière totalement indétectable, comme s'il s'agissait de photos prises en direct.",
   },
   {
-    question: "Comment fonctionne le tutoriel Snap Rouge ?",
-    answer: "Le tutoriel Snap Rouge est un guide premium qui t'explique étape par étape comment envoyer tes photos IA générées en snap rouge, sans être détecté.",
+    question: "Les paiements sont-ils sécurisés ?",
+    answer: "Absolument. Tous les paiements sont traités par Stripe, le leader mondial du paiement en ligne. Vos informations bancaires ne transitent jamais par nos serveurs et sont chiffrées de bout en bout.",
+  },
+  {
+    question: "Mes photos générées sont-elles confidentielles ?",
+    answer: "Oui, la confidentialité est notre priorité. Vos créations sont privées par défaut et ne sont jamais partagées sans votre accord. Nous n'utilisons pas vos photos pour entraîner nos modèles sans votre consentement explicite.",
   },
 ];
 
@@ -131,7 +135,9 @@ function FaqAccordion() {
           <div key={idx} className={`faq-item ${openIndex === idx ? "open" : ""}`}>
             <button className="faq-question" onClick={() => toggle(idx)} type="button">
               {item.question}
-              <span className="faq-icon">+</span>
+              <svg className="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div className="faq-answer">
               <div className="faq-answer-inner">{item.answer}</div>
