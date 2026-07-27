@@ -3,11 +3,31 @@ import { Link } from "react-router-dom";
 import "./Landing.css";
 
 const TESTIMONIALS = [
-  "Vysion a remplacé mon studio photo pour les essais de tenues.",
-  "La qualité des rendus voiture est meilleure que tout ce que j'ai testé.",
-  "Interface sobre, génération rapide, crédits clairs. Rien à redire.",
-  "Je recommande Vysion à tous mes clients retail.",
-  "L'outil le plus fiable pour visualiser des concepts avant production.",
+  {
+    text: "Vysion a remplacé mon studio photo pour les essais de tenues. Le rendu est bluffant.",
+    name: "Camille R.",
+    role: "Créatrice de contenu",
+  },
+  {
+    text: "La qualité des rendus voiture est meilleure que tout ce que j'ai testé. Incroyable.",
+    name: "Maxime D.",
+    role: "Passionné automobile",
+  },
+  {
+    text: "Interface sobre, génération rapide, crédits clairs. Rien à redire.",
+    name: "Sarah M.",
+    role: "Designer freelance",
+  },
+  {
+    text: "Je recommande Vysion à tous mes clients retail. Ils adorent voir le résultat avant de se décider.",
+    name: "Thomas B.",
+    role: "Consultant e-commerce",
+  },
+  {
+    text: "L'outil le plus fiable pour visualiser des concepts avant production.",
+    name: "Lucas P.",
+    role: "Directeur artistique",
+  },
 ];
 
 const STATS = [
@@ -82,9 +102,17 @@ export default function Landing() {
         </div>
         <div className="testimonials-track">
           <div className="testimonials-items">
-            {[...TESTIMONIALS, ...TESTIMONIALS].map((text, i) => (
-              <div key={i} className="testimonial-card">
-                <p>{text}</p>
+            {[...TESTIMONIALS, ...TESTIMONIALS].map((review, i) => (
+              <div key={`${review.name}-${i}`} className="testimonial-card">
+                <div className="testimonial-stars" aria-label="5 étoiles">★★★★★</div>
+                <p>“{review.text}”</p>
+                <div className="testimonial-author">
+                  <span className="testimonial-avatar">{review.name.charAt(0)}</span>
+                  <span>
+                    <strong>{review.name}</strong>
+                    <small>{review.role}</small>
+                  </span>
+                </div>
               </div>
             ))}
           </div>
