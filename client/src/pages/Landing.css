@@ -248,11 +248,12 @@
 .faq-title {
   text-align: center;
   font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
-  font-size: clamp(28px, 5vw, 40px);
+  font-size: clamp(40px, 9vw, 80px);
   font-weight: 700;
   margin-bottom: 12px;
   color: var(--text);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  line-height: 1.0;
 }
 
 .faq-subtitle {
