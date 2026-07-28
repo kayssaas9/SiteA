@@ -40,19 +40,23 @@ function BeforeAfter() {
 }
 
 function LiveGenerationCounter() {
-  const [count, setCount] = useState(14823);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCount(10000 + Math.floor(Math.random() * 10001));
-    }, 2800);
-
-    return () => clearInterval(timer);
-  }, []);
+  const [count] = useState(() => {
+    const today = new Date();
+    const dateSeed = today.getFullYear() * 10000
+      + (today.getMonth() + 1) * 100
+      + today.getDate();
+    const dailyVariation = (dateSeed * 9301 + 49297) % 233280;
+    return 10000 + Math.floor((dailyVariation / 233280) * 10001);
+  });
 
   return (
     <div className="live-generation-counter" aria-live="polite">
-      <span className="live-counter-dot" />
+      <svg className="live-counter-people" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="9" cy="8" r="3" />
+        <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+        <path d="M16 5.5a3 3 0 0 1 0 5.8" />
+        <path d="M16.5 14a5.5 5.5 0 0 1 4 5" />
+      </svg>
       <strong>{count.toLocaleString("fr-FR")}</strong>
       <span>personnes ont généré une image aujourd'hui</span>
     </div>
