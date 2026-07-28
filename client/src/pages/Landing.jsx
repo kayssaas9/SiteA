@@ -86,8 +86,7 @@ export default function Landing() {
           <span className="hero-title-line">Rend dingue tes potes</span>
         </h1>
         <div className="hero-cta fade-up delay-2">
-          <Link to="/generate" className="btn btn-primary">Essayer</Link>
-          <Link to="/pricing" className="btn btn-outline">Voir les tarifs</Link>
+          <Link to="/generate" className="btn btn-primary">Essayer gratuitement</Link>
         </div>
 
       </section>
