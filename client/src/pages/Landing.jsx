@@ -23,17 +23,25 @@ const HERO_BACKGROUNDS = [
 ];
 
 function HeroBackground() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveIndex((currentIndex) => (currentIndex + 1) % HERO_BACKGROUNDS.length);
+    }, 3000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
   return (
     <div className="hero-background" aria-hidden="true">
-      <div className="hero-photo-grid">
-        {HERO_BACKGROUNDS.map((image, index) => (
-          <div
-            key={image}
-            className={`hero-photo hero-photo-${index + 1}`}
-            style={{ backgroundImage: `url("${image}")` }}
-          />
-        ))}
-      </div>
+      {HERO_BACKGROUNDS.map((image, index) => (
+        <div
+          key={image}
+          className={`hero-photo ${index === activeIndex ? "is-active" : ""}`}
+          style={{ backgroundImage: `url("${image}")` }}
+        />
+      ))}
       <div className="hero-background-shade" />
     </div>
   );
