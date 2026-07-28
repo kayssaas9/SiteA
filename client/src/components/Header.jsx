@@ -21,6 +21,7 @@ export default function Header() {
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const [menuOpen, setMenuOpen] = useState(false);
+  const isLanding = pathname === "/";
 
   useEffect(() => {
     setMenuOpen(false);
@@ -63,7 +64,7 @@ const navLink = (to, label, className = "") => (
   ];
 
   return (
-    <header className="header">
+    <header className={`header ${isLanding ? "header-landing" : "header-app"}`}>
       <div className="header-inner">
         <Link to="/" className="logo">
           <span className="logo-dot" />

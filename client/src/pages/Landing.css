@@ -40,7 +40,7 @@
 
 .hero-background {
   position: absolute;
-  inset: 0;
+  inset: -18px 0 -3px;
   z-index: -1;
   pointer-events: none;
 }
@@ -53,15 +53,15 @@
 
 .hero-photo {
   position: absolute;
-  inset: 0;
+  inset: -20px 0 0;
   opacity: 0;
-  background-position: center;
+  background-position: center 68%;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(1.08);
   /* Keep the completed zoom when the image becomes inactive so it
      never visibly snaps back during the crossfade. */
-  transform: scale(1.08);
+  transform: scale(1.1);
   transition: opacity 0.8s ease-in-out;
   will-change: opacity, transform;
 }
@@ -76,8 +76,8 @@
 }
 
 @keyframes hero-ken-burns {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.08); }
+  from { transform: scale(1.1); }
+  to { transform: scale(1.16); }
 }
 
 .hero .badge {
