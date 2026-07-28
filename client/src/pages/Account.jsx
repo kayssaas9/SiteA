@@ -158,7 +158,7 @@ export default function Account() {
               <div>
                 <h2 className="account-section-title">Questionnaire</h2>
                 <p className="survey-card-text">
-                  15 questions sur ton expérience · <span className="accent">+300 crédits</span> offerts
+                  15 questions sur ton expérience · <span className="accent">+400 crédits</span> offerts
                 </p>
               </div>
             </div>

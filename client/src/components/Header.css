@@ -69,6 +69,17 @@
   font-size: 12px;
 }
 
+.header-app .survey-nav-btn {
+  border-color: rgba(142, 197, 232, 0.35);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.header-app .survey-nav-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .logo {
   display: flex;
   align-items: center;

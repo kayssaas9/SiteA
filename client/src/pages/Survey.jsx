@@ -65,7 +65,7 @@ export default function Survey() {
         throw new Error(data.error || "Erreur lors de la soumission");
       }
 
-      setCreditsEarned(data.creditsEarned ?? 300);
+      setCreditsEarned(data.creditsEarned ?? 400);
       setCompleted(true);
       refetch();
     } catch (err) {
