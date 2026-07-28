@@ -59,7 +59,9 @@
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(1.08);
-  transform: scale(1);
+  /* Keep the completed zoom when the image becomes inactive so it
+     never visibly snaps back during the crossfade. */
+  transform: scale(1.08);
   transition: opacity 0.8s ease-in-out;
   will-change: opacity, transform;
 }
