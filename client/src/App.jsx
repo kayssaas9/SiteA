@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet, RouterProvider, useLocation } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import Header from "./components/Header.jsx";
@@ -19,8 +19,10 @@ import ScrollToTop from "./components/ScrollToTop.jsx";
 import "./App.css";
 
 function Layout() {
+  const { pathname } = useLocation();
+
   return (
-    <div className="app">
+    <div className={`app ${pathname === "/" ? "landing-layout" : ""}`}>
       <Header />
       <ScrollToTop />
       <Outlet />

@@ -24,7 +24,7 @@
 .hero {
   width: 100%;
   max-width: none;
-  margin: -76px auto 0;
+  margin: 0 auto;
   min-height: 100vh;
   padding: 186px 28px 42px;
   text-align: center;
@@ -40,7 +40,7 @@
 
 .hero-background {
   position: absolute;
-  inset: -76px 0 -3px;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
 }
@@ -53,7 +53,7 @@
 
 .hero-photo {
   position: absolute;
-  inset: -76px 0 0;
+  inset: 0;
   opacity: 0;
   background-position: center 72%;
   background-size: cover;

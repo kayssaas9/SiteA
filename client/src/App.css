@@ -8,6 +8,10 @@
   padding-top: 76px;
 }
 
+.app.landing-layout {
+  padding-top: 0;
+}
+
 .footer {
   margin-top: auto;
   padding: 32px 20px;
