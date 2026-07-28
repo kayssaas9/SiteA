@@ -28,6 +28,57 @@
   text-align: center;
   position: relative;
   z-index: 1;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-background-visual,
+.hero-background-shade {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-background-visual {
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+}
+
+.hero-background-visual.active {
+  opacity: 1;
+}
+
+.hero-background-shade {
+  background:
+    linear-gradient(to bottom, rgba(14, 15, 18, 0.72), rgba(14, 15, 18, 0.9)),
+    radial-gradient(ellipse at center, transparent 10%, rgba(14, 15, 18, 0.7) 82%);
+}
+
+.hero-visual-one {
+  background:
+    radial-gradient(ellipse at 50% 28%, rgba(142, 197, 232, 0.34), transparent 46%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16) 0 18%, transparent 18% 45%, rgba(142, 197, 232, 0.12) 45% 58%, transparent 58%),
+    linear-gradient(120deg, #252b31, #101317 52%, #3b4c58);
+}
+
+.hero-visual-two {
+  background:
+    radial-gradient(ellipse at 68% 45%, rgba(142, 197, 232, 0.38), transparent 40%),
+    linear-gradient(165deg, transparent 0 28%, rgba(255, 255, 255, 0.13) 28% 30%, transparent 30% 63%, rgba(142, 197, 232, 0.16) 63% 66%, transparent 66%),
+    linear-gradient(35deg, #13171b, #34424b 54%, #0f1114);
+}
+
+.hero-visual-three {
+  background:
+    radial-gradient(ellipse at 28% 36%, rgba(142, 197, 232, 0.3), transparent 38%),
+    linear-gradient(42deg, rgba(255, 255, 255, 0.13), transparent 22% 62%, rgba(142, 197, 232, 0.16) 62% 65%, transparent 65%),
+    linear-gradient(150deg, #0f1114, #2c3942 50%, #171b20);
 }
 
 .hero .badge {
@@ -86,73 +137,6 @@
   gap: 14px;
   justify-content: center;
   margin-bottom: 56px;
-}
-
-.hero-demo {
-  max-width: 640px;
-  margin: 0 auto 48px;
-}
-
-.before-after {
-  position: relative;
-  height: 340px;
-  border-radius: var(--radius-lg);
-  border: 0.5px solid var(--border);
-  background: var(--surface);
-  overflow: hidden;
-}
-
-.before-after-side {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  opacity: 0;
-  transition: opacity 0.9s ease;
-}
-
-.before-after-side.active {
-  opacity: 1;
-}
-
-.placeholder {
-  width: 220px;
-  height: 220px;
-  border-radius: var(--radius-lg);
-  border: 0.5px solid var(--border);
-  transition: transform 0.9s ease;
-}
-
-.before-after-side.active .placeholder {
-  transform: scale(1.02);
-}
-
-.placeholder.original {
-  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-}
-
-.placeholder.generated {
-  background: radial-gradient(circle at center, rgba(142,197,232,0.25), rgba(142,197,232,0.05));
-  box-shadow: 0 0 50px rgba(142, 197, 232, 0.25);
-}
-
-.before-after-label {
-  font-size: 14px;
-  color: var(--text-muted);
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 100px;
-  border: 0.5px solid var(--border);
-  background: rgba(14, 15, 18, 0.7);
-  transition: all 0.9s ease;
-}
-
-.before-after-side.active .before-after-label {
-  color: var(--text);
-  border-color: rgba(142, 197, 232, 0.3);
 }
 
 .testimonials-section {
@@ -685,8 +669,6 @@
 @media (max-width: 640px) {
   .hero { padding-top: 48px; }
   .hero-cta { flex-direction: column; align-items: center; }
-  .before-after { height: 280px; }
-  .placeholder { width: 160px; height: 160px; }
   .faq-section { padding: 60px 16px; }
   .faq-question { padding: 18px 20px; font-size: 15px; }
   .faq-answer-inner { padding: 0 20px 18px; }

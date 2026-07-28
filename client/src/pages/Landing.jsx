@@ -11,24 +11,28 @@ const CUSTOMER_REVIEWS = [
   { username: "@drift.max", review: "Le avant/après est tellement convaincant que je l'ai posté direct en story.", rating: 5 },
 ];
 
-function BeforeAfter() {
-  const [showResult, setShowResult] = useState(false);
+const HERO_BACKGROUNDS = ["hero-visual-one", "hero-visual-two", "hero-visual-three"];
+
+function HeroBackground() {
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => setShowResult((v) => !v), 2000);
+    const timer = setInterval(() => {
+      setActiveIndex((current) => (current + 1) % HERO_BACKGROUNDS.length);
+    }, 3000);
+
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="before-after">
-      <div className={`before-after-side ${!showResult ? "active" : ""}`}>
-        <div className="placeholder original" />
-        <span className="before-after-label">Photo d'origine</span>
-      </div>
-      <div className={`before-after-side ${showResult ? "active" : ""}`}>
-        <div className="placeholder generated" />
-        <span className="before-after-label">Résultat généré par l'IA</span>
-      </div>
+    <div className="hero-background" aria-hidden="true">
+      {HERO_BACKGROUNDS.map((background, index) => (
+        <div
+          key={background}
+          className={`hero-background-visual ${background} ${index === activeIndex ? "active" : ""}`}
+        />
+      ))}
+      <div className="hero-background-shade" />
     </div>
   );
 }
@@ -61,6 +65,7 @@ export default function Landing() {
       <div className="blob blob-2" />
 
       <section className="hero">
+        <HeroBackground />
         <div className="badge fade-up">
           <span className="badge-dot" />
           La V3 est maintenant disponible
@@ -76,10 +81,6 @@ export default function Landing() {
         <div className="hero-cta fade-up delay-3">
           <Link to="/generate" className="btn btn-primary">Essayer</Link>
           <Link to="/pricing" className="btn btn-outline">Voir les tarifs</Link>
-        </div>
-
-        <div className="hero-demo fade-up delay-4">
-          <BeforeAfter />
         </div>
 
       </section>
