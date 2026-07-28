@@ -2,12 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Landing.css";
 
-const STATS = [
-  { value: "2,4M+", label: "images générées" },
-  { value: "4,9/5", label: "note utilisateurs" },
-  { value: "< 8s", label: "temps de génération" },
-];
-
 const CUSTOMER_REVIEWS = [
   { username: "@meca_matteo", review: "Le rendu de ma Golf en full black est juste incroyable, on dirait une vraie photo de shooting.", rating: 5 },
   { username: "@ines.cars", review: "J'ai enfin pu tester mes idées de jantes avant de les acheter. Le résultat est ultra propre.", rating: 5 },
@@ -88,14 +82,6 @@ export default function Landing() {
           <BeforeAfter />
         </div>
 
-        <div className="stats fade-up delay-5">
-          {STATS.map((s) => (
-            <div key={s.label} className="stat">
-              <div className="stat-value">{s.value}</div>
-              <div className="stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
       </section>
 
       <LiveGenerationCounter />
