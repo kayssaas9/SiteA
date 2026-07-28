@@ -51,11 +51,13 @@ function LiveGenerationCounter() {
 
   return (
     <div className="live-generation-counter" aria-live="polite">
-      <svg className="live-counter-people" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="9" cy="8" r="3" />
-        <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
-        <path d="M16 5.5a3 3 0 0 1 0 5.8" />
-        <path d="M16.5 14a5.5 5.5 0 0 1 4 5" />
+      <svg className="live-counter-people" width="24" height="19" viewBox="0 0 32 24" aria-hidden="true">
+        <circle cx="16" cy="6" r="4" fill="#8EC5E8" />
+        <path d="M9.5 22c.3-4.7 2.7-7.5 6.5-7.5s6.2 2.8 6.5 7.5z" fill="#8EC5E8" />
+        <circle cx="6.5" cy="8" r="3.2" fill="#E8556B" />
+        <path d="M1 22c.3-3.9 2.2-6.3 5.5-6.3s5.2 2.4 5.5 6.3z" fill="#E8556B" />
+        <circle cx="25.5" cy="8" r="3.2" fill="#F2C572" />
+        <path d="M20 22c.3-3.9 2.2-6.3 5.5-6.3s5.2 2.4 5.5 6.3z" fill="#F2C572" />
       </svg>
       <strong>{count.toLocaleString("fr-FR")}</strong>
       <span>personnes ont généré une image aujourd'hui</span>

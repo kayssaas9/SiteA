@@ -312,8 +312,8 @@
 }
 
 .live-counter-people {
-  color: var(--accent);
-  flex: 0 0 17px;
+  flex: 0 0 24px;
+  display: block;
 }
 
 @keyframes counter-breathe {
