@@ -39,6 +39,26 @@ function BeforeAfter() {
   );
 }
 
+function LiveGenerationCounter() {
+  const [count, setCount] = useState(14823);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCount(10000 + Math.floor(Math.random() * 10001));
+    }, 2800);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="live-generation-counter" aria-live="polite">
+      <span className="live-counter-dot" />
+      <strong>{count.toLocaleString("fr-FR")}</strong>
+      <span>personnes ont généré une image aujourd'hui</span>
+    </div>
+  );
+}
+
 export default function Landing() {
   return (
     <main className="landing-page">
@@ -76,6 +96,8 @@ export default function Landing() {
           ))}
         </div>
       </section>
+
+      <LiveGenerationCounter />
 
       <section className="reviews-section fade-up delay-5" aria-label="Avis clients">
         <div className="reviews-header">
