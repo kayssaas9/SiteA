@@ -40,7 +40,7 @@
 
 .hero-background {
   position: absolute;
-  inset: -18px 0 -3px;
+  inset: -76px 0 -3px;
   z-index: -1;
   pointer-events: none;
 }
@@ -53,9 +53,9 @@
 
 .hero-photo {
   position: absolute;
-  inset: -20px 0 0;
+  inset: -76px 0 0;
   opacity: 0;
-  background-position: center 68%;
+  background-position: center 72%;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(1.08);
