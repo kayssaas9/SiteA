@@ -93,7 +93,7 @@ export default function Landing() {
 
       <LiveGenerationCounter />
 
-      <section className="reviews-section fade-up delay-5" aria-label="Avis clients">
+      <section id="avis" className="reviews-section fade-up delay-5" aria-label="Avis clients">
         <div className="reviews-header">
           <span className="reviews-eyebrow">ILS ONT TESTÉ VYSION</span>
           <h2 className="reviews-title">Des rendus qui font tourner les têtes</h2>

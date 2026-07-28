@@ -63,6 +63,22 @@ const navLink = (to, label, className = "") => (
     ...(isSignedIn ? [{ to: "/account", label: "Compte" }] : []),
   ];
 
+  const landingNavItems = [
+    { to: "#exemples", label: "Fonctionnalités" },
+    { to: "#avis", label: "Avis" },
+    { to: "#faq", label: "FAQ" },
+  ];
+
+  const landingNavLink = (to, label) => (
+    <a
+      href={to}
+      className="nav-link"
+      onClick={() => setMenuOpen(false)}
+    >
+      {label}
+    </a>
+  );
+
   return (
     <header className={`header ${isLanding ? "header-landing" : "header-app"}`}>
       <div className="header-inner">
@@ -72,27 +88,45 @@ const navLink = (to, label, className = "") => (
         </Link>
 
         <nav className="nav-center">
-          {navLink("/generate", "Générer")}
-          {navLink("/pricing", "Tarifs")}
-          {navLink("/snaprouge", "SnapRouge", "snaprouge-nav-link")}
-          {isSignedIn && navLink("/history", "Historique")}
-          {isSignedIn && navLink("/account", "Compte")}
+          {isLanding ? (
+            <>
+              {landingNavLink("#exemples", "Fonctionnalités")}
+              {landingNavLink("#avis", "Avis")}
+              {landingNavLink("#faq", "FAQ")}
+            </>
+          ) : (
+            <>
+              {navLink("/generate", "Générer")}
+              {navLink("/pricing", "Tarifs")}
+              {navLink("/snaprouge", "SnapRouge", "snaprouge-nav-link")}
+              {isSignedIn && navLink("/history", "Historique")}
+              {isSignedIn && navLink("/account", "Compte")}
+            </>
+          )}
         </nav>
 
         <div className="nav-right">
-          <SignedOut>
-            <Link to="/sign-in" className="btn btn-outline header-btn">
-              Connexion
+          {isLanding ? (
+            <Link to="/generate" className="btn btn-primary header-btn landing-app-btn">
+              Accéder à l’app
             </Link>
-            <Link to="/sign-up" className="btn btn-primary header-btn">
-              Créer un compte
-            </Link>
-          </SignedOut>
+          ) : (
+            <>
+              <SignedOut>
+                <Link to="/sign-in" className="btn btn-outline header-btn">
+                  Connexion
+                </Link>
+                <Link to="/sign-up" className="btn btn-primary header-btn">
+                  Créer un compte
+                </Link>
+              </SignedOut>
 
-          <SignedIn>
-            <CreditsBadge />
-            <SignOutButton />
-          </SignedIn>
+              <SignedIn>
+                <CreditsBadge />
+                <SignOutButton />
+              </SignedIn>
+            </>
+          )}
 
           <button
             className={`mobile-menu-toggle ${menuOpen ? "open" : ""}`}
@@ -109,31 +143,50 @@ const navLink = (to, label, className = "") => (
 
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
         <div className="mobile-menu-inner">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={`mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {isLanding
+            ? landingNavItems.map((item) => (
+                <a
+                  key={item.to}
+                  href={item.to}
+                  className="mobile-nav-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))
+            : navItems.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
 
           <div className="mobile-menu-actions">
-            <SignedOut>
-              <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
-                Connexion
+            {isLanding ? (
+              <Link to="/generate" className="btn btn-primary mobile-menu-btn">
+                Accéder à l’app
               </Link>
-              <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
-                Créer un compte
-              </Link>
-            </SignedOut>
+            ) : (
+              <>
+                <SignedOut>
+                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
+                    Connexion
+                  </Link>
+                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
+                    Créer un compte
+                  </Link>
+                </SignedOut>
 
-            <SignedIn>
-              <CreditsBadge />
-              <SignOutButton />
-            </SignedIn>
+                <SignedIn>
+                  <CreditsBadge />
+                  <SignOutButton />
+                </SignedIn>
+              </>
+            )}
           </div>
         </div>
       </div>
