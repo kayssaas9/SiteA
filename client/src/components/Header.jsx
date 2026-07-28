@@ -64,9 +64,9 @@ const navLink = (to, label, className = "") => (
   ];
 
   const landingNavItems = [
-    { to: "#exemples", label: "Fonctionnalités" },
     { to: "#avis", label: "Avis" },
     { to: "#faq", label: "FAQ" },
+    { to: "#exemples", label: "Fonctionnalités" },
   ];
 
   const landingNavLink = (to, label) => (
@@ -90,9 +90,9 @@ const navLink = (to, label, className = "") => (
         <nav className="nav-center">
           {isLanding ? (
             <>
-              {landingNavLink("#exemples", "Fonctionnalités")}
               {landingNavLink("#avis", "Avis")}
               {landingNavLink("#faq", "FAQ")}
+              {landingNavLink("#exemples", "Fonctionnalités")}
             </>
           ) : (
             <>
@@ -107,9 +107,14 @@ const navLink = (to, label, className = "") => (
 
         <div className="nav-right">
           {isLanding ? (
-            <Link to="/generate" className="btn btn-primary header-btn landing-app-btn">
-              Accéder à l’app
-            </Link>
+            <>
+              <Link to="/generate" className="btn btn-primary header-btn landing-app-btn">
+                Accéder à l’app
+              </Link>
+              <SignedIn>
+                <SignOutButton />
+              </SignedIn>
+            </>
           ) : (
             <>
               <SignedOut>
@@ -167,9 +172,14 @@ const navLink = (to, label, className = "") => (
 
           <div className="mobile-menu-actions">
             {isLanding ? (
-              <Link to="/generate" className="btn btn-primary mobile-menu-btn">
-                Accéder à l’app
-              </Link>
+              <>
+                <Link to="/generate" className="btn btn-primary mobile-menu-btn">
+                  Accéder à l’app
+                </Link>
+                <SignedIn>
+                  <SignOutButton />
+                </SignedIn>
+              </>
             ) : (
               <>
                 <SignedOut>
