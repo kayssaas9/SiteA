@@ -312,8 +312,13 @@
 }
 
 .live-counter-people {
-  flex: 0 0 31px;
-  display: block;
+  flex: 0 0 auto;
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: -5px;
+  white-space: nowrap;
+  transform: translateY(1px);
 }
 
 @keyframes counter-breathe {

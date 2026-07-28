@@ -51,19 +51,9 @@ function LiveGenerationCounter() {
 
   return (
     <div className="live-generation-counter" aria-live="polite">
-      <svg className="live-counter-people" width="31" height="20" viewBox="0 0 42 24" aria-hidden="true">
-        <circle cx="10" cy="12" r="10" fill="#E8556B" />
-        <circle cx="21" cy="12" r="10" fill="#8EC5E8" />
-        <circle cx="32" cy="12" r="10" fill="#F2C572" />
-        <g fill="#0E0F12">
-          <circle cx="10" cy="9" r="2.5" />
-          <path d="M5.5 17a4.5 4.5 0 0 1 9 0z" />
-          <circle cx="21" cy="9" r="2.5" />
-          <path d="M16.5 17a4.5 4.5 0 0 1 9 0z" />
-          <circle cx="32" cy="9" r="2.5" />
-          <path d="M27.5 17a4.5 4.5 0 0 1 9 0z" />
-        </g>
-      </svg>
+      <span className="live-counter-people" aria-hidden="true">
+        🧑🏻‍🦰👩🏼‍🦱🧑🏽‍🦲
+      </span>
       <strong>{count.toLocaleString("fr-FR")}</strong>
       <span>personnes ont généré une image aujourd'hui</span>
     </div>
