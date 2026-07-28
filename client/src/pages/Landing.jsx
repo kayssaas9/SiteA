@@ -193,7 +193,7 @@ function FaqAccordion() {
 
   return (
     <section id="faq" className="faq-section fade-up delay-5">
-      <h2 className="faq-title">Questions fréquentes</h2>
+      <h2 className="faq-title">Questions récurrentes</h2>
       <p className="faq-subtitle">Tout ce que vous devez savoir sur Vysion</p>
       <div className="faq-list">
         {FAQS.map((item, idx) => (
