@@ -24,9 +24,9 @@
 .hero {
   width: 100%;
   max-width: none;
-  margin: 0 auto;
-  min-height: calc(100vh - 76px);
-  padding: 110px 28px 42px;
+  margin: -76px auto 0;
+  min-height: 100vh;
+  padding: 186px 28px 42px;
   text-align: center;
   position: relative;
   z-index: 1;
@@ -668,7 +668,7 @@
 }
 
 @media (max-width: 640px) {
-  .hero { padding-top: 48px; }
+  .hero { padding-top: 124px; }
   .hero-cta { flex-direction: column; align-items: center; }
   .faq-section { padding: 60px 16px; }
   .faq-question { padding: 18px 20px; font-size: 15px; }
