@@ -22,9 +22,11 @@
 }
 
 .hero {
-  max-width: 900px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
-  padding: 80px 20px 60px;
+  min-height: 620px;
+  padding: 80px 20px 72px;
   text-align: center;
   position: relative;
   z-index: 1;
@@ -48,6 +50,10 @@
 .hero-background-visual {
   opacity: 0;
   transition: opacity 1.2s ease-in-out;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: scale(1.03);
 }
 
 .hero-background-visual.active {
@@ -61,24 +67,15 @@
 }
 
 .hero-visual-one {
-  background:
-    radial-gradient(ellipse at 50% 28%, rgba(142, 197, 232, 0.34), transparent 46%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.16) 0 18%, transparent 18% 45%, rgba(142, 197, 232, 0.12) 45% 58%, transparent 58%),
-    linear-gradient(120deg, #252b31, #101317 52%, #3b4c58);
+  background-color: #252b31;
 }
 
 .hero-visual-two {
-  background:
-    radial-gradient(ellipse at 68% 45%, rgba(142, 197, 232, 0.38), transparent 40%),
-    linear-gradient(165deg, transparent 0 28%, rgba(255, 255, 255, 0.13) 28% 30%, transparent 30% 63%, rgba(142, 197, 232, 0.16) 63% 66%, transparent 66%),
-    linear-gradient(35deg, #13171b, #34424b 54%, #0f1114);
+  background-color: #13171b;
 }
 
 .hero-visual-three {
-  background:
-    radial-gradient(ellipse at 28% 36%, rgba(142, 197, 232, 0.3), transparent 38%),
-    linear-gradient(42deg, rgba(255, 255, 255, 0.13), transparent 22% 62%, rgba(142, 197, 232, 0.16) 62% 65%, transparent 65%),
-    linear-gradient(150deg, #0f1114, #2c3942 50%, #171b20);
+  background-color: #0f1114;
 }
 
 .hero .badge {

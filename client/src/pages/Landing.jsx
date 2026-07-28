@@ -11,7 +11,20 @@ const CUSTOMER_REVIEWS = [
   { username: "@drift.max", review: "Le avant/après est tellement convaincant que je l'ai posté direct en story.", rating: 5 },
 ];
 
-const HERO_BACKGROUNDS = ["hero-visual-one", "hero-visual-two", "hero-visual-three"];
+const HERO_BACKGROUNDS = [
+  {
+    className: "hero-visual-one",
+    image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=2200&q=85",
+  },
+  {
+    className: "hero-visual-two",
+    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2200&q=85",
+  },
+  {
+    className: "hero-visual-three",
+    image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=2200&q=85",
+  },
+];
 
 function HeroBackground() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -28,8 +41,9 @@ function HeroBackground() {
     <div className="hero-background" aria-hidden="true">
       {HERO_BACKGROUNDS.map((background, index) => (
         <div
-          key={background}
-          className={`hero-background-visual ${background} ${index === activeIndex ? "active" : ""}`}
+          key={background.className}
+          className={`hero-background-visual ${background.className} ${index === activeIndex ? "active" : ""}`}
+          style={{ backgroundImage: `url("${background.image}")` }}
         />
       ))}
       <div className="hero-background-shade" />
