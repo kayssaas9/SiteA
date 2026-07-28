@@ -12,40 +12,28 @@ const CUSTOMER_REVIEWS = [
 ];
 
 const HERO_BACKGROUNDS = [
-  {
-    className: "hero-visual-one",
-    image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=2200&q=85",
-  },
-  {
-    className: "hero-visual-two",
-    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2200&q=85",
-  },
-  {
-    className: "hero-visual-three",
-    image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=2200&q=85",
-  },
+  "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=85",
 ];
 
 function HeroBackground() {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveIndex((current) => (current + 1) % HERO_BACKGROUNDS.length);
-    }, 3000);
-
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <div className="hero-background" aria-hidden="true">
-      {HERO_BACKGROUNDS.map((background, index) => (
-        <div
-          key={background.className}
-          className={`hero-background-visual ${background.className} ${index === activeIndex ? "active" : ""}`}
-          style={{ backgroundImage: `url("${background.image}")` }}
-        />
-      ))}
+      <div className="hero-photo-grid">
+        {HERO_BACKGROUNDS.map((image, index) => (
+          <div
+            key={image}
+            className={`hero-photo hero-photo-${index + 1}`}
+            style={{ backgroundImage: `url("${image}")` }}
+          />
+        ))}
+      </div>
       <div className="hero-background-shade" />
     </div>
   );
@@ -89,10 +77,7 @@ export default function Landing() {
           <span className="hero-title-breath">Et</span>
           <span className="hero-title-line">Rend dingue tes potes</span>
         </h1>
-        <p className="hero-sub fade-up delay-2">
-          Envoie une photo, décris ta vision — nouvelle couleur, jantes forgées, kit large — et regarde ta voiture de rêve prendre vie en quelques secondes. Le rendu est tellement bluffant que tes potes n'y croiront pas.
-        </p>
-        <div className="hero-cta fade-up delay-3">
+        <div className="hero-cta fade-up delay-2">
           <Link to="/generate" className="btn btn-primary">Essayer</Link>
           <Link to="/pricing" className="btn btn-outline">Voir les tarifs</Link>
         </div>
