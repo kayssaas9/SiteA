@@ -51,13 +51,18 @@ function LiveGenerationCounter() {
 
   return (
     <div className="live-generation-counter" aria-live="polite">
-      <svg className="live-counter-people" width="24" height="19" viewBox="0 0 32 24" aria-hidden="true">
-        <circle cx="16" cy="6" r="4" fill="#8EC5E8" />
-        <path d="M9.5 22c.3-4.7 2.7-7.5 6.5-7.5s6.2 2.8 6.5 7.5z" fill="#8EC5E8" />
-        <circle cx="6.5" cy="8" r="3.2" fill="#E8556B" />
-        <path d="M1 22c.3-3.9 2.2-6.3 5.5-6.3s5.2 2.4 5.5 6.3z" fill="#E8556B" />
-        <circle cx="25.5" cy="8" r="3.2" fill="#F2C572" />
-        <path d="M20 22c.3-3.9 2.2-6.3 5.5-6.3s5.2 2.4 5.5 6.3z" fill="#F2C572" />
+      <svg className="live-counter-people" width="31" height="20" viewBox="0 0 42 24" aria-hidden="true">
+        <circle cx="10" cy="12" r="10" fill="#E8556B" />
+        <circle cx="21" cy="12" r="10" fill="#8EC5E8" />
+        <circle cx="32" cy="12" r="10" fill="#F2C572" />
+        <g fill="#0E0F12">
+          <circle cx="10" cy="9" r="2.5" />
+          <path d="M5.5 17a4.5 4.5 0 0 1 9 0z" />
+          <circle cx="21" cy="9" r="2.5" />
+          <path d="M16.5 17a4.5 4.5 0 0 1 9 0z" />
+          <circle cx="32" cy="9" r="2.5" />
+          <path d="M27.5 17a4.5 4.5 0 0 1 9 0z" />
+        </g>
       </svg>
       <strong>{count.toLocaleString("fr-FR")}</strong>
       <span>personnes ont généré une image aujourd'hui</span>
