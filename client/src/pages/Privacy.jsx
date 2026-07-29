@@ -9,10 +9,8 @@ export default function Privacy() {
         <h1 className="legal-title">Politique de Confidentialité</h1>
         <p className="legal-updated">Dernière mise à jour : 29 juillet 2026</p>
         <div className="legal-company-placeholder">
-          <strong>Responsable du traitement</strong>
-          CrediaCreation — Micro-entrepreneur — SIRET : 803 822 287 00022
-          <br />
-          9C Rue du Général de Gaulle, 76770 Le Houlme, France
+          <strong>Informations légales à compléter</strong>
+          [Nom de l'entreprise / du responsable] — [Adresse] — [SIRET]
         </div>
       </header>
 
@@ -64,11 +62,11 @@ export default function Privacy() {
           <h3>Responsable et contact</h3>
           <p>
             Le responsable du traitement est
-            <strong> CrediaCreation</strong>, micro-entrepreneur, SIRET
-            <strong> 803 822 287 00022</strong>, 9C Rue du Général de Gaulle,
-            76770 Le Houlme, France. Pour toute demande relative à vos données,
-            contactez-nous à{" "}
-            <a href="mailto:credia.contact@gmail.com">credia.contact@gmail.com</a>.
+            <span className="legal-placeholder"> [Nom de l'entreprise / du responsable]</span>,
+            <span className="legal-placeholder"> [Adresse]</span>,
+            <span className="legal-placeholder"> [SIRET]</span>. Pour toute
+            demande relative à vos données, contactez-nous à
+            <span className="legal-placeholder"> [Adresse e-mail de contact]</span>.
           </p>
           <p><Link to="/conditions-generales-utilisation">Conditions Générales d’Utilisation →</Link></p>
         </section>

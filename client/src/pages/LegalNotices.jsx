@@ -14,24 +14,22 @@ export default function LegalNotices() {
         <section>
           <h2>Éditeur du site</h2>
           <h3>Dénomination sociale</h3>
-          <p>CrediaCreation</p>
+          <p>[Nom de l'entreprise / du responsable]</p>
           <h3>Forme juridique</h3>
-          <p>Micro-entrepreneur</p>
+          <p>[Forme juridique à compléter]</p>
           <h3>Immatriculation</h3>
-          <p>SIRET : 803 822 287 00022</p>
+          <p>SIRET : [SIRET à compléter]</p>
           <h3>Siège social</h3>
-          <p>9C Rue du Général de Gaulle, 76770 Le Houlme, France</p>
+          <p>[Adresse à compléter]</p>
           <h3>Contact</h3>
-          <p><a href="mailto:credia.contact@gmail.com">credia.contact@gmail.com</a></p>
+          <p>[Adresse e-mail de contact à compléter]</p>
         </section>
 
         <section>
           <h2>Hébergement</h2>
           <p>
-            Vercel Inc.<br />
-            440 N Barranca Ave #4133<br />
-            Covina, CA 91723<br />
-            États-Unis
+            [Hébergeur à compléter]<br />
+            [Adresse de l'hébergeur à compléter]
           </p>
         </section>
 
@@ -47,7 +45,7 @@ export default function LegalNotices() {
             <li>L’abonnement ne doit pas avoir été résilié ou annulé.</li>
             <li>
               La demande doit être envoyée à{" "}
-              <a href="mailto:credia.contact@gmail.com">credia.contact@gmail.com</a>{" "}
+              <span className="legal-placeholder">[Adresse e-mail de contact]</span>{" "}
               avec l’adresse e-mail du compte et le motif de la demande.
             </li>
           </ol>
