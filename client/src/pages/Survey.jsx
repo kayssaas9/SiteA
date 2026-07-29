@@ -127,7 +127,7 @@ export default function Survey() {
         <div className="survey-header fade-up">
           <div className="badge">Questionnaire</div>
           <h1 className="page-title">Aide-nous à <span className="accent">mieux comprendre</span> ton expérience</h1>
-          <p className="page-subtitle">15 questions ouvertes · +300 crédits offerts à la fin</p>
+          <p className="page-subtitle">15 questions ouvertes · +400 crédits offerts à la fin</p>
         </div>
 
         <div className="survey-form">
@@ -165,7 +165,7 @@ export default function Survey() {
             onClick={handleSubmit}
             disabled={submitting}
           >
-            {submitting ? "Envoi…" : "Valider et recevoir +300 crédits"}
+            {submitting ? "Envoi…" : "Valider et recevoir +400 crédits"}
           </button>
         </div>
       </div>
