@@ -68,6 +68,7 @@ export default function Survey() {
       setCreditsEarned(data.creditsEarned ?? 400);
       setCompleted(true);
       refetch();
+      window.dispatchEvent(new Event("survey-completed"));
     } catch (err) {
       setErrors({ global: err.message });
     } finally {

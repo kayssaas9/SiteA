@@ -20,12 +20,19 @@ export default function Header() {
   const { isSignedIn } = useUser();
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
+  const { surveyCompleted, refetch: refetchUserData } = useUserData();
   const [menuOpen, setMenuOpen] = useState(false);
   const isLanding = pathname === "/";
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    const handleSurveyCompleted = () => refetchUserData();
+    window.addEventListener("survey-completed", handleSurveyCompleted);
+    return () => window.removeEventListener("survey-completed", handleSurveyCompleted);
+  }, [refetchUserData]);
 
 function SignOutButton() {
   const { signOut } = useClerk();
@@ -117,9 +124,11 @@ const navLink = (to, label, className = "") => (
             </>
           ) : (
             <>
-              <Link to="/survey" className="btn btn-outline header-btn survey-nav-btn">
-                Gagne 400 crédits
-              </Link>
+              {(!isSignedIn || !surveyCompleted) && (
+                <Link to="/survey" className="btn btn-outline header-btn survey-nav-btn">
+                  Gagne 400 crédits
+                </Link>
+              )}
               <SignedOut>
                 <Link to="/sign-in" className="btn btn-outline header-btn">
                   Connexion
@@ -185,9 +194,11 @@ const navLink = (to, label, className = "") => (
               </>
             ) : (
               <>
-                <Link to="/survey" className="btn btn-primary mobile-menu-btn survey-mobile-btn">
-                  Gagne 400 crédits
-                </Link>
+                {(!isSignedIn || !surveyCompleted) && (
+                  <Link to="/survey" className="btn btn-primary mobile-menu-btn survey-mobile-btn">
+                    Gagne 400 crédits
+                  </Link>
+                )}
                 <SignedOut>
                   <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
                     Connexion
