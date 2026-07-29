@@ -21,18 +21,16 @@ export default function Privacy() {
           <p>
             Nous collectons uniquement les données nécessaires au fonctionnement
             de Vysion : votre adresse e-mail, votre nom d'utilisateur, votre
-            historique de créations et les données de paiement traitées de
-            manière sécurisée par Stripe.
+            historique de créations et vos données de paiement, traitées de
+            manière sécurisée.
           </p>
         </section>
 
         <section>
           <h3>Conservation</h3>
           <p>
-            Vos créations sont conservées sur nos serveurs sécurisés tant que
+            Vos créations sont conservées sur des serveurs sécurisés tant que
             votre compte est actif, ou jusqu'à ce que vous les supprimiez.
-            Certaines données peuvent être conservées plus longtemps lorsque la
-            loi l'impose.
           </p>
         </section>
 
@@ -54,10 +52,9 @@ export default function Privacy() {
           <h3>Analyse de la navigation</h3>
           <p>
             Afin d'améliorer Vysion, nous pouvons analyser de manière anonyme
-            les données de navigation : pages visitées, durée de consultation,
-            type d'appareil et source de trafic. Ces analyses sont destinées à
-            comprendre l'utilisation de la plateforme et à améliorer
-            l'expérience utilisateur.
+            les données de navigation. Ces analyses sont destinées à comprendre
+            l'utilisation de la plateforme et à améliorer l'expérience
+            utilisateur.
           </p>
         </section>
 
@@ -69,8 +66,8 @@ export default function Privacy() {
             <span className="legal-placeholder"> [Adresse]</span>,
             <span className="legal-placeholder"> [SIRET]</span>. Ces
             informations seront complétées lors de la création du statut
-            juridique. Pour toute demande, contactez-nous via le moyen indiqué
-            sur le site.
+            juridique. Pour toute demande relative à vos données, contactez-nous
+            via le moyen indiqué sur le site.
           </p>
           <p><Link to="/conditions-generales-utilisation">Conditions Générales d’Utilisation →</Link></p>
         </section>
