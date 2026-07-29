@@ -68,8 +68,8 @@ router.post("/", async (req, res) => {
  * POST /api/checkout/cancel-subscription
  * Body: { clerkUserId }
  *
- * Schedules the active subscription to cancel at the end of the current
- * billing period. Access is not interrupted immediately.
+ * Cancels the active subscription immediately and removes the subscription
+ * plan from the local account. Credits already purchased or granted remain.
  */
 router.post("/cancel-subscription", async (req, res) => {
   const { clerkUserId } = req.body;
@@ -103,20 +103,22 @@ router.post("/cancel-subscription", async (req, res) => {
       return res.status(404).json({ error: "Aucun abonnement actif trouvé." });
     }
 
-    if (subscription.cancel_at_period_end) {
-      return res.json({
-        cancelAtPeriodEnd: true,
-        currentPeriodEnd: subscription.current_period_end,
-      });
-    }
+    await stripe.subscriptions.cancel(subscription.id);
 
-    const updatedSubscription = await stripe.subscriptions.update(subscription.id, {
-      cancel_at_period_end: true,
-    });
+    // Remove the subscription and all remaining account benefits immediately.
+    const { error: planError } = await supabaseAdmin
+      .from("users")
+      .update({
+        plan: "free",
+        credits: 0,
+        snaprouge_unlocked: false,
+      })
+      .eq("clerk_user_id", clerkUserId);
+
+    if (planError) throw planError;
 
     res.json({
-      cancelAtPeriodEnd: true,
-      currentPeriodEnd: updatedSubscription.current_period_end,
+      cancelled: true,
     });
   } catch (err) {
     console.error("Stripe cancellation error:", err.message);

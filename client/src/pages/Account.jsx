@@ -43,7 +43,7 @@ export default function Account() {
   const cancelSubscription = async () => {
     if (cancellingSubscription || subscriptionCancelled) return;
     const confirmed = window.confirm(
-      "Votre abonnement sera annulé à la fin de la période déjà payée. Voulez-vous continuer ?"
+      "ATTENTION : en annulant votre abonnement, vous perdrez immédiatement votre plan premium, tous vos crédits restants et vos avantages (dont SnapRouge). Cette action est irréversible. Voulez-vous continuer ?"
     );
     if (!confirmed) return;
 
@@ -58,7 +58,8 @@ export default function Account() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Annulation impossible.");
       setSubscriptionCancelled(true);
-      setSubscriptionMessage("Votre abonnement sera annulé à la fin de la période payée.");
+      setSubscriptionMessage("Abonnement annulé. Vos crédits et avantages premium ont été retirés.");
+      await refetch();
     } catch (error) {
       setSubscriptionMessage(error.message);
     } finally {
@@ -113,7 +114,7 @@ export default function Account() {
                 {cancellingSubscription
                   ? "Annulation…"
                   : subscriptionCancelled
-                    ? "Annulation programmée"
+                    ? "Abonnement annulé"
                     : "Annuler l'abonnement"}
               </button>
             )}
@@ -145,7 +146,7 @@ export default function Account() {
                 {cancellingSubscription
                   ? "Annulation en cours…"
                   : subscriptionCancelled
-                    ? "Annulation programmée"
+                    ? "Abonnement annulé"
                     : "Annuler l'abonnement"}
               </span>
               <span className="chevron">›</span>
