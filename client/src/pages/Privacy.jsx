@@ -45,16 +45,6 @@ export default function Privacy() {
         </section>
 
         <section>
-          <h3>Analyse de la navigation</h3>
-          <p>
-            Afin d'améliorer Vysion, nous pouvons analyser de manière anonyme
-            les données de navigation. Ces analyses sont destinées à comprendre
-            l'utilisation de la plateforme et à améliorer l'expérience
-            utilisateur.
-          </p>
-        </section>
-
-        <section>
           <h3>Contact</h3>
           <p>
             Pour toute demande relative à vos données, utilisez les coordonnées
