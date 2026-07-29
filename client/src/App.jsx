@@ -16,16 +16,21 @@ import Survey from "./pages/Survey.jsx";
 import ReferralLanding from "./components/ReferralLanding.jsx";
 import CrispChat from "./components/CrispChat.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import FakeActivityNotification from "./components/FakeActivityNotification.jsx";
 import "./App.css";
 
 function Layout() {
   const { pathname } = useLocation();
+  const showActivityNotification = pathname === "/"
+    || pathname === "/pricing"
+    || pathname === "/generate";
 
   return (
     <div className={`app ${pathname === "/" ? "landing-layout" : ""}`}>
       <Header />
       <ScrollToTop />
       <Outlet />
+      <FakeActivityNotification visible={showActivityNotification} />
       <footer className="footer">
         <p>© 2026 Vysion · IA visuelle propriétaire</p>
       </footer>
