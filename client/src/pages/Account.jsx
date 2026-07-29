@@ -19,6 +19,9 @@ export default function Account() {
   const navigate = useNavigate();
   const [referral, setReferral] = useState({ code: "", count: 0, earned: 0, loading: true });
   const [copied, setCopied] = useState(false);
+  const [cancellingSubscription, setCancellingSubscription] = useState(false);
+  const [subscriptionCancelled, setSubscriptionCancelled] = useState(false);
+  const [subscriptionMessage, setSubscriptionMessage] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -35,6 +38,32 @@ export default function Account() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  };
+
+  const cancelSubscription = async () => {
+    if (cancellingSubscription || subscriptionCancelled) return;
+    const confirmed = window.confirm(
+      "Votre abonnement sera annulé à la fin de la période déjà payée. Voulez-vous continuer ?"
+    );
+    if (!confirmed) return;
+
+    setCancellingSubscription(true);
+    setSubscriptionMessage("");
+    try {
+      const response = await fetch("/api/checkout/cancel-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clerkUserId: user.id }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Annulation impossible.");
+      setSubscriptionCancelled(true);
+      setSubscriptionMessage("Votre abonnement sera annulé à la fin de la période payée.");
+    } catch (error) {
+      setSubscriptionMessage(error.message);
+    } finally {
+      setCancellingSubscription(false);
+    }
   };
 
   if (!user) {
@@ -75,9 +104,18 @@ export default function Account() {
             <div className="plan-card-label">Plan actuel</div>
             <div className="plan-card-value">{PLAN_LABELS[plan] || plan}</div>
             {plan !== "free" && (
-              <Link to="/pricing" className="btn btn-outline plan-card-btn">
-                Gérer l'abonnement
-              </Link>
+              <button
+                type="button"
+                className="btn btn-outline plan-card-btn"
+                onClick={cancelSubscription}
+                disabled={cancellingSubscription || subscriptionCancelled}
+              >
+                {cancellingSubscription
+                  ? "Annulation…"
+                  : subscriptionCancelled
+                    ? "Annulation programmée"
+                    : "Annuler l'abonnement"}
+              </button>
             )}
           </div>
 
@@ -96,6 +134,28 @@ export default function Account() {
             <span>Gérer l'abonnement</span>
             <span className="chevron">›</span>
           </Link>
+          {plan !== "free" && (
+            <button
+              type="button"
+              className="account-row account-row-button"
+              onClick={cancelSubscription}
+              disabled={cancellingSubscription || subscriptionCancelled}
+            >
+              <span>
+                {cancellingSubscription
+                  ? "Annulation en cours…"
+                  : subscriptionCancelled
+                    ? "Annulation programmée"
+                    : "Annuler l'abonnement"}
+              </span>
+              <span className="chevron">›</span>
+            </button>
+          )}
+          {subscriptionMessage && (
+            <p className={`subscription-message ${subscriptionCancelled ? "success" : "error"}`}>
+              {subscriptionMessage}
+            </p>
+          )}
           <Link to="/pricing#recharge-credits" className="account-row">
             <span>Recharger des crédits</span>
             <span className="chevron">›</span>
