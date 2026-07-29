@@ -7,10 +7,6 @@ function LegalHeader({ title }) {
       <span className="legal-eyebrow">Vysion</span>
       <h1 className="legal-title">{title}</h1>
       <p className="legal-updated">Dernière mise à jour : 29 juillet 2026</p>
-      <div className="legal-company-placeholder">
-        <strong>Informations légales à compléter</strong>
-        [Nom de l'entreprise / du responsable] — [Adresse] — [SIRET]
-      </div>
     </header>
   );
 }
@@ -20,16 +16,6 @@ export default function Terms() {
     <main className="legal-page">
       <LegalHeader title="Conditions Générales d’Utilisation" />
       <article className="legal-content">
-        <section>
-          <h2>Informations sur l’éditeur</h2>
-          <p>
-            Vysion est édité par
-            <span className="legal-placeholder"> [Nom de l'entreprise / du responsable]</span>.
-            Les informations légales complètes seront ajoutées une fois le
-            statut juridique créé.
-          </p>
-        </section>
-
         <section>
           <h2>1. Le service</h2>
           <p>
@@ -80,8 +66,8 @@ export default function Terms() {
           </p>
           <p>
             Pour demander un remboursement, écrivez à{" "}
-            <span className="legal-placeholder">[Adresse e-mail de contact]</span>{" "}
-            en indiquant l’adresse e-mail du compte et le motif de la demande.
+            l’adresse de contact indiquée dans les Mentions légales, en indiquant
+            l’adresse e-mail du compte et le motif de la demande.
             Passé 48 heures, après consommation de crédits ou après résiliation
             de l’abonnement, aucun remboursement ne pourra être effectué.
           </p>
@@ -107,8 +93,8 @@ export default function Terms() {
           <h2>6. Droit applicable et contact</h2>
           <p>
             Les présentes CGU sont soumises au droit français. Pour toute
-            question, contactez-nous à{" "}
-            <span className="legal-placeholder">[Adresse e-mail de contact]</span>.
+            question, contactez-nous via les coordonnées indiquées dans les
+            Mentions légales.
           </p>
           <p><Link to="/politique-confidentialite">Politique de Confidentialité →</Link></p>
         </section>

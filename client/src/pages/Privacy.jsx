@@ -8,10 +8,6 @@ export default function Privacy() {
         <span className="legal-eyebrow">Vysion</span>
         <h1 className="legal-title">Politique de Confidentialité</h1>
         <p className="legal-updated">Dernière mise à jour : 29 juillet 2026</p>
-        <div className="legal-company-placeholder">
-          <strong>Informations légales à compléter</strong>
-          [Nom de l'entreprise / du responsable] — [Adresse] — [SIRET]
-        </div>
       </header>
 
       <article className="legal-content">
@@ -59,14 +55,10 @@ export default function Privacy() {
         </section>
 
         <section>
-          <h3>Responsable et contact</h3>
+          <h3>Contact</h3>
           <p>
-            Le responsable du traitement est
-            <span className="legal-placeholder"> [Nom de l'entreprise / du responsable]</span>,
-            <span className="legal-placeholder"> [Adresse]</span>,
-            <span className="legal-placeholder"> [SIRET]</span>. Pour toute
-            demande relative à vos données, contactez-nous à
-            <span className="legal-placeholder"> [Adresse e-mail de contact]</span>.
+            Pour toute demande relative à vos données, utilisez les coordonnées
+            indiquées dans les Mentions légales.
           </p>
           <p><Link to="/conditions-generales-utilisation">Conditions Générales d’Utilisation →</Link></p>
         </section>
