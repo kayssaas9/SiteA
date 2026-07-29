@@ -5,6 +5,9 @@
   "engines": {
     "node": "20.x"
   },
+  "workspaces": [
+    "client"
+  ],
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node server/index.js",
