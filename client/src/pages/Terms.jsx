@@ -63,8 +63,8 @@ export default function Terms() {
           </p>
           <p>
             La garantie « Satisfait ou remboursé » s’applique pendant
-            <span className="legal-placeholder"> 14 jours</span> à compter de
-            l’achat, selon les conditions applicables. Les crédits sont
+            <span className="legal-placeholder"> 48 heures après l’achat</span>,
+            selon les conditions applicables. Les crédits sont
             personnels, non transférables et non remboursables sauf indication
             contraire.
           </p>
