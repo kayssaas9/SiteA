@@ -123,7 +123,7 @@ export default function Terms() {
           </p>
           <p>
             Vysion applique une politique « Satisfait ou remboursé » pendant
-            une période de <span className="legal-placeholder">[DÉLAI À DÉFINIR]</span>{" "}
+            une période de <span className="legal-placeholder">14 jours</span>{" "}
             à compter de l’achat, sous réserve des conditions qui seront
             précisées par l’entreprise. Toute demande doit être adressée via le
             moyen de contact indiqué sur le site.
