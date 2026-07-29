@@ -8,8 +8,10 @@ function LegalHeader({ title }) {
       <h1 className="legal-title">{title}</h1>
       <p className="legal-updated">Dernière mise à jour : 29 juillet 2026</p>
       <div className="legal-company-placeholder">
-        <strong>Informations légales à compléter</strong>
-        [Nom de l'entreprise / du responsable] — [Adresse] — [SIRET]
+        <strong>Éditeur du site</strong>
+        CrediaCreation — Micro-entrepreneur — SIRET : 803 822 287 00022
+        <br />
+        9C Rue du Général de Gaulle, 76770 Le Houlme, France
       </div>
     </header>
   );
@@ -20,6 +22,15 @@ export default function Terms() {
     <main className="legal-page">
       <LegalHeader title="Conditions Générales d’Utilisation" />
       <article className="legal-content">
+        <section>
+          <h2>Informations sur l’éditeur</h2>
+          <p>
+            Vysion est édité par <strong>CrediaCreation</strong>, micro-entrepreneur,
+            SIRET <strong>803 822 287 00022</strong>, dont le siège social est
+            situé 9C Rue du Général de Gaulle, 76770 Le Houlme, France.
+          </p>
+        </section>
+
         <section>
           <h2>1. Le service</h2>
           <p>
@@ -64,9 +75,21 @@ export default function Terms() {
           <p>
             La garantie « Satisfait ou remboursé » s’applique pendant
             <span className="legal-placeholder"> 48 heures après l’achat</span>,
-            selon les conditions applicables. Les crédits sont
-            personnels, non transférables et non remboursables sauf indication
-            contraire.
+            uniquement si aucun crédit n’a été consommé et si l’abonnement n’a
+            pas été résilié. Les crédits sont personnels, non transférables et
+            non remboursables sauf indication contraire.
+          </p>
+          <p>
+            Pour demander un remboursement, écrivez à{" "}
+            <a href="mailto:credia.contact@gmail.com">credia.contact@gmail.com</a>{" "}
+            en indiquant l’adresse e-mail du compte et le motif de la demande.
+            Passé 48 heures, après consommation de crédits ou après résiliation
+            de l’abonnement, aucun remboursement ne pourra être effectué.
+          </p>
+          <p>
+            Les produits numériques étant accessibles immédiatement après
+            l’achat, le droit de rétractation de 14 jours ne s’applique pas,
+            conformément à l’article L221-28 du Code de la consommation.
           </p>
         </section>
 
@@ -85,9 +108,8 @@ export default function Terms() {
           <h2>6. Droit applicable et contact</h2>
           <p>
             Les présentes CGU sont soumises au droit français. Pour toute
-            question, contactez Vysion via le moyen indiqué sur le site. Les
-            informations définitives de l’entreprise seront ajoutées dès la
-            création du statut juridique.
+            question, contactez-nous à{" "}
+            <a href="mailto:credia.contact@gmail.com">credia.contact@gmail.com</a>.
           </p>
           <p><Link to="/politique-confidentialite">Politique de Confidentialité →</Link></p>
         </section>
