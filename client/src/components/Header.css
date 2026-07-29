@@ -31,6 +31,7 @@
 /* The landing header sits over the hero instead of reading like an app
    toolbar. Its translucent glass keeps the background visible underneath. */
 .header-landing .header-inner {
+  max-width: 900px;
   height: 50px;
   padding: 0 16px;
   background: rgba(14, 15, 18, 0.66);
