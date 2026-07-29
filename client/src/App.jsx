@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Outlet, RouterProvider, useLocation } from "react-router-dom";
+import { createBrowserRouter, Link, Navigate, Outlet, RouterProvider, useLocation } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import Header from "./components/Header.jsx";
@@ -17,6 +17,8 @@ import ReferralLanding from "./components/ReferralLanding.jsx";
 import CrispChat from "./components/CrispChat.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import FakeActivityNotification from "./components/FakeActivityNotification.jsx";
+import Terms from "./pages/Terms.jsx";
+import Privacy from "./pages/Privacy.jsx";
 import "./App.css";
 
 function Layout() {
@@ -33,6 +35,10 @@ function Layout() {
       <FakeActivityNotification visible={showActivityNotification} />
       <footer className="footer">
         <p>© 2026 Vysion · IA visuelle propriétaire</p>
+        <nav className="footer-links" aria-label="Informations légales">
+          <Link to="/conditions-generales-utilisation">Conditions Générales d’Utilisation</Link>
+          <Link to="/politique-confidentialite">Politique de Confidentialité</Link>
+        </nav>
       </footer>
     </div>
   );
@@ -69,6 +75,8 @@ const router = createBrowserRouter([
       { path: "account", element: <Account /> },
       { path: "history", element: <History /> },
       { path: "survey", element: <Survey /> },
+      { path: "conditions-generales-utilisation", element: <Terms /> },
+      { path: "politique-confidentialite", element: <Privacy /> },
       {
         path: "snaprouge",
         element: (
