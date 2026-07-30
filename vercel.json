@@ -2,5 +2,20 @@
   "framework": "vite",
   "installCommand": "pnpm install",
   "buildCommand": "pnpm --filter nano-banana-client build",
-  "outputDirectory": "client/dist"
+  "outputDirectory": "client/dist",
+  "rewrites": [
+    { "source": "/generate", "destination": "/index.html" },
+    { "source": "/pricing", "destination": "/index.html" },
+    { "source": "/account", "destination": "/index.html" },
+    { "source": "/history", "destination": "/index.html" },
+    { "source": "/survey", "destination": "/index.html" },
+    { "source": "/mentions-legales", "destination": "/index.html" },
+    { "source": "/conditions-generales-utilisation", "destination": "/index.html" },
+    { "source": "/politique-confidentialite", "destination": "/index.html" },
+    { "source": "/snaprouge", "destination": "/index.html" },
+    { "source": "/sign-in", "destination": "/index.html" },
+    { "source": "/sign-up", "destination": "/index.html" },
+    { "source": "/sso-callback", "destination": "/index.html" },
+    { "source": "/r/:code", "destination": "/index.html" }
+  ]
 }
