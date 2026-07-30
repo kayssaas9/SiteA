@@ -1,6 +1,6 @@
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageGenerator from "../components/ImageGenerator.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
@@ -67,9 +67,21 @@ function PackCheckoutButton({ pack }) {
 }
 
 export default function Generate() {
+  const { isLoaded, isSignedIn } = useUser();
+  const [authTimedOut, setAuthTimedOut] = useState(false);
   const { credits, plan, loading } = useUserData();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setAuthTimedOut(false);
+      return undefined;
+    }
+
+    const timeout = window.setTimeout(() => setAuthTimedOut(true), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [isLoaded]);
 
   return (
     <main className="generate-page">
@@ -87,11 +99,34 @@ export default function Generate() {
           <h1 className="page-title">Transforme ta <span className="accent">voiture</span></h1>
         </div>
 
-        <SignedIn>
+        {!isLoaded && !authTimedOut ? (
+          <div className="generate-auth generate-loading fade-up delay-2">
+            <p>Chargement de votre espace…</p>
+            <span className="generate-loading-dot" aria-hidden="true" />
+          </div>
+        ) : !isLoaded ? (
+          <div className="generate-auth fade-up delay-2">
+            <p>La connexion prend plus de temps que prévu.</p>
+            <Link to="/sign-in" className="btn btn-primary">
+              Ouvrir la connexion
+            </Link>
+          </div>
+        ) : isSignedIn ? (
           <div className="generate-toolbox fade-up delay-2">
             <ImageGenerator />
           </div>
+        ) : (
+          <>
+            <div className="generate-auth fade-up delay-2">
+              <p>Connecte-toi pour générer des images.</p>
+              <Link to="/sign-in" className="btn btn-primary">
+                Se connecter
+              </Link>
+            </div>
+          </>
+        )}
 
+        {isLoaded && isSignedIn && (
           <div className="generate-bottom fade-up delay-3">
             {!isSubscriber && !snapRougeAccess ? (
               <Link to="/snaprouge" className="snaprouge-mini-banner">
@@ -117,16 +152,7 @@ export default function Generate() {
               </div>
             ) : null}
           </div>
-        </SignedIn>
-
-        <SignedOut>
-          <div className="generate-auth fade-up delay-2">
-            <p>Connecte-toi pour générer des images.</p>
-            <Link to="/sign-in" className="btn btn-primary">
-              Se connecter
-            </Link>
-          </div>
-        </SignedOut>
+        )}
       </div>
     </main>
   );
