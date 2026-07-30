@@ -114,14 +114,25 @@ const navLink = (to, label, className = "") => (
 
         <div className="nav-right">
           {isLanding ? (
-            <>
-              <Link to="/generate" className="btn btn-primary header-btn landing-app-btn">
-                Accéder à l’app
-              </Link>
-              <SignedIn>
-                <SignOutButton />
-              </SignedIn>
-            </>
+            isSignedIn ? (
+              <>
+                <Link to="/generate" className="btn btn-primary header-btn landing-app-btn">
+                  Accéder à l’app
+                </Link>
+                <SignedIn>
+                  <SignOutButton />
+                </SignedIn>
+              </>
+            ) : (
+              <>
+                <Link to="/sign-in" className="btn btn-outline header-btn">
+                  Se connecter
+                </Link>
+                <Link to="/sign-up" className="btn btn-primary header-btn">
+                  S’inscrire
+                </Link>
+              </>
+            )
           ) : (
             <>
               {(!isSignedIn || !surveyCompleted) && (
@@ -184,14 +195,25 @@ const navLink = (to, label, className = "") => (
 
           <div className="mobile-menu-actions">
             {isLanding ? (
-              <>
-                <Link to="/generate" className="btn btn-primary mobile-menu-btn">
-                  Accéder à l’app
-                </Link>
-                <SignedIn>
-                  <SignOutButton />
-                </SignedIn>
-              </>
+              isSignedIn ? (
+                <>
+                  <Link to="/generate" className="btn btn-primary mobile-menu-btn">
+                    Accéder à l’app
+                  </Link>
+                  <SignedIn>
+                    <SignOutButton />
+                  </SignedIn>
+                </>
+              ) : (
+                <>
+                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
+                    Se connecter
+                  </Link>
+                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
+                    S’inscrire
+                  </Link>
+                </>
+              )
             ) : (
               <>
                 {(!isSignedIn || !surveyCompleted) && (
