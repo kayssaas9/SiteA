@@ -1,27 +1,37 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const publicEnv = {
+  clerkPublishableKey:
+    process.env.VITE_CLERK_PUBLISHABLE_KEY
+    || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    || "",
+  stripePublishableKey:
+    process.env.VITE_STRIPE_PUBLISHABLE_KEY
+    || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+    || "",
+  supabaseUrl:
+    process.env.VITE_SUPABASE_URL
+    || process.env.NEXT_PUBLIC_SUPABASE_URL
+    || "",
+  supabaseAnonKey:
+    process.env.VITE_SUPABASE_ANON_KEY
+    || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    || "",
+  crispWebsiteId:
+    process.env.VITE_CRISP_WEBSITE_ID
+    || process.env.CRISP_WEBSITE_ID
+    || "",
+};
+
 export default defineConfig({
   plugins: [react()],
   define: {
-    // Remap NEXT_PUBLIC_* secrets → VITE_* for frontend access
-    "import.meta.env.VITE_CLERK_PUBLISHABLE_KEY": JSON.stringify(
-      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? ""
-    ),
-    "import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY": JSON.stringify(
-      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
-    ),
-    "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(
-      process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
-    ),
-    "import.meta.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
-    ),
-    "import.meta.env.VITE_CRISP_WEBSITE_ID": JSON.stringify(
-      process.env.CRISP_WEBSITE_ID ?? ""
-    ),
-    // Vite expose automatiquement les variables d'environnement préfixées par VITE_
-    // aux fichiers clients (ex: VITE_STRIPE_PRICE_*). Aucun remapping n'est nécessaire.
+    "import.meta.env.VITE_CLERK_PUBLISHABLE_KEY": JSON.stringify(publicEnv.clerkPublishableKey),
+    "import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY": JSON.stringify(publicEnv.stripePublishableKey),
+    "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(publicEnv.supabaseUrl),
+    "import.meta.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(publicEnv.supabaseAnonKey),
+    "import.meta.env.VITE_CRISP_WEBSITE_ID": JSON.stringify(publicEnv.crispWebsiteId),
   },
   server: {
     host: "0.0.0.0",
