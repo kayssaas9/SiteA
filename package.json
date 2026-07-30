@@ -2,17 +2,15 @@
   "name": "nano-banana",
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "pnpm@10.26.1",
   "engines": {
     "node": "20.x"
   },
-  "workspaces": [
-    "client"
-  ],
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"pnpm server\" \"pnpm client\"",
     "server": "node server/index.js",
-    "client": "cd client && npm run dev",
-    "build": "cd client && npm run build",
+    "client": "pnpm --filter nano-banana-client dev",
+    "build": "pnpm --filter nano-banana-client build",
     "start": "node server/index.js"
   },
   "dependencies": {
@@ -29,5 +27,11 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@clerk/shared",
+      "esbuild"
+    ]
   }
 }

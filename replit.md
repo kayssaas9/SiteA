@@ -19,18 +19,20 @@ AI-powered image generation studio. Users can visualise new outfits on themselve
 │   │   └── components/   ← Header, ModeSelector, OutfitGenerator, CarReplacer, …
 │   ├── vite.config.js    ← Proxies /api → localhost:3001
 │   └── package.json
-├── package.json          ← Root: server deps + concurrently dev script
+├── package.json          ← Root workspace: server deps + scripts pnpm
+├── pnpm-workspace.yaml   ← Workspace client
+├── pnpm-lock.yaml        ← Lockfile pnpm
 └── replit.md
 ```
 
 ## How to run
 
 ```bash
-# Install all deps (root + client)
-npm install && cd client && npm install
+# Install all workspace dependencies
+pnpm install
 
 # Start both servers (dev)
-npm run dev
+pnpm dev
 ```
 
 The Vite dev server on port 5000 proxies `/api/*` to the Express server on port 3001.

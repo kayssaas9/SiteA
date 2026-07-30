@@ -1,6 +1,6 @@
 {
   "framework": "vite",
-  "installCommand": "npm ci --include=dev --workspaces --no-audit --no-fund",
-  "buildCommand": "npm run build --workspace=client",
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm --filter nano-banana-client build",
   "outputDirectory": "client/dist"
 }
