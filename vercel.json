@@ -1,6 +1,6 @@
 {
   "framework": "vite",
-  "installCommand": "npm install --include=dev --workspaces --no-audit --no-fund",
+  "installCommand": "npm ci --include=dev --workspaces --no-audit --no-fund",
   "buildCommand": "npm run build --workspace=client",
   "outputDirectory": "client/dist"
 }
