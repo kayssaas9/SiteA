@@ -1,2 +1,3 @@
 - [Vite environment variable exposure](vite-env-exposure.md) — VITE_* secrets are auto-exposed to the client; no manual remapping needed in vite.config.js.
 - [Supabase migrations in this project](supabase-migrations.md) — Migrations must run in Supabase SQL Editor, not via Replit's built-in database skill.
+- [Clerk production domain](clerk-production-domain.md) — The production Clerk key rejects Replit preview origins; validate Clerk auth on app.astracrea.com.
