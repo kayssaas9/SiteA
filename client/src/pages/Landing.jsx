@@ -126,7 +126,7 @@ function Examples() {
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
       <h2 className="examples-title">
-        La différence <span className="examples-title-accent">Astra</span>
+        Le résultat <span className="examples-title-accent">Astra</span>
       </h2>
 
       <div className="example-showcase">
