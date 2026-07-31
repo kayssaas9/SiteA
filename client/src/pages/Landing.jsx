@@ -7,7 +7,7 @@ const CUSTOMER_REVIEWS = [
   { username: "@ines.cars", review: "J'ai enfin pu tester mes idées de jantes avant de les acheter. Le résultat est ultra propre.", rating: 5 },
   { username: "@slammed_yno", review: "La transformation est folle. Même mes potes n'ont pas capté que c'était généré.", rating: 5 },
   { username: "@nox_rsx", review: "Super rapide et hyper réaliste, surtout les reflets sur la carrosserie.", rating: 5 },
-  { username: "@lil_turbo", review: "Vysion m'a permis de visualiser exactement le look que je voulais pour ma caisse.", rating: 5 },
+  { username: "@lil_turbo", review: "Astra m'a permis de visualiser exactement le look que je voulais pour ma caisse.", rating: 5 },
   { username: "@drift.max", review: "Le avant/après est tellement convaincant que je l'ai posté direct en story.", rating: 5 },
 ];
 
@@ -95,7 +95,7 @@ export default function Landing() {
 
       <section id="avis" className="reviews-section fade-up delay-5" aria-label="Avis clients">
         <div className="reviews-header">
-          <span className="reviews-eyebrow">ILS ONT TESTÉ VYSION</span>
+          <span className="reviews-eyebrow">ILS ONT TESTÉ ASTRA</span>
           <h2 className="reviews-title">Des rendus qui font tourner les têtes</h2>
         </div>
         <div className="reviews-track">
@@ -126,7 +126,7 @@ function Examples() {
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
       <h2 className="examples-title">
-        La différence <span className="examples-title-accent">Vysion</span>
+        La différence <span className="examples-title-accent">Astra</span>
       </h2>
 
       <div className="example-showcase">
@@ -156,8 +156,8 @@ function Examples() {
                 ULTRA-RÉALISTE
               </span>
               <div className="example-caption">
-                <div className="example-caption-title">Ultra-réalisme Vysion ✨</div>
-                <strong>Résultat Vysion :</strong> Transformation en{" "}
+                <div className="example-caption-title">Ultra-réalisme Astra ✨</div>
+                <strong>Résultat Astra :</strong> Transformation en{" "}
                 <span className="example-caption-detail">[modèle cible]</span>, décor identique.
               </div>
             </div>
@@ -170,7 +170,7 @@ function Examples() {
       </button>
 
       <Link to="/generate" className="btn btn-primary examples-cta">
-        Démarrer avec Vysion
+        Démarrer avec Astra
       </Link>
     </section>
   );
@@ -179,7 +179,7 @@ function Examples() {
 const FAQS = [
   {
     question: "Comment fonctionne la génération d'images ?",
-    answer: "Vysion utilise les modèles d'IA les plus avancés au monde pour transformer vos photos et descriptions en rendus photoréalistes. Il vous suffit d'envoyer une photo de votre voiture et de décrire ce que vous voulez, notre IA s'occupe du reste.",
+    answer: "Astra utilise les modèles d'IA les plus avancés au monde pour transformer vos photos et descriptions en rendus photoréalistes. Il vous suffit d'envoyer une photo de votre voiture et de décrire ce que vous voulez, notre IA s'occupe du reste.",
   },
   {
     question: "Les photos m'appartiennent-elles ?",
@@ -191,7 +191,7 @@ const FAQS = [
   },
   {
     question: "Qu'est-ce que le système SnapRouge ?",
-    answer: "C'est une fonctionnalité exclusive de Vysion qui permet d'envoyer vos photos générées par IA sur Snapchat de manière totalement indétectable, comme s'il s'agissait de photos prises en direct.",
+    answer: "C'est une fonctionnalité exclusive d'Astra qui permet d'envoyer vos photos générées par IA sur Snapchat de manière totalement indétectable, comme s'il s'agissait de photos prises en direct.",
   },
   {
     question: "Les paiements sont-ils sécurisés ?",
@@ -210,7 +210,7 @@ function FaqAccordion() {
   return (
     <section id="faq" className="faq-section fade-up delay-5">
       <h2 className="faq-title">Questions récurrentes</h2>
-      <p className="faq-subtitle">Tout ce que vous devez savoir sur Vysion</p>
+      <p className="faq-subtitle">Tout ce que vous devez savoir sur Astra</p>
       <div className="faq-list">
         {FAQS.map((item, idx) => (
           <div key={idx} className={`faq-item ${openIndex === idx ? "open" : ""}`}>

@@ -4,7 +4,7 @@ import "./Legal.css";
 function LegalHeader({ title }) {
   return (
     <header className="legal-header">
-      <span className="legal-eyebrow">Vysion</span>
+      <span className="legal-eyebrow">Astra</span>
       <h1 className="legal-title">{title}</h1>
       <p className="legal-updated">Dernière mise à jour : 29 juillet 2026</p>
     </header>
@@ -19,7 +19,7 @@ export default function Terms() {
         <section>
           <h2>1. Le service</h2>
           <p>
-            Vysion est un SaaS de génération et de transformation d’images par
+            Astra est un SaaS de génération et de transformation d’images par
             intelligence artificielle. L’offre comprend des abonnements, des
             crédits, des recharges et la fonctionnalité SnapRouge. Les
             conditions et tarifs applicables sont ceux affichés au moment de
@@ -81,9 +81,9 @@ export default function Terms() {
         <section>
           <h2>5. Responsabilité</h2>
           <p>
-            Vysion met en œuvre des moyens raisonnables pour assurer le service,
+            Astra met en œuvre des moyens raisonnables pour assurer le service,
             sans garantir une disponibilité permanente ni l’absence d’erreur.
-            Vysion ne peut être tenu responsable des contenus fournis par
+            Astra ne peut être tenu responsable des contenus fournis par
             l’utilisateur, des décisions prises à partir d’une image générée ou
             des dommages indirects, dans les limites prévues par la loi.
           </p>

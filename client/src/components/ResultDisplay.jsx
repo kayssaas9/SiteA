@@ -30,7 +30,7 @@ export default function ResultDisplay({ imageUrl, loading, error }) {
       <a
         className="result-download"
         href={imageUrl}
-        download="vysion-resultat.jpg"
+        download="astra-resultat.jpg"
         target="_blank"
         rel="noreferrer"
       >

@@ -35,7 +35,7 @@ function Layout() {
       <Outlet />
       <FakeActivityNotification visible={showActivityNotification} />
       <footer className="footer">
-        <p>© 2026 Vysion · IA visuelle propriétaire</p>
+        <p>© 2026 Astra · IA visuelle propriétaire</p>
         <nav className="footer-links" aria-label="Informations légales">
           <Link to="/mentions-legales">Mentions légales</Link>
           <Link to="/conditions-generales-utilisation">Conditions Générales d’Utilisation</Link>
@@ -51,7 +51,7 @@ function AppWithReferral() {
 
   useEffect(() => {
     if (!user) return;
-    const pendingCode = localStorage.getItem("vysionReferralCode");
+    const pendingCode = localStorage.getItem("astraReferralCode");
     if (!pendingCode) return;
 
     fetch("/api/referral/apply", {
@@ -59,7 +59,7 @@ function AppWithReferral() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ clerkUserId: user.id, referralCode: pendingCode }),
     }).then((res) => {
-      if (res.ok) localStorage.removeItem("vysionReferralCode");
+      if (res.ok) localStorage.removeItem("astraReferralCode");
     });
   }, [user?.id]);
 

@@ -10,14 +10,14 @@ const QUESTIONS = [
   { id: "q4", text: "Les explications sur les crédits sont-elles claires ?" },
   { id: "q5", text: "Le processus de paiement est-il satisfaisant ?" },
   { id: "q6", text: "Quelle fonctionnalité utilisez-vous le plus et pourquoi ?" },
-  { id: "q7", text: "Sur quel appareil utilisez-vous principalement Vysion ?" },
-  { id: "q8", text: "Comment avez-vous découvert Vysion ?" },
-  { id: "q9", text: "Recommanderiez-vous Vysion à quelqu'un ? Pourquoi ?" },
+  { id: "q7", text: "Sur quel appareil utilisez-vous principalement Astra ?" },
+  { id: "q8", text: "Comment avez-vous découvert Astra ?" },
+  { id: "q9", text: "Recommanderiez-vous Astra à quelqu'un ? Pourquoi ?" },
   { id: "q10", text: "Le plan tarifaire vous semble-t-il adapté ?" },
   { id: "q11", text: "La page Historique est-elle utile ? Que pourrait-on améliorer ?" },
   { id: "q12", text: "Les animations et le design sont-ils agréables ?" },
   { id: "q13", text: "Le support client répond-il à vos attentes ?" },
-  { id: "q14", text: "Qu'est-ce qui pourrait améliorer votre expérience sur Vysion ?" },
+  { id: "q14", text: "Qu'est-ce qui pourrait améliorer votre expérience sur Astra ?" },
   { id: "q15", text: "Quelle fonctionnalité aimeriez-vous voir ajoutée ?" },
 ];
 

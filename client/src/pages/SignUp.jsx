@@ -126,7 +126,7 @@ export default function SignUp() {
           ) : (
             <>
               <h1 className="auth-title">Créer un compte</h1>
-              <p className="auth-subtitle">Rejoins Vysion et génère des images IA en quelques secondes.</p>
+              <p className="auth-subtitle">Rejoins Astra et génère des images IA en quelques secondes.</p>
 
               <button className="auth-social-btn" onClick={handleGoogle} disabled={loading}>
                 <GoogleIcon />

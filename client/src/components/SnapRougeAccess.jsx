@@ -126,7 +126,7 @@ export default function SnapRougeAccess() {
           </div>
           <h1 className="snaprouge-access-title">SnapRouge</h1>
           <p className="snaprouge-access-subtitle">
-            Découvre comment envoyer des snaps rouges indétectables avec les photos générées par Vysion.
+            Découvre comment envoyer des snaps rouges indétectables avec les photos générées par Astra.
           </p>
         </div>
 

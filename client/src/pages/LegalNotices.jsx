@@ -5,7 +5,7 @@ export default function LegalNotices() {
   return (
     <main className="legal-page">
       <header className="legal-header">
-        <span className="legal-eyebrow">Vysion</span>
+        <span className="legal-eyebrow">Astra</span>
         <h1 className="legal-title">Mentions légales</h1>
         <p className="legal-updated">Dernière mise à jour : 29 juillet 2026</p>
       </header>

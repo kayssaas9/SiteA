@@ -7,7 +7,7 @@ export default function ReferralLanding() {
 
   useEffect(() => {
     if (code) {
-      localStorage.setItem("vysionReferralCode", code.trim());
+      localStorage.setItem("astraReferralCode", code.trim());
     }
     navigate("/", { replace: true });
   }, [code, navigate]);

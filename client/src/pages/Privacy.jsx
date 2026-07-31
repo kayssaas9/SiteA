@@ -5,7 +5,7 @@ export default function Privacy() {
   return (
     <main className="legal-page">
       <header className="legal-header">
-        <span className="legal-eyebrow">Vysion</span>
+        <span className="legal-eyebrow">Astra</span>
         <h1 className="legal-title">Politique de Confidentialité</h1>
         <p className="legal-updated">Dernière mise à jour : 29 juillet 2026</p>
       </header>
@@ -16,7 +16,7 @@ export default function Privacy() {
           <h3>Données collectées</h3>
           <p>
             Nous collectons uniquement les données nécessaires au fonctionnement
-            de Vysion : votre adresse e-mail, votre nom d'utilisateur, votre
+            d'Astra : votre adresse e-mail, votre nom d'utilisateur, votre
             historique de créations et vos données de paiement, traitées de
             manière sécurisée.
           </p>
