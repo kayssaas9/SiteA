@@ -1,4 +1,4 @@
-Refonte complète du design — identité visuelle "Vysion" (remplace ce nom par le tien si tu en as un autre)
+Refonte complète du design — identité visuelle "Astra" (remplace ce nom par le tien si tu en as un autre)
 
 Important : le nom "nano-banana" ne doit apparaître NULLE PART sur le site visible par l'utilisateur — c'est uniquement un nom technique interne. Le site doit se présenter comme notre propre IA propriétaire, positionnée comme la meilleure du marché.
 
