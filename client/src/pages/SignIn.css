@@ -252,6 +252,29 @@
   color: var(--text-muted);
 }
 
+.auth-loading-box {
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-loading-box .auth-title {
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+
+.auth-loading-box .auth-subtitle {
+  margin-bottom: 0;
+}
+
+.auth-loading-box .auth-retry-btn {
+  width: auto;
+  margin-top: 18px;
+  padding: 11px 22px;
+}
+
 /* Staggered fade-up for elements inside the box */
 .auth-box .auth-title { animation-delay: 0s; }
 .auth-box .auth-subtitle { animation-delay: 0.06s; }

@@ -668,8 +668,42 @@
 }
 
 @media (max-width: 640px) {
-  .hero { padding-top: 124px; }
-  .hero-cta { flex-direction: column; align-items: center; }
+  .hero {
+    min-height: 100svh;
+    padding: 112px 16px 32px;
+    justify-content: center;
+  }
+
+  .hero .badge {
+    margin-bottom: 16px;
+    font-size: 10px;
+    letter-spacing: 0.035em;
+  }
+
+  .hero-title {
+    max-width: 100%;
+    font-size: clamp(38px, 11.5vw, 58px);
+    line-height: 0.94;
+    letter-spacing: -0.06em;
+    margin-bottom: 24px;
+    gap: 4px;
+  }
+
+  .hero-title-breath {
+    font-size: 0.42em;
+    margin: 2px 0;
+  }
+
+  .hero-cta {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-cta .btn {
+    width: min(100%, 300px);
+  }
+
   .faq-section { padding: 60px 16px; }
   .faq-question { padding: 18px 20px; font-size: 15px; }
   .faq-answer-inner { padding: 0 20px 18px; }

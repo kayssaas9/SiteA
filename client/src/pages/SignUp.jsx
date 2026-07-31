@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSignUp, useUser } from "@clerk/clerk-react";
 import { Link, Navigate } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
@@ -23,14 +23,40 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [verificationStep, setVerificationStep] = useState(false);
+  const [clerkTimedOut, setClerkTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setClerkTimedOut(false);
+      return undefined;
+    }
+
+    const timeout = window.setTimeout(() => setClerkTimedOut(true), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [isLoaded]);
 
   if (isSignedIn) return <Navigate to="/generate" replace />;
   if (!isLoaded) {
     return (
       <div className="auth-page">
-        <div className="auth-loading">
-          <div className="spinner" />
-          <p>Chargement…</p>
+        <AuthNav />
+        <div className="auth-blob blob-top-left" />
+        <div className="auth-blob blob-bottom-right" />
+        <div className="auth-container">
+          <div className="auth-box auth-loading-box">
+            <div className="spinner" />
+            <h1 className="auth-title">Créer un compte</h1>
+            <p className="auth-subtitle">
+              {clerkTimedOut
+                ? "Le chargement prend plus de temps que prévu. Vérifie ta connexion puis réessaie."
+                : "Préparation de ton espace sécurisé…"}
+            </p>
+            {clerkTimedOut && (
+              <button className="auth-btn auth-retry-btn" type="button" onClick={() => window.location.reload()}>
+                Réessayer
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );

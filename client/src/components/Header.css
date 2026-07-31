@@ -215,6 +215,11 @@
   margin-left: 4px;
 }
 
+.mobile-menu-toggle:active,
+.mobile-menu-btn:active {
+  transform: scale(0.97);
+}
+
 .mobile-menu-toggle span {
   display: block;
   width: 100%;
