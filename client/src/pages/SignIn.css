@@ -269,6 +269,23 @@
   margin-bottom: 0;
 }
 
+.auth-error-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 103, 145, 0.5);
+  border-radius: 50%;
+  color: #ff6791;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.auth-loading-box .auth-load-error-message {
+  max-width: 390px;
+  line-height: 1.55;
+}
+
 .auth-loading-box .auth-retry-btn {
   width: auto;
   margin-top: 18px;

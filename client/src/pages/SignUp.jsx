@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSignUp, useUser } from "@clerk/clerk-react";
 import { Link, Navigate } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
+import { getClerkLoadMessage, useClerkLoadState } from "../hooks/useClerkLoadState.js";
 import "./SignUp.css";
 
 const GoogleIcon = () => (
@@ -23,17 +24,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [verificationStep, setVerificationStep] = useState(false);
-  const [clerkTimedOut, setClerkTimedOut] = useState(false);
-
-  useEffect(() => {
-    if (isLoaded) {
-      setClerkTimedOut(false);
-      return undefined;
-    }
-
-    const timeout = window.setTimeout(() => setClerkTimedOut(true), 5000);
-    return () => window.clearTimeout(timeout);
-  }, [isLoaded]);
+  const clerkLoadError = useClerkLoadState(isLoaded);
 
   if (isSignedIn) return <Navigate to="/generate" replace />;
   if (!isLoaded) {
@@ -44,14 +35,12 @@ export default function SignUp() {
         <div className="auth-blob blob-bottom-right" />
         <div className="auth-container">
           <div className="auth-box auth-loading-box">
-            <div className="spinner" />
+            {clerkLoadError ? <div className="auth-error-icon" aria-hidden="true">!</div> : <div className="spinner" />}
             <h1 className="auth-title">Créer un compte</h1>
-            <p className="auth-subtitle">
-              {clerkTimedOut
-                ? "Le chargement prend plus de temps que prévu. Vérifie ta connexion puis réessaie."
-                : "Préparation de ton espace sécurisé…"}
+            <p className={`auth-subtitle${clerkLoadError ? " auth-load-error-message" : ""}`} role={clerkLoadError ? "alert" : undefined}>
+              {clerkLoadError ? getClerkLoadMessage() : "Préparation de ton espace sécurisé…"}
             </p>
-            {clerkTimedOut && (
+            {clerkLoadError && (
               <button className="auth-btn auth-retry-btn" type="button" onClick={() => window.location.reload()}>
                 Réessayer
               </button>

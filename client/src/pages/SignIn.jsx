@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSignIn, useUser } from "@clerk/clerk-react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
+import { getClerkLoadMessage, useClerkLoadState } from "../hooks/useClerkLoadState.js";
 import "./SignIn.css";
 
 const GoogleIcon = () => (
@@ -28,17 +29,7 @@ export default function SignIn() {
   const [resetMode, setResetMode] = useState(false);
   const [resetStep, setResetStep] = useState("email"); // email | password
   const [resetSent, setResetSent] = useState(false);
-  const [clerkTimedOut, setClerkTimedOut] = useState(false);
-
-  useEffect(() => {
-    if (isLoaded) {
-      setClerkTimedOut(false);
-      return undefined;
-    }
-
-    const timeout = window.setTimeout(() => setClerkTimedOut(true), 5000);
-    return () => window.clearTimeout(timeout);
-  }, [isLoaded]);
+  const clerkLoadError = useClerkLoadState(isLoaded);
 
   if (isSignedIn) return <Navigate to={from} replace />;
   if (!isLoaded) {
@@ -49,14 +40,12 @@ export default function SignIn() {
         <div className="auth-blob blob-bottom-right" />
         <div className="auth-container">
           <div className="auth-box auth-loading-box">
-            <div className="spinner" />
+            {clerkLoadError ? <div className="auth-error-icon" aria-hidden="true">!</div> : <div className="spinner" />}
             <h1 className="auth-title">Connexion</h1>
-            <p className="auth-subtitle">
-              {clerkTimedOut
-                ? "Le chargement prend plus de temps que prévu. Vérifie ta connexion puis réessaie."
-                : "Préparation de ton espace sécurisé…"}
+            <p className={`auth-subtitle${clerkLoadError ? " auth-load-error-message" : ""}`} role={clerkLoadError ? "alert" : undefined}>
+              {clerkLoadError ? getClerkLoadMessage() : "Préparation de ton espace sécurisé…"}
             </p>
-            {clerkTimedOut && (
+            {clerkLoadError && (
               <button className="auth-btn auth-retry-btn" type="button" onClick={() => window.location.reload()}>
                 Réessayer
               </button>
