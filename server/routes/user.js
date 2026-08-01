@@ -4,8 +4,17 @@ import { getOrCreateUserCode } from "./referral.js";
 
 const router = express.Router();
 
+function disableUserDataCaching(res) {
+  res.set({
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    Pragma: "no-cache",
+    Expires: "0",
+  });
+}
+
 /** GET /api/user/:clerkUserId — fetch plan + credits for display in UI */
 router.get("/:clerkUserId", async (req, res) => {
+  disableUserDataCaching(res);
   const { clerkUserId } = req.params;
 
   const { data, error } = await supabaseAdmin
@@ -25,6 +34,7 @@ router.get("/:clerkUserId", async (req, res) => {
  * not configured yet, so the UI can still operate immediately after sign-up.
  */
 router.post("/ensure", express.json(), async (req, res) => {
+  disableUserDataCaching(res);
   const { clerkUserId, email } = req.body;
 
   if (!clerkUserId || !email) {

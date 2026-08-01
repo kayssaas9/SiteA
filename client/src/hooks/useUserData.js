@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/clerk-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 /**
  * Fetches plan + credits for the signed-in user from the Express API.
@@ -12,12 +12,22 @@ export function useUserData() {
   const { user, isLoaded } = useUser();
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(false);
+  const userId = user?.id;
+  const userEmail =
+    user?.primaryEmailAddress?.emailAddress
+    ?? user?.emailAddresses?.[0]?.emailAddress
+    ?? "";
 
-  const fetch_ = async () => {
-    if (!user) return;
+  const fetch_ = useCallback(async () => {
+    if (!userId) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/user/${user.id}`);
+      // The credits can be changed directly in Supabase. Never let the
+      // browser, a service worker, or a proxy reuse an older user response.
+      const res = await fetch(`/api/user/${encodeURIComponent(userId)}?fresh=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
       if (res.ok) {
         setData(await res.json());
         return;
@@ -25,11 +35,14 @@ export function useUserData() {
 
       // Fallback: create the row if the Clerk webhook missed it
       if (res.status === 404) {
-        const email = user.primaryEmailAddress?.emailAddress ?? user.emailAddresses?.[0]?.emailAddress ?? "";
-        const ensureRes = await fetch("/api/user/ensure", {
+        const ensureRes = await fetch(`/api/user/ensure?fresh=${Date.now()}`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ clerkUserId: user.id, email }),
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+          body: JSON.stringify({ clerkUserId: userId, email: userEmail }),
         });
         if (ensureRes.ok) {
           setData(await ensureRes.json());
@@ -41,11 +54,11 @@ export function useUserData() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userEmail, userId]);
 
   useEffect(() => {
-    if (isLoaded && user) fetch_();
-  }, [isLoaded, user?.id]);
+    if (isLoaded && userId) fetch_();
+  }, [fetch_, isLoaded, userId]);
 
   return {
     plan: data?.plan ?? "free",
