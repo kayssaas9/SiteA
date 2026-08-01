@@ -76,6 +76,7 @@ export default function ImageGenerator() {
     }
 
     setLoading(true);
+    let pricingPreviewStarted = false;
 
     try {
       const form = new FormData();
@@ -91,6 +92,7 @@ export default function ImageGenerator() {
 
       if (!res.ok) {
         if (res.status === 402 && plan === "free") {
+          pricingPreviewStarted = true;
           startPricingPreview();
           return;
         }
@@ -100,7 +102,7 @@ export default function ImageGenerator() {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      if (!pricingPreviewStarted) setLoading(false);
     }
   };
 
@@ -190,16 +192,6 @@ export default function ImageGenerator() {
         loadingSubtext="Cela prend généralement 10 à 30 secondes"
         error={error}
       />
-
-      {pricingPreview && (
-        <div className="pricing-preview-backdrop" role="status" aria-live="polite">
-          <div className="pricing-preview">
-            <div className="pricing-preview-spinner" />
-            <strong>Préparation de ta génération…</strong>
-            <span>Un instant, on vérifie les meilleures options pour toi.</span>
-          </div>
-        </div>
-      )}
 
       {showPricingModal && !pricingPreview && (
         <div
