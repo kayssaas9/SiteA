@@ -238,7 +238,7 @@ export default function ImageGenerator() {
               className="btn btn-primary pricing-modal-cta"
               onClick={() => setShowPricingModal(false)}
             >
-              Voir les tarifs
+              <span>Voir les tarifs</span>
             </Link>
           </section>
         </div>
