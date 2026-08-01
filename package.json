@@ -7,7 +7,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "concurrently \"pnpm server\" \"pnpm client\"",
+    "dev": "concurrently \"pnpm run server\" \"pnpm run client\"",
     "server": "node server/index.js",
     "client": "pnpm --filter nano-banana-client dev",
     "build": "pnpm --filter nano-banana-client build",
