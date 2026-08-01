@@ -5,15 +5,17 @@
 }
 
 :root {
-  --bg: #0E0F12;
-  --surface: rgba(255, 255, 255, 0.03);
-  --surface-hover: rgba(255, 255, 255, 0.05);
-  --border: rgba(255, 255, 255, 0.1);
-  --accent: #8EC5E8;
-  --accent-soft: rgba(142, 197, 232, 0.15);
-  --text: #F0F2F5;
-  --text-muted: rgba(240, 242, 245, 0.55);
-  --text-faint: rgba(240, 242, 245, 0.35);
+  --bg: #000000;
+  --surface: #08090c;
+  --surface-2: #0b0e14;
+  --surface-hover: #11151d;
+  --border: rgba(255, 255, 255, 0.13);
+  --accent: #2388FF;
+  --accent-soft: rgba(35, 136, 255, 0.16);
+  --accent-grad: linear-gradient(135deg, #1769D5 0%, #2F9BFF 100%);
+  --text: #F5F8FF;
+  --text-muted: rgba(245, 248, 255, 0.62);
+  --text-faint: rgba(245, 248, 255, 0.38);
   --snaprouge: #E8556B;
   --radius: 14px;
   --radius-sm: 10px;
@@ -136,6 +138,6 @@ a {
 }
 
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 0 rgba(142, 197, 232, 0); }
-  50% { box-shadow: 0 0 24px rgba(142, 197, 232, 0.15); }
+  0%, 100% { box-shadow: 0 0 0 rgba(35, 136, 255, 0); }
+  50% { box-shadow: 0 0 24px rgba(35, 136, 255, 0.2); }
 }

@@ -92,7 +92,7 @@
 
 .btn-primary {
   background: var(--accent);
-  color: #0E0F12;
+  color: #000;
 }
 
 .btn-outline {
@@ -124,7 +124,7 @@
 }
 
 .badge-blue {
-  border-color: rgba(142, 197, 232, 0.3);
+  border-color: rgba(35, 136, 255, 0.38);
   color: var(--accent);
   background: var(--accent-soft);
 }

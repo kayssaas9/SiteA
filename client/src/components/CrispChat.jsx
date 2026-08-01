@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 const CRISP_WEBSITE_ID = import.meta.env.VITE_CRISP_WEBSITE_ID;
-const ACCENT_COLOR = "#8EC5E8";
+const ACCENT_COLOR = "#2388FF";
 
 /**
  * Loads the Crisp chat widget on every page.
@@ -9,7 +9,7 @@ const ACCENT_COLOR = "#8EC5E8";
  * The accent color is best configured from the Crisp dashboard:
  * Settings → Chatbox Settings → Chatbox Appearance → Advanced Chatbox Customization.
  * We also attempt to pass a runtime color hint via the JS SDK; if Crisp honours it,
- * the widget will use the site blue (#8EC5E8).
+ * the widget will use the site blue (#2388FF).
  */
 export default function CrispChat() {
   useEffect(() => {

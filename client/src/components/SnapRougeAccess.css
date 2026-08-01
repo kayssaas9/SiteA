@@ -291,9 +291,9 @@
   padding: 13px 20px;
   font-size: 14px;
   font-weight: 600;
-  color: #0E0F12;
+  color: #000;
   border-radius: var(--radius);
-  background: linear-gradient(135deg, #A8D4F2 0%, #8EC5E8 100%);
+  background: var(--accent-grad);
   transition: transform 0.15s ease, filter 0.15s ease;
 }
 

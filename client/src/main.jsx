@@ -12,7 +12,7 @@ if (!publishableKey) {
 
 const clerkAppearance = {
   variables: {
-    colorPrimary: "#8EC5E8",
+      colorPrimary: "#2388FF",
   },
   layout: {
     logoPlacement: "none",
