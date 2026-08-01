@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 import ImageUpload from "./ImageUpload.jsx";
@@ -43,14 +43,23 @@ export default function ImageGenerator() {
   const hasNoGenerationAccess =
     !userDataLoading && plan === "free" && credits < GENERATION_COST;
 
-  const showPricingAfterPreview = async () => {
+  const startPricingPreview = () => {
+    setShowPricingModal(false);
     setPricingPreview(true);
     setLoading(true);
-    await new Promise((resolve) => window.setTimeout(resolve, 2000));
-    setLoading(false);
-    setPricingPreview(false);
-    setShowPricingModal(true);
   };
+
+  useEffect(() => {
+    if (!pricingPreview) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setLoading(false);
+      setPricingPreview(false);
+      setShowPricingModal(true);
+    }, 2000);
+
+    return () => window.clearTimeout(timer);
+  }, [pricingPreview]);
 
   const handleRefChange = (slot, value) => {
     setRefs((r) => ({ ...r, [slot]: value }));
@@ -62,7 +71,7 @@ export default function ImageGenerator() {
     setResult(null);
 
     if (hasNoGenerationAccess) {
-      await showPricingAfterPreview();
+      startPricingPreview();
       return;
     }
 
@@ -82,7 +91,7 @@ export default function ImageGenerator() {
 
       if (!res.ok) {
         if (res.status === 402 && plan === "free") {
-          await showPricingAfterPreview();
+          startPricingPreview();
           return;
         }
         throw new Error(data.error || "La génération a échoué");
@@ -192,7 +201,7 @@ export default function ImageGenerator() {
         </div>
       )}
 
-      {showPricingModal && (
+      {showPricingModal && !pricingPreview && (
         <div
           className="pricing-modal-backdrop"
           role="presentation"
