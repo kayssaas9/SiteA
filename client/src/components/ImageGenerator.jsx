@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 import ImageUpload from "./ImageUpload.jsx";
 import ResultDisplay from "./ResultDisplay.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import "./ImageGenerator.css";
+
+const GENERATION_COST = 100;
+
+const PRICING_OPTIONS = [
+  { name: "Basique", price: "9,99 €", details: "2 500 crédits / mois" },
+  { name: "Pro", price: "19,99 €", details: "7 500 crédits / mois" },
+  { name: "Expert", price: "39,99 €", details: "Crédits illimités" },
+];
 
 const PlusIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
@@ -19,7 +28,7 @@ const MinusIcon = () => (
 
 export default function ImageGenerator() {
   const { user } = useUser();
-  const { plan } = useUserData();
+  const { plan, credits, loading: userDataLoading } = useUserData();
   const [mainPhoto, setMainPhoto] = useState(null);
   const [refs, setRefs] = useState({ ref1: null, ref2: null });
   const [showRefs, setShowRefs] = useState(false);
@@ -27,8 +36,11 @@ export default function ImageGenerator() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showPricingModal, setShowPricingModal] = useState(false);
 
   const unlockedCount = plan === "expert" ? 2 : plan === "pro" ? 1 : 0;
+  const hasNoGenerationAccess =
+    !userDataLoading && plan === "free" && credits < GENERATION_COST;
 
   const handleRefChange = (slot, value) => {
     setRefs((r) => ({ ...r, [slot]: value }));
@@ -36,9 +48,15 @@ export default function ImageGenerator() {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
-    setLoading(true);
     setError(null);
     setResult(null);
+
+    if (hasNoGenerationAccess) {
+      setShowPricingModal(true);
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const form = new FormData();
@@ -52,7 +70,13 @@ export default function ImageGenerator() {
       const res = await fetch("/api/generate", { method: "POST", body: form });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "La génération a échoué");
+      if (!res.ok) {
+        if (res.status === 402 && plan === "free") {
+          setShowPricingModal(true);
+          return;
+        }
+        throw new Error(data.error || "La génération a échoué");
+      }
       setResult(data.imageUrl);
     } catch (err) {
       setError(err.message);
@@ -136,11 +160,62 @@ export default function ImageGenerator() {
           onClick={handleGenerate}
           disabled={loading || !prompt.trim()}
         >
-          {loading ? "Génération…" : "Générer — 100 crédits"}
+          {loading ? "Génération…" : `Générer — ${GENERATION_COST} crédits`}
         </button>
       </div>
 
       <ResultDisplay imageUrl={result} loading={loading} error={error} />
+
+      {showPricingModal && (
+        <div
+          className="pricing-modal-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setShowPricingModal(false);
+          }}
+        >
+          <section
+            className="pricing-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pricing-modal-title"
+          >
+            <button
+              type="button"
+              className="pricing-modal-close"
+              aria-label="Fermer"
+              onClick={() => setShowPricingModal(false)}
+            >
+              ×
+            </button>
+            <div className="pricing-modal-kicker">Il te manque des crédits</div>
+            <h2 id="pricing-modal-title">Choisis ton offre pour générer</h2>
+            <p className="pricing-modal-copy">
+              Chaque génération coûte {GENERATION_COST} crédits. Active une offre pour commencer.
+            </p>
+
+            <div className="pricing-modal-options">
+              {PRICING_OPTIONS.map((option) => (
+                <div className="pricing-modal-option" key={option.name}>
+                  <div>
+                    <strong>{option.name}</strong>
+                    <span>{option.details}</span>
+                  </div>
+                  <b>{option.price}</b>
+                </div>
+              ))}
+            </div>
+
+            <Link
+              to="/pricing"
+              className="btn btn-primary pricing-modal-cta"
+              onClick={() => setShowPricingModal(false)}
+            >
+              Voir les tarifs
+            </Link>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

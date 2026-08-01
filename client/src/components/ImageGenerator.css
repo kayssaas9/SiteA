@@ -82,8 +82,141 @@
   font-weight: 500;
 }
 
+/* No-credit pricing prompt */
+.pricing-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(5, 7, 10, 0.76);
+  animation: pricingModalFadeIn 0.18s ease-out;
+}
+
+.pricing-modal {
+  position: relative;
+  width: min(100%, 440px);
+  padding: 30px;
+  border: 0.5px solid rgba(142, 197, 232, 0.28);
+  border-radius: var(--radius-lg);
+  background: #15191f;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+  animation: pricingModalSlideIn 0.22s ease-out;
+}
+
+.pricing-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pricing-modal-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.pricing-modal-kicker {
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pricing-modal h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.pricing-modal-copy {
+  margin: 10px 0 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.pricing-modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.pricing-modal-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.pricing-modal-option div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pricing-modal-option strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.pricing-modal-option span {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.pricing-modal-option b {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.pricing-modal-cta {
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+}
+
+@keyframes pricingModalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pricingModalSlideIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @media (max-width: 640px) {
   .ref-slot .upload-preview img {
     max-height: 120px;
+  }
+
+  .pricing-modal {
+    padding: 26px 20px 20px;
+  }
+
+  .pricing-modal h2 {
+    padding-right: 20px;
+    font-size: 21px;
   }
 }
