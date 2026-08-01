@@ -1,12 +1,18 @@
 import "./ResultDisplay.css";
 
-export default function ResultDisplay({ imageUrl, loading, error }) {
+export default function ResultDisplay({
+  imageUrl,
+  loading,
+  loadingMessage = "Génération en cours…",
+  loadingSubtext = "Cela prend généralement 10 à 30 secondes",
+  error,
+}) {
   if (loading) {
     return (
       <div className="result-box loading">
         <div className="spinner" />
-        <p className="result-status">Génération en cours…</p>
-        <p className="result-sub">Cela prend généralement 10 à 30 secondes</p>
+        <p className="result-status">{loadingMessage}</p>
+        <p className="result-sub">{loadingSubtext}</p>
       </div>
     );
   }

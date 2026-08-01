@@ -35,12 +35,22 @@ export default function ImageGenerator() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [pricingPreview, setPricingPreview] = useState(false);
   const [error, setError] = useState(null);
   const [showPricingModal, setShowPricingModal] = useState(false);
 
   const unlockedCount = plan === "expert" ? 2 : plan === "pro" ? 1 : 0;
   const hasNoGenerationAccess =
     !userDataLoading && plan === "free" && credits < GENERATION_COST;
+
+  const showPricingAfterPreview = async () => {
+    setPricingPreview(true);
+    setLoading(true);
+    await new Promise((resolve) => window.setTimeout(resolve, 2000));
+    setLoading(false);
+    setPricingPreview(false);
+    setShowPricingModal(true);
+  };
 
   const handleRefChange = (slot, value) => {
     setRefs((r) => ({ ...r, [slot]: value }));
@@ -52,7 +62,7 @@ export default function ImageGenerator() {
     setResult(null);
 
     if (hasNoGenerationAccess) {
-      setShowPricingModal(true);
+      await showPricingAfterPreview();
       return;
     }
 
@@ -72,7 +82,7 @@ export default function ImageGenerator() {
 
       if (!res.ok) {
         if (res.status === 402 && plan === "free") {
-          setShowPricingModal(true);
+          await showPricingAfterPreview();
           return;
         }
         throw new Error(data.error || "La génération a échoué");
@@ -164,7 +174,23 @@ export default function ImageGenerator() {
         </button>
       </div>
 
-      <ResultDisplay imageUrl={result} loading={loading} error={error} />
+      <ResultDisplay
+        imageUrl={result}
+        loading={loading}
+        loadingMessage="Génération en cours…"
+        loadingSubtext="Cela prend généralement 10 à 30 secondes"
+        error={error}
+      />
+
+      {pricingPreview && (
+        <div className="pricing-preview-backdrop" role="status" aria-live="polite">
+          <div className="pricing-preview">
+            <div className="pricing-preview-spinner" />
+            <strong>Préparation de ta génération…</strong>
+            <span>Un instant, on vérifie les meilleures options pour toi.</span>
+          </div>
+        </div>
+      )}
 
       {showPricingModal && (
         <div
