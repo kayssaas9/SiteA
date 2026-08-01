@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSignIn, useUser } from "@clerk/clerk-react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
@@ -20,10 +20,12 @@ export default function SignIn() {
   const location = useLocation();
   const from = location.state?.from || "/generate";
 
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const resetEmailRef = useRef(null);
+  const codeRef = useRef(null);
+  const newPasswordRef = useRef(null);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [resetMode, setResetMode] = useState(false);
@@ -71,8 +73,8 @@ export default function SignIn() {
 
     try {
       const result = await signIn.create({
-        identifier: email,
-        password,
+        identifier: emailRef.current?.value || "",
+        password: passwordRef.current?.value || "",
       });
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
@@ -94,8 +96,9 @@ export default function SignIn() {
     try {
       await signIn.create({
         strategy: "reset_password_email_code",
-        identifier: email,
+        identifier: resetEmailRef.current?.value || "",
       });
+      setEmail(resetEmailRef.current?.value || "");
       setResetSent(true);
       setResetStep("password");
     } catch (err) {
@@ -112,8 +115,8 @@ export default function SignIn() {
 
     try {
       const result = await signIn.resetPassword({
-        password: newPassword,
-        code,
+        password: newPasswordRef.current?.value || "",
+        code: codeRef.current?.value || "",
       });
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
@@ -150,8 +153,7 @@ export default function SignIn() {
                   <input
                     id="reset-email"
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    ref={resetEmailRef}
                     placeholder="exemple@email.com"
                     required
                     disabled={loading}
@@ -170,8 +172,7 @@ export default function SignIn() {
                     id="reset-code"
                     type="text"
                     inputMode="numeric"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    ref={codeRef}
                     placeholder="123456"
                     required
                     disabled={loading}
@@ -182,8 +183,7 @@ export default function SignIn() {
                   <input
                     id="reset-password"
                     type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    ref={newPasswordRef}
                     placeholder="••••••••"
                     required
                     disabled={loading}
@@ -225,8 +225,7 @@ export default function SignIn() {
                 <input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                    ref={emailRef}
                   placeholder="exemple@email.com"
                   required
                   disabled={loading}
@@ -247,8 +246,7 @@ export default function SignIn() {
                 <input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  ref={passwordRef}
                   placeholder="••••••••"
                   required
                   disabled={loading}

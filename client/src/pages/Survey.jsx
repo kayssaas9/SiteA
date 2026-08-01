@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { useUserData } from "../hooks/useUserData.js";
@@ -14,7 +14,7 @@ export default function Survey() {
   const navigate = useNavigate();
   const { refetch } = useUserData();
   const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState(INITIAL_ANSWERS());
+  const answersRef = useRef(INITIAL_ANSWERS());
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
@@ -39,7 +39,7 @@ export default function Survey() {
   }, [user?.id]);
 
   const handleAnswer = (id, value) => {
-    setAnswers((a) => ({ ...a, [id]: value }));
+    answersRef.current[id] = value;
     if (errors[id]) setErrors((e) => ({ ...e, [id]: null }));
   };
 
@@ -52,7 +52,7 @@ export default function Survey() {
       const res = await fetch("/api/survey/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clerkUserId: user.id, answers }),
+        body: JSON.stringify({ clerkUserId: user.id, answers: answersRef.current }),
       });
       const data = await res.json();
 
@@ -144,7 +144,7 @@ export default function Survey() {
                 <textarea
                   className="survey-textarea"
                   rows={4}
-                  value={answers[q.id]}
+                  defaultValue={answersRef.current[q.id]}
                   onChange={(e) => handleAnswer(q.id, e.target.value)}
                   placeholder="Détaille ta réponse ici…"
                 />

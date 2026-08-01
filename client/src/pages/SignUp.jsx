@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSignUp, useUser } from "@clerk/clerk-react";
 import { Link, Navigate } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
@@ -18,9 +18,10 @@ export default function SignUp() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const { isSignedIn } = useUser();
 
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const codeRef = useRef(null);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [verificationStep, setVerificationStep] = useState(false);
@@ -66,9 +67,10 @@ export default function SignUp() {
 
     try {
       const result = await signUp.create({
-        emailAddress: email,
-        password,
+        emailAddress: emailRef.current?.value || "",
+        password: passwordRef.current?.value || "",
       });
+      setEmail(emailRef.current?.value || "");
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
       } else if (result.status === "missing_requirements") {
@@ -90,7 +92,9 @@ export default function SignUp() {
     setError("");
 
     try {
-      const result = await signUp.attemptEmailAddressVerification({ code });
+      const result = await signUp.attemptEmailAddressVerification({
+        code: codeRef.current?.value || "",
+      });
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
       } else {
@@ -125,8 +129,7 @@ export default function SignUp() {
                     id="code"
                     type="text"
                     inputMode="numeric"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    ref={codeRef}
                     placeholder="123456"
                     required
                     disabled={loading}
@@ -158,8 +161,7 @@ export default function SignUp() {
                   <input
                     id="signup-email"
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    ref={emailRef}
                     placeholder="exemple@email.com"
                     required
                     disabled={loading}
@@ -171,8 +173,7 @@ export default function SignUp() {
                   <input
                     id="signup-password"
                     type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    ref={passwordRef}
                     placeholder="••••••••"
                     required
                     disabled={loading}
