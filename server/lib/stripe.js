@@ -22,7 +22,7 @@ export const PRICE_CREDITS = {
   [process.env.VITE_STRIPE_PRICE_PACK_10K]: 10000,
   [process.env.VITE_STRIPE_PRICE_PACK_20K]: 20000,
   // One-time credit packs for non-subscribers
-  [process.env.VITE_STRIPE_PRICE_PACK_800]: 800,
+  [process.env.VITE_STRIPE_PRICE_PACK_800]: 900,
   [process.env.VITE_STRIPE_PRICE_PACK_2K]: 2000,
 };
 

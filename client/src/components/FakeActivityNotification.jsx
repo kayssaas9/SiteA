@@ -15,7 +15,7 @@ const EVENTS = [
   { type: "subscription", plan: "Basique", time: "À l'instant" },
   { type: "subscription", plan: "Pro", time: "Il y a 1 min" },
   { type: "subscription", plan: "Expert", time: "Il y a 2 min" },
-  { type: "recharge", credits: 800, time: "À l'instant" },
+  { type: "recharge", credits: 900, time: "À l'instant" },
   { type: "recharge", credits: 2000, time: "Il y a 1 min" },
   { type: "recharge", credits: 4000, time: "Il y a 3 min" },
   { type: "recharge", credits: 10000, time: "Il y a 4 min" },

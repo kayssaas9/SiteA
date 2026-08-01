@@ -113,7 +113,7 @@ const SUBSCRIBER_PACKS = [
 ];
 
 const NON_SUBSCRIBER_PACKS = [
-  { id: "pack_800", name: "Pack Découverte", credits: 800, price: "9,99 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_800" },
+  { id: "pack_800", name: "Pack Découverte", credits: 900, price: "9,99 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_800" },
   { id: "pack_2k", name: "Pack Starter", credits: 2000, price: "19,99 €", priceEnvKey: "VITE_STRIPE_PRICE_PACK_2K" },
 ];
 
