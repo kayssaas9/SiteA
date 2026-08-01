@@ -55,6 +55,7 @@ export async function createCheckoutSession({ priceId, clerkUserId, mode = "subs
   const origin = getRequestOrigin(req);
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
+    customer_email: user?.email || undefined,
     mode,
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${origin}/?checkout=success`,
