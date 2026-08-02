@@ -23,18 +23,15 @@ export default function DownloadButton({
       const safeImageUrl = getSafeUrl(imageUrl);
       if (!safeImageUrl) throw new Error("image_url_invalid");
 
-      // Opening the same-origin proxy is supported by iOS Safari and avoids
-      // Blob/object URLs, which can throw a pattern exception on mobile.
-      const link = document.createElement("a");
-      link.href = safeImageUrl;
-      link.download = filename;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.click();
+      // Open the same-origin proxy directly in a new tab. Keeping this call
+      // inside the click handler avoids mobile popup blockers and lets the
+      // browser's image viewer handle saving/sharing.
+      const newTab = window.open(safeImageUrl, "_blank", "noopener,noreferrer");
+      if (!newTab) throw new Error("popup_blocked");
       setProgress(100);
     } catch (downloadError) {
       console.error("image download error", downloadError);
-      setError("Téléchargement direct indisponible");
+      setError("Impossible d’ouvrir l’image dans un nouvel onglet");
 
       const safeImageUrl = getSafeUrl(imageUrl);
       if (safeImageUrl) window.open(safeImageUrl, "_blank", "noopener,noreferrer");
