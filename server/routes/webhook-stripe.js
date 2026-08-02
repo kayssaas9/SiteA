@@ -194,7 +194,8 @@ async function unlockGeneration(clerkUserId, generationId) {
     .update({ unlocked: true })
     .eq("clerk_user_id", clerkUserId)
     .eq("id", generationId)
-    .eq("unlocked", false);
+    .eq("unlocked", false)
+    .in("status", ["processing", "finalizing", "completed"]);
 
   if (error) {
     console.error(`Failed to unlock generation ${generationId} for ${clerkUserId}:`, error.message);

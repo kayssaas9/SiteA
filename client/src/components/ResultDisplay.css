@@ -7,13 +7,35 @@
 }
 
 .result-box.loading,
-.result-box.error {
+.result-box.error,
+.result-box.empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 48px 24px;
   text-align: center;
+}
+
+.result-box.empty {
+  min-height: 188px;
+  border-style: dashed;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(35, 136, 255, 0.08), transparent 46%),
+    rgba(255, 255, 255, 0.015);
+}
+
+.result-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(35, 136, 255, 0.32);
+  border-radius: 50%;
+  color: var(--accent);
+  font-size: 20px;
+  background: rgba(35, 136, 255, 0.08);
 }
 
 /* Spinner */
@@ -80,7 +102,7 @@
 }
 
 .result-visual.is-teaser .result-img {
-  filter: blur(10px);
+  filter: blur(4px);
   transform: scale(1.08);
   user-select: none;
   pointer-events: none;
@@ -92,26 +114,37 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 8px;
-  padding: 24px;
+  padding: 24px 24px 20px;
   text-align: center;
-  background: rgba(0, 0, 0, 0.24);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.34) 42%,
+    rgba(0, 0, 0, 0.04) 78%,
+    transparent 100%
+  );
 }
 
 .result-teaser-overlay p {
+  margin: 0;
   color: #fff;
   font-size: 20px;
   font-weight: 750;
 }
 
 .result-teaser-overlay span {
+  margin: 0;
   color: rgba(255, 255, 255, 0.78);
   font-size: 13px;
 }
 
 .result-unlock-btn {
-  margin-top: 10px;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 12px 20px;
   border-radius: var(--radius);
   background: var(--accent-grad);
@@ -120,6 +153,25 @@
   font-weight: 750;
   box-shadow: 0 8px 26px rgba(35, 136, 255, 0.32);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (max-width: 520px) {
+  .result-teaser-overlay {
+    padding: 18px 16px 16px;
+  }
+
+  .result-teaser-overlay p {
+    font-size: 17px;
+  }
+
+  .result-teaser-overlay span {
+    font-size: 12px;
+  }
+
+  .result-unlock-btn {
+    width: min(100%, 240px);
+    padding: 11px 16px;
+  }
 }
 
 .result-unlock-btn:hover {

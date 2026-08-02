@@ -162,7 +162,9 @@ export default function Pricing() {
     setError(null);
 
     try {
-      const generationId = window.sessionStorage.getItem("astraPendingGenerationId") || undefined;
+      const generationId = window.localStorage.getItem("astraPendingGenerationId")
+        || window.sessionStorage.getItem("astraPendingGenerationId")
+        || undefined;
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

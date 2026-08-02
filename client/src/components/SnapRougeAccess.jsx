@@ -97,7 +97,9 @@ export default function SnapRougeAccess() {
           priceId,
           clerkUserId: user.id,
           mode: "payment",
-          generationId: window.sessionStorage.getItem("astraPendingGenerationId") || undefined,
+           generationId: window.localStorage.getItem("astraPendingGenerationId")
+             || window.sessionStorage.getItem("astraPendingGenerationId")
+             || undefined,
         }),
       });
       const data = await res.json();

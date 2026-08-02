@@ -87,36 +87,226 @@ async function uploadToOneShot(file) {
   return fileId;
 }
 
-async function pollOneShotJob(jobId) {
-  const maxAttempts = 60;
-  const delayMs = 2000;
+async function getOneShotJob(jobId) {
+  return oneshotFetch(`/v1/jobs/${jobId}`);
+}
 
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const job = await oneshotFetch(`/v1/jobs/${jobId}`);
-    console.log(`OneShot job ${jobId} status: ${job.status} (attempt ${attempt + 1}/${maxAttempts})`);
+function getJobImageUrl(job) {
+  const result = job?.result || {};
+  return (
+    result.url ||
+    result.image_url ||
+    result.imageUrl ||
+    result.output ||
+    result.image ||
+    null
+  );
+}
 
-    if (job.status === "completed") {
-      const result = job.result || {};
-      const imageUrl =
-        result.url ||
-        result.image_url ||
-        result.imageUrl ||
-        result.output ||
-        result.image ||
-        null;
-      if (!imageUrl) throw new Error("URL de l'image introuvable dans le résultat du job.");
-      return imageUrl;
-    }
+function clientGeneration(row, error = null) {
+  const status = row.status || "completed";
+  const unlocked = status === "completed" && row.unlocked === true;
+  const teaser = row.teaser === true || (
+    status === "completed" &&
+    unlocked === false &&
+    Boolean(row.preview_url)
+  );
+  return {
+    id: row.id,
+    status,
+    unlocked,
+    teaser,
+    imageUrl: status === "completed"
+      ? (unlocked ? row.image_url : row.preview_url)
+      : null,
+    error: error || row.error_message || null,
+  };
+}
 
-    if (job.status === "failed") {
-      const error = job.error || {};
-      throw new Error(error.message || `Le job a échoué (${error.code || "unknown"}).`);
-    }
+async function failGeneration(row, message) {
+  await supabaseAdmin
+    .from("generations")
+    .update({
+      status: "failed",
+      error_message: message,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", row.id)
+    .eq("status", "processing");
 
-    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  if (row.free_teaser_claimed) {
+    await releaseFreeTeaser(row.clerk_user_id);
   }
 
-  throw new Error("La génération a pris trop de temps. Réessayez plus tard.");
+  return clientGeneration({ ...row, status: "failed", error_message: message }, message);
+}
+
+async function finalizeGeneration(row, imageUrl) {
+  const { data: claimed, error: claimError } = await supabaseAdmin
+    .from("generations")
+    .update({
+      status: "finalizing",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", row.id)
+    .eq("status", "processing")
+    .select("id, clerk_user_id, teaser, free_teaser_claimed, consumed_credits, unlocked, status")
+    .maybeSingle();
+
+  if (claimError) throw claimError;
+  if (!claimed) {
+    const { data: current, error: readError } = await supabaseAdmin
+      .from("generations")
+      .select("id, status, image_url, preview_url, unlocked, teaser, error_message")
+      .eq("id", row.id)
+      .single();
+    if (readError || !current) throw readError || new Error("Generation introuvable.");
+    return clientGeneration(current);
+  }
+
+  try {
+    let previewUrl = null;
+    let consumed = 0;
+
+    if (claimed.teaser) {
+      previewUrl = await createBlurredPreview(imageUrl, claimed.clerk_user_id, claimed.id);
+      if (!claimed.free_teaser_claimed) {
+        consumed = await consumeCreditsForGeneration(
+          claimed.id,
+          claimed.clerk_user_id,
+          GENERATION_COST,
+        );
+        if (consumed <= 0) {
+          throw Object.assign(
+            new Error("Vos crédits ont été utilisés pendant la génération. Rechargez votre compte."),
+            { code: "NO_CREDITS" },
+          );
+        }
+      }
+    } else {
+      consumed = await consumeCreditsForGeneration(
+        claimed.id,
+        claimed.clerk_user_id,
+        GENERATION_COST,
+      );
+      if (consumed < GENERATION_COST) {
+        throw Object.assign(
+          new Error("Vos crédits ont été utilisés pendant la génération. Rechargez votre compte."),
+          { code: "NO_CREDITS" },
+        );
+      }
+    }
+
+    const unlocked = claimed.unlocked === true || (!claimed.teaser && consumed >= GENERATION_COST);
+    const completedUpdate = {
+      status: "completed",
+      image_url: imageUrl,
+      preview_url: previewUrl,
+      consumed_credits: consumed,
+      error_message: null,
+      updated_at: new Date().toISOString(),
+    };
+
+    // Stripe may unlock a teaser while its preview is being prepared. Do not
+    // write false back over that payment; for full generations the value is
+    // determined by the successful credit consumption.
+    if (!claimed.teaser) completedUpdate.unlocked = unlocked;
+
+    const { data: completed, error: saveError } = await supabaseAdmin
+      .from("generations")
+      .update(completedUpdate)
+      .eq("id", claimed.id)
+      .eq("status", "finalizing")
+      .select("id, status, image_url, preview_url, unlocked, teaser, error_message")
+      .single();
+
+    if (saveError || !completed) throw saveError || new Error("Erreur lors de l'enregistrement dans l'historique.");
+
+    await grantReferralReward(claimed.clerk_user_id);
+    console.log(`✅ Finalized ${unlocked ? "unlocked" : "teaser"} generation for ${claimed.clerk_user_id}: ${claimed.id}`);
+    return clientGeneration(completed);
+  } catch (error) {
+    await supabaseAdmin
+      .from("generations")
+      .update({
+        status: "failed",
+        error_message: error.message,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", claimed.id)
+      .eq("status", "finalizing");
+
+    if (claimed.free_teaser_claimed) {
+      await releaseFreeTeaser(claimed.clerk_user_id);
+    }
+    return clientGeneration({ ...row, status: "failed", error_message: error.message }, error.message);
+  }
+}
+
+export async function getGenerationStatus(generationId, clerkUserId) {
+  const { data: row, error } = await supabaseAdmin
+    .from("generations")
+    .select([
+      "id",
+      "clerk_user_id",
+      "oneshot_job_id",
+      "status",
+      "image_url",
+      "preview_url",
+      "unlocked",
+      "teaser",
+      "free_teaser_claimed",
+      "error_message",
+      "updated_at",
+    ].join(", "))
+    .eq("id", generationId)
+    .eq("clerk_user_id", clerkUserId)
+    .single();
+
+  if (error || !row) {
+    const notFound = error?.code === "PGRST116";
+    const statusError = new Error(notFound ? "Generation not found" : error?.message || "Unable to load generation");
+    statusError.statusCode = notFound ? 404 : 500;
+    throw statusError;
+  }
+
+  if (row.status === "completed" || row.status === "failed") return clientGeneration(row);
+  if (row.status === "finalizing") {
+    const finalizingAt = row.updated_at ? Date.parse(row.updated_at) : 0;
+    const staleFinalization = !finalizingAt || Date.now() - finalizingAt > 5 * 60 * 1000;
+    if (!staleFinalization) return clientGeneration(row);
+
+    const { data: recovered, error: recoveryError } = await supabaseAdmin
+      .from("generations")
+      .update({ status: "processing", updated_at: new Date().toISOString() })
+      .eq("id", row.id)
+      .eq("status", "finalizing")
+      .select("id")
+      .maybeSingle();
+    if (recoveryError) throw recoveryError;
+    if (!recovered) return clientGeneration(row);
+    row.status = "processing";
+  }
+  if (!row.oneshot_job_id) return failGeneration(row, "Le job de génération est introuvable.");
+
+  let job;
+  try {
+    job = await getOneShotJob(row.oneshot_job_id);
+  } catch (error) {
+    // A transient OneShot/network error must not destroy a still-running job.
+    console.error(`Unable to read OneShot job ${row.oneshot_job_id}:`, error.message);
+    return clientGeneration(row);
+  }
+
+  if (job.status === "failed") {
+    const message = job.error?.message || `Le job a échoué (${job.error?.code || "unknown"}).`;
+    return failGeneration(row, message);
+  }
+
+  const imageUrl = getJobImageUrl(job);
+  if (job.status !== "completed" || !imageUrl) return clientGeneration(row);
+
+  return finalizeGeneration(row, imageUrl);
 }
 
 async function ensureUser(clerkUserId) {
@@ -201,6 +391,24 @@ async function consumeCredits(clerkUserId, maximum) {
   return updateError ? 0 : consumed;
 }
 
+async function consumeCreditsForGeneration(generationId, clerkUserId, maximum) {
+  const { data, error } = await supabaseAdmin.rpc(
+    "consume_generation_credits_for_generation",
+    {
+      p_generation_id: generationId,
+      p_clerk_user_id: clerkUserId,
+      p_maximum: maximum,
+    },
+  );
+
+  if (error || typeof data !== "number") {
+    console.error("idempotent generation credit consumption failed:", error?.message);
+    throw new Error("La consommation des crédits est temporairement indisponible. Réessayez plus tard.");
+  }
+
+  return data;
+}
+
 async function createBlurredPreview(imageUrl, clerkUserId, generationId) {
   const original = await fetch(imageUrl);
   if (!original.ok) {
@@ -274,15 +482,17 @@ async function grantReferralReward(clerkUserId) {
 
 export async function createGeneration(req, res) {
   let freeTeaserClaimed = false;
-  let freeTeaserPersisted = false;
+  let generationPersisted = false;
+  let clerkUserId = "";
 
   try {
-    const { mode, prompt, clerk_user_id: clerkUserId } = req.body;
+    const { mode, prompt, clerk_user_id: rawClerkUserId } = req.body;
+    clerkUserId = typeof rawClerkUserId === "string" ? rawClerkUserId.trim() : "";
 
     if (!ONESHOT_API_KEY) {
       return res.status(500).json({ error: "Clé OneShotAPI non configurée." });
     }
-    if (!clerkUserId || !clerkUserId.trim()) {
+    if (!clerkUserId) {
       return res.status(401).json({ error: "Connectez-vous pour générer une image." });
     }
     if (!prompt || !prompt.trim()) {
@@ -295,7 +505,6 @@ export async function createGeneration(req, res) {
     }
 
     let currentCredits = user.credits ?? 0;
-
     if (currentCredits <= 0) {
       freeTeaserClaimed = await claimFreeTeaser(clerkUserId);
 
@@ -364,71 +573,50 @@ export async function createGeneration(req, res) {
       return res.status(502).json({ error: jobErr.message });
     }
 
-    let imageUrl;
-    try {
-      imageUrl = await pollOneShotJob(job.id);
-    } catch (pollErr) {
-      console.error("OneShot polling error:", pollErr);
-      return res.status(502).json({ error: pollErr.message });
+    if (!job?.id) {
+      return res.status(502).json({ error: "OneShot n'a pas retourné d'identifiant de génération." });
     }
 
-    const consumed = freeTeaserClaimed
-      ? 0
-      : await consumeCredits(clerkUserId, GENERATION_COST);
-    if (!freeTeaserClaimed && consumed <= 0) {
-      return res.status(402).json({
-        code: "NO_CREDITS",
-        error: "Vos crédits ont été utilisés pendant la génération. Rechargez votre compte.",
-      });
-    }
-
-    // A teaser is intentionally created for non-subscribers, even when they
-    // have enough credits. Subscribers with fewer than 100 credits also get
-    // one, and only their remaining credits are charged.
-    const unlocked = !teaser && consumed >= GENERATION_COST;
     const generationId = randomUUID();
-    const previewUrl = unlocked
-      ? null
-      : await createBlurredPreview(imageUrl, clerkUserId, generationId);
-
     const { error: saveError } = await supabaseAdmin
       .from("generations")
       .insert({
         id: generationId,
         clerk_user_id: clerkUserId,
         mode: mode || "image",
-        prompt: prompt || "",
-        image_url: imageUrl,
-        preview_url: previewUrl,
-        unlocked,
+        prompt: prompt.trim(),
+        image_url: null,
+        preview_url: null,
+        unlocked: false,
+        oneshot_job_id: job.id,
+        status: "processing",
+        teaser,
+        free_teaser_claimed: freeTeaserClaimed,
+        consumed_credits: 0,
+        error_message: null,
       });
+
     if (saveError) {
-      console.error("Failed to save generation:", saveError);
-      return res.status(500).json({ error: "Erreur lors de l'enregistrement dans l'historique." });
+      console.error("Failed to persist generation job:", saveError);
+      return res.status(500).json({ error: "Erreur lors de l'enregistrement de la génération." });
     }
 
-    // The free teaser is now safely persisted. Keep its one-use reservation.
-    freeTeaserPersisted = true;
-    await grantReferralReward(clerkUserId);
-    console.log(`✅ Saved ${unlocked ? "unlocked" : "teaser"} generation for ${clerkUserId}: ${generationId}`);
+    generationPersisted = true;
+    console.log(`⏳ Persisted ${teaser ? "teaser" : "full"} generation for ${clerkUserId}: ${generationId} (job ${job.id})`);
 
-    return res.json({
+    return res.status(202).json({
       generationId,
-      imageUrl: unlocked ? imageUrl : previewUrl,
-      unlocked,
-      teaser: !unlocked,
-      cost: consumed,
+      status: "processing",
+      imageUrl: null,
+      unlocked: false,
+      teaser,
     });
   } catch (err) {
     console.error("Server error:", err);
     return res.status(500).json({ error: err.message });
   } finally {
-    if (freeTeaserClaimed && !freeTeaserPersisted) {
-      await releaseFreeTeaser(clerkUserIdFromRequest(req));
+    if (freeTeaserClaimed && !generationPersisted) {
+      await releaseFreeTeaser(clerkUserId);
     }
   }
-}
-
-function clerkUserIdFromRequest(req) {
-  return typeof req.body?.clerk_user_id === "string" ? req.body.clerk_user_id.trim() : "";
 }

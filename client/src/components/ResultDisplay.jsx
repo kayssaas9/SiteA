@@ -8,6 +8,7 @@ export default function ResultDisplay({
   loadingMessage = "Génération en cours…",
   loadingSubtext = "Cela prend généralement 10 à 30 secondes",
   error,
+  showEmpty = false,
 }) {
   if (loading) {
     return (
@@ -29,6 +30,16 @@ export default function ResultDisplay({
     );
   }
 
+  if (!imageUrl && showEmpty) {
+    return (
+      <div className="result-box empty">
+        <div className="result-empty-icon" aria-hidden="true">✦</div>
+        <p className="result-status">En attente de génération</p>
+        <p className="result-sub">Ton prochain résultat apparaîtra ici</p>
+      </div>
+    );
+  }
+
   if (!imageUrl) return null;
 
   return (
@@ -43,7 +54,7 @@ export default function ResultDisplay({
             <p>Ton résultat est prêt</p>
             <span>Débloque l'image en qualité nette</span>
             <Link className="result-unlock-btn" to="/pricing">
-              Débloquer ce résultat
+              Débloquer maintenant
             </Link>
           </div>
         )}

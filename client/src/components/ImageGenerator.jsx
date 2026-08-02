@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import ImageUpload from "./ImageUpload.jsx";
-import ResultDisplay from "./ResultDisplay.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import "./ImageGenerator.css";
 
 const GENERATION_COST = 100;
+const ACTIVE_GENERATIONS_KEY = "astraActiveGenerationIds";
+const PENDING_UNLOCK_KEY = "astraPendingGenerationId";
 
 const PlusIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
@@ -19,7 +20,7 @@ const MinusIcon = () => (
   </svg>
 );
 
-export default function ImageGenerator() {
+export default function ImageGenerator({ onResultChange }) {
   const { user } = useUser();
   const { plan, refetch: refetchUserData } = useUserData();
   const [mainPhoto, setMainPhoto] = useState(null);
@@ -29,60 +30,161 @@ export default function ImageGenerator() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const activeGenerationIdRef = useRef(null);
+  const pollGenerationRef = useRef(null);
 
   const unlockedCount = plan === "expert" ? 2 : plan === "pro" ? 1 : 0;
   const handleRefChange = (slot, value) => {
     setRefs((r) => ({ ...r, [slot]: value }));
   };
 
-  const loadGeneration = async (generationId) => {
-    if (!generationId || !user?.id) return null;
-
-    const res = await fetch(
-      `/api/generations/${encodeURIComponent(generationId)}?clerkUserId=${encodeURIComponent(user.id)}&fresh=${Date.now()}`,
-      { cache: "no-store", headers: { "Cache-Control": "no-cache" } },
-    );
-    if (!res.ok) return null;
-
-    const data = await res.json();
-    if (data.imageUrl) {
-      setResult({
-        imageUrl: data.imageUrl,
-        teaser: !data.unlocked,
-        generationId: data.id,
-      });
-    }
-    return data;
-  };
-
-  // Stripe sends the user away from the generator. Keep the generation id in
-  // session storage so the exact teaser can become sharp after payment.
   useEffect(() => {
-    const generationId = window.sessionStorage.getItem("astraPendingGenerationId");
-    if (!generationId || !user?.id) return undefined;
-
     let cancelled = false;
-    let attempts = 0;
-    let timer;
+    const timers = new Map();
 
-    const refresh = async () => {
+    const readActiveIds = () => {
+      try {
+        return JSON.parse(window.localStorage.getItem(ACTIVE_GENERATIONS_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    };
+
+    const writeActiveIds = (ids) => {
+      if (ids.length) window.localStorage.setItem(ACTIVE_GENERATIONS_KEY, JSON.stringify(ids));
+      else window.localStorage.removeItem(ACTIVE_GENERATIONS_KEY);
+    };
+
+    const removeActiveId = (generationId) => {
+      writeActiveIds(readActiveIds().filter((id) => id !== generationId));
+    };
+
+    const loadGeneration = async (generationId) => {
+      if (!generationId || !user?.id || cancelled) return null;
+
+      const res = await fetch(
+        `/api/generations/${encodeURIComponent(generationId)}?clerkUserId=${encodeURIComponent(user.id)}&fresh=${Date.now()}`,
+        { cache: "no-store", headers: { "Cache-Control": "no-cache" } },
+      );
+      if (!res.ok) return null;
+      return res.json();
+    };
+
+    const trackGeneration = async (generationId, attempts = 0) => {
       if (cancelled) return;
-      const data = await loadGeneration(generationId);
-      if (data?.unlocked) {
-        window.sessionStorage.removeItem("astraPendingGenerationId");
+
+      let data;
+      try {
+        data = await loadGeneration(generationId);
+      } catch (trackError) {
+        console.error("generation status fetch error", trackError);
+      }
+
+      if (cancelled) return;
+
+      if (!data) {
+        if (attempts < 120) {
+          timers.set(generationId, window.setTimeout(() => trackGeneration(generationId, attempts + 1), 2000));
+        }
+        return;
+      }
+
+      const isCurrent = activeGenerationIdRef.current === generationId;
+      if (data.status === "processing" || data.status === "finalizing") {
+        if (isCurrent) setLoading(true);
+        timers.set(generationId, window.setTimeout(() => trackGeneration(generationId, attempts + 1), 1500));
+        return;
+      }
+
+      removeActiveId(generationId);
+
+      if (data.status === "failed") {
+        if (isCurrent) {
+          setLoading(false);
+          setError(data.error || "La génération a échoué.");
+          onResultChange?.({ loading: false, error: data.error || "La génération a échoué.", result: null });
+        }
+        if (window.localStorage.getItem(PENDING_UNLOCK_KEY) === generationId) {
+          window.localStorage.removeItem(PENDING_UNLOCK_KEY);
+        }
+        return;
+      }
+
+      if (data.imageUrl && isCurrent) {
+        const nextResult = {
+          imageUrl: data.imageUrl,
+          teaser: Boolean(data.teaser),
+          generationId: data.id,
+        };
+        setResult(nextResult);
+        setLoading(false);
+        setError(null);
+        onResultChange?.({ loading: false, error: null, result: nextResult });
+        window.dispatchEvent(new Event("astra-user-data-changed"));
+      }
+
+      if (data.unlocked) {
+        if (window.localStorage.getItem(PENDING_UNLOCK_KEY) === generationId) {
+          window.localStorage.removeItem(PENDING_UNLOCK_KEY);
+        }
         await refetchUserData();
         return;
       }
 
-      // The Stripe webhook may arrive just after the redirect.
-      attempts += 1;
-      if (attempts < 40) timer = window.setTimeout(refresh, 1500);
+      if (data.teaser) {
+        window.localStorage.setItem(PENDING_UNLOCK_KEY, generationId);
+        // Stripe's webhook may unlock the exact teaser after redirect.
+        if (attempts < 40) {
+          timers.set(generationId, window.setTimeout(() => trackGeneration(generationId, attempts + 1), 1500));
+        }
+      }
     };
 
-    refresh();
+    pollGenerationRef.current = (generationId) => {
+      activeGenerationIdRef.current = generationId;
+      const ids = Array.from(new Set([...readActiveIds(), generationId]));
+      writeActiveIds(ids);
+      trackGeneration(generationId);
+    };
+
+    const bootstrap = async () => {
+      if (!user?.id) return;
+
+      const pendingUnlock = window.localStorage.getItem(PENDING_UNLOCK_KEY)
+        || window.sessionStorage.getItem(PENDING_UNLOCK_KEY);
+      if (pendingUnlock) window.localStorage.setItem(PENDING_UNLOCK_KEY, pendingUnlock);
+
+      const ids = new Set([...readActiveIds(), pendingUnlock].filter(Boolean));
+      try {
+        const historyRes = await fetch(`/api/history/${encodeURIComponent(user.id)}?fresh=${Date.now()}`, {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" },
+        });
+        if (historyRes.ok) {
+          const history = await historyRes.json();
+          history
+            .filter((item) => item.status === "processing" || item.status === "finalizing")
+            .forEach((item) => ids.add(item.id));
+        }
+      } catch (historyError) {
+        console.error("active generation discovery error", historyError);
+      }
+
+      const activeIds = [...ids];
+      writeActiveIds(activeIds.filter((id) => id !== pendingUnlock));
+      if (activeIds.length) {
+        activeGenerationIdRef.current = activeIds[activeIds.length - 1];
+        setLoading(true);
+        onResultChange?.({ loading: true, error: null, result: null });
+        activeIds.forEach((id) => trackGeneration(id));
+      }
+    };
+
+    bootstrap();
     return () => {
       cancelled = true;
-      window.clearTimeout(timer);
+      timers.forEach((timer) => window.clearTimeout(timer));
+      pollGenerationRef.current = null;
     };
   }, [refetchUserData, user?.id]);
 
@@ -90,6 +192,7 @@ export default function ImageGenerator() {
     if (loading || !prompt.trim()) return;
     setError(null);
     setResult(null);
+    onResultChange?.({ loading: true, error: null, result: null });
 
     setLoading(true);
 
@@ -108,21 +211,21 @@ export default function ImageGenerator() {
       if (!res.ok) {
         throw new Error(data.error || "La génération a échoué");
       }
-      setResult({
-        imageUrl: data.imageUrl,
-        teaser: Boolean(data.teaser),
-        generationId: data.generationId,
-      });
-      window.dispatchEvent(new Event("astra-user-data-changed"));
-      if (data.teaser && data.generationId) {
-        window.sessionStorage.setItem("astraPendingGenerationId", data.generationId);
-      } else {
-        window.sessionStorage.removeItem("astraPendingGenerationId");
+      if (data.generationId) {
+        activeGenerationIdRef.current = data.generationId;
+        window.localStorage.setItem(
+          ACTIVE_GENERATIONS_KEY,
+          JSON.stringify([data.generationId]),
+        );
+        setLoading(true);
+        pollGenerationRef.current?.(data.generationId);
       }
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
+      onResultChange?.({ loading: false, error: err.message, result: null });
+    } finally {
+      // Keep the loading state while the persisted OneShot job is running.
     }
   };
 
@@ -210,15 +313,6 @@ export default function ImageGenerator() {
           {loading ? "Génération…" : `Générer — ${GENERATION_COST} crédits`}
         </button>
       </div>
-
-      <ResultDisplay
-        imageUrl={result?.imageUrl}
-        teaser={result?.teaser}
-        loading={loading}
-        loadingMessage="Génération en cours…"
-        loadingSubtext="Cela prend généralement 10 à 30 secondes"
-        error={error}
-      />
 
     </div>
   );

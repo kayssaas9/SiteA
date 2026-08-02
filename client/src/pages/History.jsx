@@ -13,8 +13,14 @@ export default function History() {
     if (!user) return;
     setLoading(true);
     try {
-      const url = `/api/history/${user.id}${query ? `?q=${encodeURIComponent(query)}` : ""}`;
-      const res = await fetch(url);
+      const search = new URLSearchParams();
+      if (query) search.set("q", query);
+      search.set("fresh", Date.now());
+      const url = `/api/history/${user.id}?${search.toString()}`;
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
       if (res.ok) setItems(await res.json());
     } catch (err) {
       console.error("history fetch error", err);
@@ -26,6 +32,18 @@ export default function History() {
   useEffect(() => {
     fetchHistory();
   }, [user?.id, query]);
+
+  // A generation is persisted before OneShot finishes. Keep checking while
+  // one is processing so the history updates even if the generator page was
+  // closed or refreshed.
+  const hasActiveGenerations = items.some(
+    (item) => item.status === "processing" || item.status === "finalizing",
+  );
+  useEffect(() => {
+    if (!user?.id || !hasActiveGenerations) return undefined;
+    const timer = window.setInterval(fetchHistory, 2000);
+    return () => window.clearInterval(timer);
+  }, [user?.id, query, hasActiveGenerations]);
 
   // Refresh history when the user comes back to this tab/page.
   useEffect(() => {
@@ -86,11 +104,22 @@ export default function History() {
           <div className="history-grid">
             {items.map((item, idx) => (
               <div key={item.id} className={`history-card fade-up delay-${Math.min(idx % 4 + 1, 4)}`}>
-                <div className="history-thumb" onClick={() => setPreview(item)}>
+                <div
+                  className="history-thumb"
+                  onClick={() => item.image_url && setPreview(item)}
+                >
                   {item.image_url ? (
                     <div className={`history-image-wrap ${item.unlocked ? "" : "is-teaser"}`}>
                       <img src={item.image_url} alt={item.prompt} loading="lazy" />
                       {!item.unlocked && <span className="history-teaser-badge">À débloquer</span>}
+                    </div>
+                  ) : item.status === "processing" || item.status === "finalizing" ? (
+                    <div className="history-thumb-placeholder history-thumb-processing">
+                      <span>Génération en cours…</span>
+                    </div>
+                  ) : item.status === "failed" ? (
+                    <div className="history-thumb-placeholder history-thumb-failed">
+                      <span>Génération échouée</span>
                     </div>
                   ) : (
                     <div className="history-thumb-placeholder" />
@@ -107,9 +136,9 @@ export default function History() {
                       >
                         ⬇
                       </a>
-                    ) : (
+                    ) : item.status === "completed" ? (
                       <LinkToPricing />
-                    )}
+                    ) : null}
                   </div>
                 </div>
                 <div className="history-meta">

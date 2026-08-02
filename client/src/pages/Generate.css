@@ -51,6 +51,16 @@
   margin: 0 auto 32px;
 }
 
+.generate-result-slot {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto 24px;
+}
+
+.generate-result-slot .result-box {
+  margin-top: 0;
+}
+
 /* Generator card */
 .image-generator-v2 {
   display: flex;

@@ -2,6 +2,7 @@ import { useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ImageGenerator from "../components/ImageGenerator.jsx";
+import ResultDisplay from "../components/ResultDisplay.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Generate.css";
@@ -49,7 +50,9 @@ function PackCheckoutButton({ pack }) {
           priceId,
           clerkUserId: user.id,
           mode: "payment",
-          generationId: window.sessionStorage.getItem("astraPendingGenerationId") || undefined,
+          generationId: window.localStorage.getItem("astraPendingGenerationId")
+            || window.sessionStorage.getItem("astraPendingGenerationId")
+            || undefined,
         }),
       });
       const data = await res.json();
@@ -77,6 +80,11 @@ export default function Generate() {
   const { credits, plan, loading } = useUserData();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
+  const [resultState, setResultState] = useState({
+    loading: false,
+    result: null,
+    error: null,
+  });
 
   useEffect(() => {
     if (isLoaded) {
@@ -117,9 +125,22 @@ export default function Generate() {
             </Link>
           </div>
         ) : isSignedIn ? (
-          <div className="generate-toolbox fade-up delay-2">
-            <ImageGenerator />
+          <>
+          <div className="generate-result-slot fade-up delay-2">
+            <ResultDisplay
+              imageUrl={resultState.result?.imageUrl}
+              teaser={resultState.result?.teaser}
+              loading={resultState.loading}
+              loadingMessage="Génération en cours…"
+              loadingSubtext="Cela prend généralement 10 à 30 secondes"
+              error={resultState.error}
+              showEmpty
+            />
           </div>
+          <div className="generate-toolbox fade-up delay-2">
+            <ImageGenerator onResultChange={setResultState} />
+          </div>
+          </>
         ) : (
           <>
             <div className="generate-auth fade-up delay-2">
