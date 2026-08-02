@@ -11,6 +11,7 @@ export default function ResultDisplay({
   error,
   showEmpty = false,
   showcase = false,
+  onNewGeneration,
 }) {
   if (loading) {
     return (
@@ -104,6 +105,16 @@ export default function ResultDisplay({
               >
                 ⬇ Télécharger la version HD
               </DownloadButton>
+            )}
+
+            {onNewGeneration && (
+              <button
+                type="button"
+                className="result-new-generation"
+                onClick={onNewGeneration}
+              >
+                ← Créer une nouvelle image
+              </button>
             )}
 
             <div className="result-guarantee">

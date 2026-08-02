@@ -132,6 +132,11 @@ export default function Generate() {
                 imageUrl={resultState.result.imageUrl}
                 teaser={resultState.result.teaser}
                 showcase
+                onNewGeneration={() => setResultState({
+                  loading: false,
+                  result: null,
+                  error: null,
+                })}
               />
             </div>
           ) : (
