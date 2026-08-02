@@ -66,26 +66,38 @@ function AppWithReferral() {
   return <RouterProvider router={router} />;
 }
 
+function RequireSignedIn({ children }) {
+  const { isLoaded, isSignedIn } = useUser();
+
+  if (!isLoaded) {
+    return <div className="app-route-loading" aria-live="polite">Chargement…</div>;
+  }
+
+  return isSignedIn ? children : <Navigate to="/" replace />;
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
       { index: true, element: <Landing /> },
-      { path: "generate", element: <Generate /> },
-      { path: "pricing", element: <Pricing /> },
-      { path: "account", element: <Account /> },
-      { path: "history", element: <History /> },
-      { path: "survey", element: <Survey /> },
+      { path: "generate", element: <RequireSignedIn><Generate /></RequireSignedIn> },
+      { path: "pricing", element: <RequireSignedIn><Pricing /></RequireSignedIn> },
+      { path: "account", element: <RequireSignedIn><Account /></RequireSignedIn> },
+      { path: "history", element: <RequireSignedIn><History /></RequireSignedIn> },
+      { path: "survey", element: <RequireSignedIn><Survey /></RequireSignedIn> },
       { path: "mentions-legales", element: <LegalNotices /> },
       { path: "conditions-generales-utilisation", element: <Terms /> },
       { path: "politique-confidentialite", element: <Privacy /> },
       {
         path: "snaprouge",
         element: (
-          <SnapRougeGuard>
-            <SnapRouge />
-          </SnapRougeGuard>
+          <RequireSignedIn>
+            <SnapRougeGuard>
+              <SnapRouge />
+            </SnapRougeGuard>
+          </RequireSignedIn>
         ),
       },
       { path: "*", element: <Navigate to="/" replace /> },

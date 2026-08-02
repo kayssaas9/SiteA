@@ -7,6 +7,7 @@ import { supabaseAdmin } from "./supabase.js";
 const ONESHOT_BASE_URL = "https://api.oneshotapi.com";
 const ONESHOT_API_KEY = process.env.ONESHOT_API_KEY;
 export const GENERATION_COST = 100;
+const MAX_EXPERT_CREDITS = 20000;
 const PREVIEW_BUCKET = "generation-previews";
 
 function isSubscriber(plan) {
@@ -587,12 +588,14 @@ async function grantReferralReward(clerkUserId) {
 
   const { data: referrer } = await supabaseAdmin
     .from("users")
-    .select("credits")
+    .select("plan, credits")
     .eq("clerk_user_id", pendingReferral.referrer_id)
     .single();
 
   if (!referrer) return;
-  const newReferrerCredits = (referrer.credits ?? 0) + 200;
+  const newReferrerCredits = referrer.plan === "expert"
+    ? Math.min(MAX_EXPERT_CREDITS, (referrer.credits ?? 0) + 200)
+    : (referrer.credits ?? 0) + 200;
   const { error: creditError } = await supabaseAdmin
     .from("users")
     .update({ credits: newReferrerCredits })

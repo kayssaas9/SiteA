@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
 import "./Landing.css";
 
@@ -63,6 +64,8 @@ function LiveGenerationCounter() {
 }
 
 export default function Landing() {
+  const { isSignedIn } = useUser();
+
   return (
     <main className="landing-page">
       <div className="blob blob-1" />
@@ -117,6 +120,8 @@ export default function Landing() {
 }
 
 function Examples() {
+  const { isSignedIn } = useUser();
+
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
       <h2 className="examples-title">
@@ -163,7 +168,7 @@ function Examples() {
         Voir plus d'exemples
       </button>
 
-      <Link to="/generate" className="btn btn-primary examples-cta">
+      <Link to={isSignedIn ? "/generate" : "/sign-up"} className="btn btn-primary examples-cta">
         Démarrer avec Astra
       </Link>
     </section>

@@ -1,5 +1,11 @@
 import express from "express";
-import { stripe, PRICE_CREDITS, PRICE_PLANS, SNAP_ROUGE_PRICE } from "../lib/stripe.js";
+import {
+  stripe,
+  PRICE_CREDITS,
+  PRICE_PLANS,
+  SNAP_ROUGE_PRICE,
+  MAX_EXPERT_CREDITS,
+} from "../lib/stripe.js";
 import { supabaseAdmin } from "../lib/supabase.js";
 
 const router = express.Router();
@@ -145,14 +151,24 @@ async function processSubscription(subscription, clerkUserId, generationId) {
     return false;
   }
 
-  if (credits > 0) {
-    await addCredits(clerkUserId, credits);
+  const { data: account } = await supabaseAdmin
+    .from("users")
+    .select("credits")
+    .eq("clerk_user_id", clerkUserId)
+    .single();
+  const planUpdate = { plan };
+  if (plan === "expert") {
+    planUpdate.credits = Math.min(MAX_EXPERT_CREDITS, account?.credits ?? 0);
   }
 
   await supabaseAdmin
     .from("users")
-    .update({ plan })
+    .update(planUpdate)
     .eq("clerk_user_id", clerkUserId);
+
+  if (credits > 0) {
+    await addCredits(clerkUserId, credits);
+  }
   await unlockGeneration(clerkUserId, generationId);
 
   console.log(`🔄 Plan → ${plan}, +${credits} credits added for ${clerkUserId} (subscription ${subscription.id})`);
@@ -160,10 +176,21 @@ async function processSubscription(subscription, clerkUserId, generationId) {
 }
 
 async function addCredits(clerkUserId, amount) {
+  const { data: currentUser } = await supabaseAdmin
+    .from("users")
+    .select("plan, credits")
+    .eq("clerk_user_id", clerkUserId)
+    .single();
+  const cappedAmount = currentUser?.plan === "expert"
+    ? Math.max(0, Math.min(amount, MAX_EXPERT_CREDITS - (currentUser.credits ?? 0)))
+    : amount;
+
+  if (cappedAmount <= 0) return;
+
   // Use a Postgres function to atomically increment credits
   const { error } = await supabaseAdmin.rpc("increment_credits", {
     p_clerk_user_id: clerkUserId,
-    p_amount: amount,
+    p_amount: cappedAmount,
   });
 
   if (error) {
@@ -176,9 +203,13 @@ async function addCredits(clerkUserId, amount) {
       .single();
 
     const current = data?.credits ?? 0;
+    const plan = currentUser?.plan;
+    const nextCredits = plan === "expert"
+      ? Math.min(MAX_EXPERT_CREDITS, current + cappedAmount)
+      : current + cappedAmount;
     await supabaseAdmin
       .from("users")
-      .update({ credits: current + amount })
+      .update({ credits: nextCredits })
       .eq("clerk_user_id", clerkUserId);
   }
 }

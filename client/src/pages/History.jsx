@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import DownloadButton from "../components/DownloadButton.jsx";
 import "./History.css";
@@ -10,7 +10,7 @@ export default function History() {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
 
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     try {
@@ -22,17 +22,56 @@ export default function History() {
         cache: "no-store",
         headers: { "Cache-Control": "no-cache" },
       });
-      if (res.ok) setItems(await res.json());
+      if (res.ok) {
+        const nextItems = await res.json();
+        setItems(nextItems);
+        return nextItems;
+      }
     } catch (err) {
       console.error("history fetch error", err);
     } finally {
       setLoading(false);
     }
-  };
+    return [];
+  }, [query, user?.id]);
 
   useEffect(() => {
     fetchHistory();
-  }, [user?.id, query]);
+  }, [fetchHistory]);
+
+  // Stripe webhooks can finish just after the browser returns from Checkout.
+  // Keep the history in sync so the exact teaser becomes sharp automatically.
+  useEffect(() => {
+    if (!user?.id) return undefined;
+
+    let pendingGenerationId = null;
+    try {
+      pendingGenerationId = window.localStorage.getItem("astraPendingGenerationId")
+        || window.sessionStorage.getItem("astraPendingGenerationId");
+    } catch {
+      pendingGenerationId = null;
+    }
+
+    const checkoutReturned = window.location.search.includes("checkout=success");
+    if (!pendingGenerationId && !checkoutReturned) return undefined;
+
+    let attempts = 0;
+    const timer = window.setInterval(async () => {
+      attempts += 1;
+      const nextItems = await fetchHistory();
+      const unlocked = pendingGenerationId
+        && nextItems.some((item) => item.id === pendingGenerationId && item.unlocked);
+      if (unlocked || attempts >= 20) {
+        if (unlocked) {
+          window.localStorage.removeItem("astraPendingGenerationId");
+          window.sessionStorage.removeItem("astraPendingGenerationId");
+        }
+        window.clearInterval(timer);
+      }
+    }, 1500);
+
+    return () => window.clearInterval(timer);
+  }, [fetchHistory, user?.id]);
 
   // A generation is persisted before OneShot finishes. Keep checking while
   // one is processing so the history updates even if the generator page was
@@ -44,7 +83,7 @@ export default function History() {
     if (!user?.id || !hasActiveGenerations) return undefined;
     const timer = window.setInterval(fetchHistory, 2000);
     return () => window.clearInterval(timer);
-  }, [user?.id, query, hasActiveGenerations]);
+  }, [fetchHistory, hasActiveGenerations]);
 
   // Refresh history when the user comes back to this tab/page.
   useEffect(() => {
@@ -57,7 +96,7 @@ export default function History() {
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("focus", onVisible);
     };
-  }, [user?.id]);
+  }, [fetchHistory, user?.id]);
 
   if (!user) {
     return (

@@ -5,11 +5,12 @@ function toClientGeneration(item) {
   const status = item.status || "completed";
   const completed = status === "completed";
   const unlocked = completed && item.unlocked !== false;
+  const source = unlocked ? item.image_url : item.preview_url;
   return {
     id: item.id,
     mode: item.mode,
     prompt: item.prompt,
-    image_url: completed
+    image_url: completed && source
       ? `/api/generations/${encodeURIComponent(item.id)}/image?clerkUserId=${encodeURIComponent(item.clerk_user_id)}`
       : null,
     unlocked,
