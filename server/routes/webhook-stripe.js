@@ -4,7 +4,6 @@ import {
   PRICE_CREDITS,
   PRICE_PLANS,
   SNAP_ROUGE_PRICE,
-  MAX_EXPERT_CREDITS,
 } from "../lib/stripe.js";
 import { supabaseAdmin } from "../lib/supabase.js";
 
@@ -151,19 +150,9 @@ async function processSubscription(subscription, clerkUserId, generationId) {
     return false;
   }
 
-  const { data: account } = await supabaseAdmin
-    .from("users")
-    .select("credits")
-    .eq("clerk_user_id", clerkUserId)
-    .single();
-  const planUpdate = { plan };
-  if (plan === "expert") {
-    planUpdate.credits = Math.min(MAX_EXPERT_CREDITS, account?.credits ?? 0);
-  }
-
   await supabaseAdmin
     .from("users")
-    .update(planUpdate)
+    .update({ plan })
     .eq("clerk_user_id", clerkUserId);
 
   if (credits > 0) {
@@ -176,21 +165,12 @@ async function processSubscription(subscription, clerkUserId, generationId) {
 }
 
 async function addCredits(clerkUserId, amount) {
-  const { data: currentUser } = await supabaseAdmin
-    .from("users")
-    .select("plan, credits")
-    .eq("clerk_user_id", clerkUserId)
-    .single();
-  const cappedAmount = currentUser?.plan === "expert"
-    ? Math.max(0, Math.min(amount, MAX_EXPERT_CREDITS - (currentUser.credits ?? 0)))
-    : amount;
-
-  if (cappedAmount <= 0) return;
+  if (amount <= 0) return;
 
   // Use a Postgres function to atomically increment credits
   const { error } = await supabaseAdmin.rpc("increment_credits", {
     p_clerk_user_id: clerkUserId,
-    p_amount: cappedAmount,
+    p_amount: amount,
   });
 
   if (error) {
@@ -203,13 +183,9 @@ async function addCredits(clerkUserId, amount) {
       .single();
 
     const current = data?.credits ?? 0;
-    const plan = currentUser?.plan;
-    const nextCredits = plan === "expert"
-      ? Math.min(MAX_EXPERT_CREDITS, current + cappedAmount)
-      : current + cappedAmount;
     await supabaseAdmin
       .from("users")
-      .update({ credits: nextCredits })
+      .update({ credits: current + amount })
       .eq("clerk_user_id", clerkUserId);
   }
 }
