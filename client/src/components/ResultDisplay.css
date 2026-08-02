@@ -80,7 +80,7 @@
 }
 
 .result-visual.is-teaser .result-img {
-  filter: blur(26px);
+  filter: blur(10px);
   transform: scale(1.08);
   user-select: none;
   pointer-events: none;

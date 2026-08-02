@@ -97,7 +97,7 @@
 
 .history-image-wrap.is-teaser img,
 .preview-teaser-image img {
-  filter: blur(24px);
+  filter: blur(10px);
   transform: scale(1.08);
   user-select: none;
   pointer-events: none;
