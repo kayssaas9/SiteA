@@ -53,11 +53,19 @@ export default function SignUp() {
   }
 
   const handleGoogle = async () => {
-    await signUp.authenticateWithRedirect({
-      strategy: "oauth_google",
-      redirectUrl: "/sso-callback",
-      redirectUrlComplete: "/generate",
-    });
+    setLoading(true);
+    setError("");
+
+    try {
+      await signUp.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: `${window.location.origin}/sso-callback`,
+        redirectUrlComplete: `${window.location.origin}/generate`,
+      });
+    } catch (err) {
+      setError(err.errors?.[0]?.message || err.message || "Impossible d’ouvrir Google. Réessaie.");
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -146,9 +154,9 @@ export default function SignUp() {
               <h1 className="auth-title">Créer un compte</h1>
               <p className="auth-subtitle">Rejoins Astra et génère des images IA en quelques secondes.</p>
 
-              <button className="auth-social-btn" onClick={handleGoogle} disabled={loading}>
+              <button type="button" className="auth-social-btn" onClick={handleGoogle} disabled={loading}>
                 <GoogleIcon />
-                Continuer avec Google
+                {loading ? "Connexion à Google…" : "Continuer avec Google"}
               </button>
 
               <div className="auth-divider">

@@ -59,11 +59,19 @@ export default function SignIn() {
   }
 
   const handleGoogle = async () => {
-    await signIn.authenticateWithRedirect({
-      strategy: "oauth_google",
-      redirectUrl: "/sso-callback",
-      redirectUrlComplete: from,
-    });
+    setLoading(true);
+    setError("");
+
+    try {
+      await signIn.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: `${window.location.origin}/sso-callback`,
+        redirectUrlComplete: `${window.location.origin}${from}`,
+      });
+    } catch (err) {
+      setError(err.errors?.[0]?.message || err.message || "Impossible d’ouvrir Google. Réessaie.");
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -210,9 +218,9 @@ export default function SignIn() {
             <h1 className="auth-title">Bon retour</h1>
             <p className="auth-subtitle">Connecte-toi pour accéder à tes crédits et générer des images.</p>
 
-            <button className="auth-social-btn" onClick={handleGoogle} disabled={loading}>
+            <button type="button" className="auth-social-btn" onClick={handleGoogle} disabled={loading}>
               <GoogleIcon />
-              Continuer avec Google
+              {loading ? "Connexion à Google…" : "Continuer avec Google"}
             </button>
 
             <div className="auth-divider">
