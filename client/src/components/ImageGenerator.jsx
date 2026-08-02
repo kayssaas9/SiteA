@@ -33,7 +33,7 @@ const MinusIcon = () => (
   </svg>
 );
 
-export default function ImageGenerator({ onResultChange }) {
+export default function ImageGenerator({ onResultChange, skipResume = false }) {
   const { user } = useUser();
   const { plan, refetch: refetchUserData } = useUserData();
   const [mainPhoto, setMainPhoto] = useState(null);
@@ -187,6 +187,11 @@ export default function ImageGenerator({ onResultChange }) {
     const bootstrap = async () => {
       if (!user?.id) return;
 
+      if (skipResume) {
+        activeGenerationIdRef.current = null;
+        return;
+      }
+
       const pendingUnlock = window.localStorage.getItem(PENDING_UNLOCK_KEY)
         || window.sessionStorage.getItem(PENDING_UNLOCK_KEY);
       if (pendingUnlock) window.localStorage.setItem(PENDING_UNLOCK_KEY, pendingUnlock);
@@ -223,7 +228,7 @@ export default function ImageGenerator({ onResultChange }) {
       timers.forEach((timer) => window.clearTimeout(timer));
       pollGenerationRef.current = null;
     };
-  }, [refetchUserData, user?.id]);
+  }, [refetchUserData, skipResume, user?.id]);
 
   const handleGenerate = async () => {
     const prompt = promptValueRef.current.trim();

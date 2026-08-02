@@ -94,6 +94,7 @@ export default function Generate() {
     result: null,
     error: null,
   });
+  const [startFresh, setStartFresh] = useState(false);
 
   useEffect(() => {
     if (isLoaded) {
@@ -143,6 +144,7 @@ export default function Generate() {
                 showcase
                 onNewGeneration={() => {
                   clearGenerationResumeState();
+                  setStartFresh(true);
                   setResultState({
                     loading: false,
                     result: null,
@@ -153,7 +155,7 @@ export default function Generate() {
             </div>
           ) : (
             <div className={`generate-toolbox fade-up delay-2 ${resultState.loading ? "is-generating" : ""}`}>
-              <ImageGenerator onResultChange={setResultState} />
+              <ImageGenerator onResultChange={setResultState} skipResume={startFresh} />
               {resultState.error && (
                 <div className="generate-inline-error" role="alert">
                   <span aria-hidden="true">⚠️</span>
