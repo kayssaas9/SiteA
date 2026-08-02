@@ -5,3 +5,4 @@
 - [Dev workflow pnpm commands](dev-workflow-pnpm.md) — Use explicit `pnpm run` commands in concurrently or the Express process may exit while Vite stays up.
 - [Teaser unlock security](teaser-unlock-security.md) — Keep original image URLs server-side and unlock only the exact generation attached to payment.
 - [Free teaser quota](free-teaser-quota.md) — Allow one real blurred teaser per zero-credit Clerk account, then require recharge or subscription.
+- [OneShot result URL handling](oneshot-result-urls.md) — Normalize variable image result shapes and reject invalid URLs before fetch or browser APIs.
