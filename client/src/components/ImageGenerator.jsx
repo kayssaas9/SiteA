@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 import ImageUpload from "./ImageUpload.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import "./ImageGenerator.css";
@@ -7,6 +8,11 @@ import "./ImageGenerator.css";
 const GENERATION_COST = 100;
 const ACTIVE_GENERATIONS_KEY = "astraActiveGenerationIds";
 const PENDING_UNLOCK_KEY = "astraPendingGenerationId";
+const PRICING_OPTIONS = [
+  { name: "Basique", price: "9,99 €", details: "2 500 crédits / mois" },
+  { name: "Pro", price: "19,99 €", details: "7 500 crédits / mois" },
+  { name: "Expert", price: "39,99 €", details: "Crédits illimités" },
+];
 
 const PlusIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
@@ -30,6 +36,7 @@ export default function ImageGenerator({ onResultChange }) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showPricingModal, setShowPricingModal] = useState(false);
   const activeGenerationIdRef = useRef(null);
   const pollGenerationRef = useRef(null);
 
@@ -209,6 +216,13 @@ export default function ImageGenerator({ onResultChange }) {
       const data = await res.json();
 
       if (!res.ok) {
+        if (res.status === 402 && data.code === "FREE_TEASER_USED") {
+          setLoading(false);
+          setError(null);
+          setShowPricingModal(true);
+          onResultChange?.({ loading: false, error: null, result: null });
+          return;
+        }
         throw new Error(data.error || "La génération a échoué");
       }
       if (data.generationId) {
@@ -313,6 +327,57 @@ export default function ImageGenerator({ onResultChange }) {
           {loading ? "Génération…" : `Générer — ${GENERATION_COST} crédits`}
         </button>
       </div>
+
+      {showPricingModal && (
+        <div
+          className="pricing-modal-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setShowPricingModal(false);
+          }}
+        >
+          <section
+            className="pricing-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pricing-modal-title"
+          >
+            <button
+              type="button"
+              className="pricing-modal-close"
+              aria-label="Fermer"
+              onClick={() => setShowPricingModal(false)}
+            >
+              ×
+            </button>
+            <div className="pricing-modal-kicker">Il te manque des crédits</div>
+            <h2 id="pricing-modal-title">Choisis ton offre pour générer</h2>
+            <p className="pricing-modal-copy">
+              Ton aperçu gratuit a déjà été utilisé. Active un abonnement pour continuer à générer.
+            </p>
+
+            <div className="pricing-modal-options">
+              {PRICING_OPTIONS.map((option) => (
+                <div className="pricing-modal-option" key={option.name}>
+                  <div>
+                    <strong>{option.name}</strong>
+                    <span>{option.details}</span>
+                  </div>
+                  <b>{option.price}</b>
+                </div>
+              ))}
+            </div>
+
+            <Link
+              to="/pricing"
+              className="btn btn-primary pricing-modal-cta"
+              onClick={() => setShowPricingModal(false)}
+            >
+              Voir les tarifs
+            </Link>
+          </section>
+        </div>
+      )}
 
     </div>
   );
