@@ -1,5 +1,6 @@
-import "./ResultDisplay.css";
 import { Link } from "react-router-dom";
+import DownloadButton from "./DownloadButton.jsx";
+import "./ResultDisplay.css";
 
 export default function ResultDisplay({
   imageUrl,
@@ -73,9 +74,12 @@ export default function ResultDisplay({
                 Débloquer ma photo maintenant
               </Link>
             ) : (
-              <a className="result-showcase-bottom-cta" href={imageUrl} download="astra-resultat.jpg">
+              <DownloadButton
+                className="result-showcase-bottom-cta"
+                imageUrl={imageUrl}
+              >
                 ⬇ Télécharger mon résultat
-              </a>
+              </DownloadButton>
             )}
           </div>
 
@@ -94,9 +98,12 @@ export default function ResultDisplay({
                 Accéder à la version sans floutage
               </Link>
             ) : (
-              <a className="result-showcase-cta" href={imageUrl} download="astra-resultat.jpg">
+              <DownloadButton
+                className="result-showcase-cta"
+                imageUrl={imageUrl}
+              >
                 ⬇ Télécharger la version HD
-              </a>
+              </DownloadButton>
             )}
 
             <div className="result-guarantee">
@@ -150,15 +157,12 @@ export default function ResultDisplay({
         )}
       </div>
       {!teaser && (
-        <a
+        <DownloadButton
           className="result-download"
-          href={imageUrl}
-          download="astra-resultat.jpg"
-          target="_blank"
-          rel="noreferrer"
+          imageUrl={imageUrl}
         >
           ⬇ Télécharger
-        </a>
+        </DownloadButton>
       )}
     </div>
   );

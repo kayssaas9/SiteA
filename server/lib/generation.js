@@ -12,6 +12,19 @@ function isSubscriber(plan) {
   return ["basic", "pro", "expert"].includes(plan);
 }
 
+function normalizeHttpUrl(value) {
+  if (typeof value !== "string" || !value.trim()) return null;
+
+  const candidate = value.trim();
+  try {
+    const parsed = new URL(candidate);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
 async function oneshotFetch(path, opts = {}) {
   const res = await fetch(`${ONESHOT_BASE_URL}${path}`, {
     ...opts,
@@ -69,7 +82,12 @@ async function uploadToOneShot(file) {
   });
 
   const { fileId, uploadUrl, requiredHeaders } = signData;
-  const uploadRes = await fetch(uploadUrl, {
+  const validUploadUrl = normalizeHttpUrl(uploadUrl);
+  if (!validUploadUrl) {
+    throw new Error("OneShot a retourné une URL d'upload invalide.");
+  }
+
+  const uploadRes = await fetch(validUploadUrl, {
     method: "PUT",
     headers: { ...requiredHeaders, "Content-Length": sizeBytes },
     body: normalizedBuffer,
@@ -93,14 +111,27 @@ async function getOneShotJob(jobId) {
 
 function getJobImageUrl(job) {
   const result = job?.result || {};
-  return (
-    result.url ||
-    result.image_url ||
-    result.imageUrl ||
-    result.output ||
-    result.image ||
-    null
-  );
+  const candidates = [
+    result,
+    result.url,
+    result.image_url,
+    result.imageUrl,
+    result.output,
+    result.image,
+    result.images,
+    job?.output,
+    job?.images,
+  ].flat(Infinity);
+
+  for (const candidate of candidates) {
+    const candidateValue = typeof candidate === "object" && candidate !== null
+      ? candidate.url || candidate.image_url || candidate.imageUrl
+      : candidate;
+    const validUrl = normalizeHttpUrl(candidateValue);
+    if (validUrl) return validUrl;
+  }
+
+  return null;
 }
 
 function clientGeneration(row, error = null) {
@@ -304,7 +335,10 @@ export async function getGenerationStatus(generationId, clerkUserId) {
   }
 
   const imageUrl = getJobImageUrl(job);
-  if (job.status !== "completed" || !imageUrl) return clientGeneration(row);
+  if (job.status !== "completed") return clientGeneration(row);
+  if (!imageUrl) {
+    return failGeneration(row, "OneShot n'a pas retourné une URL d'image valide. Réessayez avec une autre image.");
+  }
 
   return finalizeGeneration(row, imageUrl);
 }

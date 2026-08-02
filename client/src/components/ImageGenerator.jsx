@@ -14,6 +14,13 @@ const PRICING_OPTIONS = [
   { name: "Expert", price: "39,99 €", details: "Crédits illimités" },
 ];
 
+function getFriendlyGenerationError(message) {
+  if (/string did not match the pattern|invalid url|url d.?image/i.test(message || "")) {
+    return "Le service d’image a renvoyé un résultat invalide. Réessaie avec une autre image ou description.";
+  }
+  return message || "La génération a échoué.";
+}
+
 const PlusIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
     <path d="M12 5v14M5 12h14" />
@@ -110,8 +117,9 @@ export default function ImageGenerator({ onResultChange }) {
       if (data.status === "failed") {
         if (isCurrent) {
           setLoading(false);
-          setError(data.error || "La génération a échoué.");
-          onResultChange?.({ loading: false, error: data.error || "La génération a échoué.", result: null });
+          const friendlyError = getFriendlyGenerationError(data.error);
+          setError(friendlyError);
+          onResultChange?.({ loading: false, error: friendlyError, result: null });
         }
         if (window.localStorage.getItem(PENDING_UNLOCK_KEY) === generationId) {
           window.localStorage.removeItem(PENDING_UNLOCK_KEY);
@@ -238,9 +246,10 @@ export default function ImageGenerator({ onResultChange }) {
         pollGenerationRef.current?.(data.generationId);
       }
     } catch (err) {
-      setError(err.message);
+      const friendlyError = getFriendlyGenerationError(err.message);
+      setError(friendlyError);
       setLoading(false);
-      onResultChange?.({ loading: false, error: err.message, result: null });
+      onResultChange?.({ loading: false, error: friendlyError, result: null });
     } finally {
       // Keep the loading state while the persisted OneShot job is running.
     }

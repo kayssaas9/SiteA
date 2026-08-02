@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
+import DownloadButton from "../components/DownloadButton.jsx";
 import "./History.css";
 
 export default function History() {
@@ -127,15 +128,12 @@ export default function History() {
                   <div className="history-thumb-overlay">
                     <button className="thumb-action" title="Agrandir">👁</button>
                     {item.unlocked ? (
-                      <a
-                        href={item.image_url}
-                        download
+                       <DownloadButton
                         className="thumb-action"
-                        title="Télécharger"
-                        onClick={(e) => e.stopPropagation()}
+                         imageUrl={item.image_url}
                       >
                         ⬇
-                      </a>
+                       </DownloadButton>
                     ) : item.status === "completed" ? (
                       <LinkToPricing />
                     ) : null}

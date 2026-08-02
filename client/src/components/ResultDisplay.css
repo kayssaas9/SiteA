@@ -105,6 +105,56 @@
   transition: transform 0.2s, filter 0.2s, box-shadow 0.2s;
 }
 
+.result-showcase-bottom-cta:disabled,
+.result-showcase-cta:disabled,
+.result-download:disabled {
+  cursor: wait;
+  opacity: 0.9;
+}
+
+.result-download-wrap {
+  width: 100%;
+}
+
+.history-thumb-overlay .result-download-wrap {
+  display: contents;
+}
+
+.result-download-progress-content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  gap: 6px;
+}
+
+.result-download-progress-track {
+  display: block;
+  width: min(100%, 240px);
+  height: 4px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(3, 6, 9, 0.35);
+}
+
+.result-download-progress-bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #fff;
+  transition: width 0.12s linear;
+}
+
+.result-download-error {
+  display: block;
+  margin-top: 6px;
+  color: #fca5a5;
+  font-size: 11px;
+  text-align: center;
+}
+
 .result-showcase-bottom-cta:hover,
 .result-showcase-cta:hover {
   transform: translateY(-2px);
@@ -466,6 +516,10 @@
   text-decoration: none;
   border-top: 1px solid var(--border);
   transition: background 0.2s;
+}
+
+.result-download-wrap > .result-download {
+  width: 100%;
 }
 
 .result-download:hover {
