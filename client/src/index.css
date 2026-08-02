@@ -141,3 +141,29 @@ a {
   0%, 100% { box-shadow: 0 0 0 rgba(35, 136, 255, 0); }
   50% { box-shadow: 0 0 24px rgba(35, 136, 255, 0.2); }
 }
+
+@media (max-width: 720px) {
+  /* Avoid expensive animated blur layers while the user is typing on mobile. */
+  .blob {
+    filter: none;
+    opacity: 0.08;
+    animation: none;
+  }
+
+  .fade-up,
+  .scale-in {
+    animation-duration: 0.25s;
+    will-change: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

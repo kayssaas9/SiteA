@@ -32,11 +32,13 @@ export default function ImageGenerator({ onResultChange }) {
   const [mainPhoto, setMainPhoto] = useState(null);
   const [refs, setRefs] = useState({ ref1: null, ref2: null });
   const [showRefs, setShowRefs] = useState(false);
-  const [prompt, setPrompt] = useState("");
+  const [hasPrompt, setHasPrompt] = useState(false);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPricingModal, setShowPricingModal] = useState(false);
+  const promptValueRef = useRef("");
+  const promptRef = useRef(null);
   const activeGenerationIdRef = useRef(null);
   const pollGenerationRef = useRef(null);
 
@@ -196,7 +198,8 @@ export default function ImageGenerator({ onResultChange }) {
   }, [refetchUserData, user?.id]);
 
   const handleGenerate = async () => {
-    if (loading || !prompt.trim()) return;
+    const prompt = promptValueRef.current.trim();
+    if (loading || !prompt) return;
     setError(null);
     setResult(null);
     onResultChange?.({ loading: true, error: null, result: null });
@@ -330,8 +333,15 @@ export default function ImageGenerator({ onResultChange }) {
         <textarea
           className="gen-textarea"
           placeholder="Décris précisément le résultat (ex : remplace par une GT3RS noire, jantes forgées)..."
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
+          ref={promptRef}
+          defaultValue={promptValueRef.current}
+          onInput={(e) => {
+            promptValueRef.current = e.currentTarget.value;
+            const nextHasPrompt = Boolean(e.currentTarget.value.trim());
+            setHasPrompt((previous) => (
+              previous === nextHasPrompt ? previous : nextHasPrompt
+            ));
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -346,7 +356,7 @@ export default function ImageGenerator({ onResultChange }) {
         <button
           className="gen-btn"
           onClick={handleGenerate}
-          disabled={loading || !prompt.trim()}
+          disabled={loading || !hasPrompt}
         >
           {loading ? "Génération…" : `Générer — ${GENERATION_COST} crédits`}
         </button>
