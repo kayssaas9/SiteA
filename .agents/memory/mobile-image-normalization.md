@@ -7,4 +7,4 @@ Mobile pickers may provide an empty MIME type and iPhone photos may be HEIC/HEIF
 
 **Why:** Desktop uploads are commonly JPEG/PNG, while mobile uploads can otherwise reach OneShot with a mismatched MIME or unsupported HEIC bytes and surface the opaque “The string did not match the pattern” error.
 
-**How to apply:** Keep `sharp` as the normalizer and use the dedicated HEIC decoder only as its fallback; never send an unconverted source while naming it `.jpg`.
+**How to apply:** Keep `sharp` as the normalizer and use the dedicated HEIC decoder only as its fallback; never send an unconverted source while naming it `.jpg`. For Safari multipart requests, preserve the bytes but append a sliced Blob with a fixed ASCII filename and safe MIME metadata.
