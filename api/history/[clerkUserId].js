@@ -9,7 +9,9 @@ function toClientGeneration(item) {
     id: item.id,
     mode: item.mode,
     prompt: item.prompt,
-    image_url: completed ? (unlocked ? item.image_url : item.preview_url) : null,
+    image_url: completed
+      ? `/api/generations/${encodeURIComponent(item.id)}/image?clerkUserId=${encodeURIComponent(item.clerk_user_id)}`
+      : null,
     unlocked,
     status,
     error: item.error_message || null,
@@ -27,7 +29,7 @@ export default async function handler(req, res) {
   const query = typeof req.query.q === "string" ? req.query.q.trim() : "";
   let request = supabaseAdmin
     .from("generations")
-    .select("id, mode, prompt, image_url, preview_url, unlocked, status, error_message, created_at")
+    .select("id, clerk_user_id, mode, prompt, image_url, preview_url, unlocked, status, error_message, created_at")
     .eq("clerk_user_id", clerkUserId)
     .order("created_at", { ascending: false });
 
@@ -50,7 +52,7 @@ export default async function handler(req, res) {
 
     const refreshed = await supabaseAdmin
       .from("generations")
-      .select("id, mode, prompt, image_url, preview_url, unlocked, status, error_message, created_at")
+      .select("id, clerk_user_id, mode, prompt, image_url, preview_url, unlocked, status, error_message, created_at")
       .eq("clerk_user_id", clerkUserId)
       .order("created_at", { ascending: false });
     data = refreshed.data ?? data;
