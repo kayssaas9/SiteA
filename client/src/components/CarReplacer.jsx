@@ -19,7 +19,7 @@ export default function CarReplacer() {
   const [error, setError] = useState(null);
 
   const handleGenerate = async () => {
-    if (!prompt.trim()) return;
+    if (loading || !prompt.trim()) return;
     setLoading(true);
     setError(null);
     setResult(null);
@@ -75,6 +75,12 @@ export default function CarReplacer() {
           placeholder="Ex. : une Lamborghini Urus bleue nuit garée à Monaco au coucher du soleil"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleGenerate();
+            }
+          }}
           rows={3}
         />
       </div>

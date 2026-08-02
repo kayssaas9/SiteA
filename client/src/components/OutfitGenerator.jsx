@@ -18,7 +18,7 @@ export default function OutfitGenerator() {
   const [error, setError] = useState(null);
 
   const handleGenerate = async () => {
-    if (!prompt.trim()) return;
+    if (loading || !prompt.trim()) return;
     setLoading(true);
     setError(null);
     setResult(null);
@@ -74,6 +74,12 @@ export default function OutfitGenerator() {
           placeholder="Ex. : une tenue streetwear toute noire avec un hoodie oversize et un cargo"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleGenerate();
+            }
+          }}
           rows={3}
         />
       </div>

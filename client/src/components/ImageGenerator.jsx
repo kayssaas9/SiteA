@@ -117,7 +117,7 @@ export default function ImageGenerator() {
   }, [refetchUserData, user?.id]);
 
   const handleGenerate = async () => {
-    if (!prompt.trim()) return;
+    if (loading || !prompt.trim()) return;
     setError(null);
     setResult(null);
 
@@ -232,6 +232,12 @@ export default function ImageGenerator() {
           placeholder="Décris précisément le résultat (ex : remplace par une GT3RS noire, jantes forgées)..."
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleGenerate();
+            }
+          }}
           rows={4}
         />
       </div>
