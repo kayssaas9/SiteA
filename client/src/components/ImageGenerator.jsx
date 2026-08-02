@@ -15,6 +15,9 @@ const PRICING_OPTIONS = [
 ];
 
 function getFriendlyGenerationError(message) {
+  if (/ne peut pas être convertie|format.*(jpg|png)|heic|heif/i.test(message || "")) {
+    return "Cette photo mobile n’est pas compatible. Enregistre-la en JPG ou PNG, puis réessaie.";
+  }
   if (/string did not match the pattern|invalid url|url d.?image/i.test(message || "")) {
     return "Le service d’image a renvoyé un résultat invalide. Réessaie avec une autre image ou description.";
   }

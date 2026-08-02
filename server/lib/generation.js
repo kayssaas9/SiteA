@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import sharp from "sharp";
+import heicConvert from "heic-convert";
 import { randomUUID } from "crypto";
 import { supabaseAdmin } from "./supabase.js";
 
@@ -55,24 +56,48 @@ async function oneshotFetch(path, opts = {}) {
 }
 
 async function normalizeImage(buffer) {
-  return sharp(buffer)
-    .rotate()
-    .jpeg({ quality: 92, progressive: true })
-    .toBuffer();
+  try {
+    return await sharp(buffer)
+      .rotate()
+      .jpeg({ quality: 92, progressive: true })
+      .toBuffer();
+  } catch (sharpError) {
+    // sharp in the production image does not always include HEIC support.
+    // Use the dedicated decoder for iPhone HEIC/HEIF uploads, then keep the
+    // same JPEG normalization pipeline for the rest of the upload flow.
+    try {
+      const jpegBuffer = await heicConvert({
+        buffer,
+        format: "JPEG",
+        quality: 0.92,
+      });
+      return sharp(jpegBuffer)
+        .rotate()
+        .jpeg({ quality: 92, progressive: true })
+        .toBuffer();
+    } catch (heicError) {
+      heicError.cause = sharpError;
+      throw heicError;
+    }
+  }
 }
 
 async function uploadToOneShot(file) {
   let normalizedBuffer;
+
   try {
     normalizedBuffer = await normalizeImage(file.buffer);
-  } catch (normalizeErr) {
-    console.warn("Image normalization failed, using original buffer:", normalizeErr.message);
-    normalizedBuffer = file.buffer;
+  } catch (normalizeError) {
+    console.error("Mobile image normalization failed:", normalizeError.message);
+    throw new Error(
+      "Cette photo ne peut pas être convertie. Choisis une image JPG ou PNG, puis réessaie.",
+    );
   }
 
-  const filename = file.originalname
-    ? file.originalname.replace(/\.[^.]+$/, ".jpg")
-    : "reference.jpg";
+  // Never send an unconverted HEIC/HEIF or device-specific image to OneShot
+  // while labelling it as JPEG. Mobile cameras commonly provide those
+  // formats even though desktop uploads are usually already JPEG/PNG.
+  const filename = `reference-${randomUUID()}.jpg`;
   const contentType = "image/jpeg";
   const sizeBytes = normalizedBuffer.length;
 

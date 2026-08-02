@@ -9,3 +9,4 @@
 - [Generation reset and resume](generation-reset-resume.md) — An explicit new-generation action must bypass one automatic history-resume pass.
 - [Generation entitlements](generation-entitlements.md) — 100 credits unlock a full render; the blurred teaser is only for zero-credit free accounts.
 - [Generation counting](generation-counting.md) — Count finalized generations on the database transition to completed, including successful teasers.
+- [Mobile image normalization](mobile-image-normalization.md) — Accept MIME-less mobile images and convert HEIC/HEIF to JPEG before OneShot.

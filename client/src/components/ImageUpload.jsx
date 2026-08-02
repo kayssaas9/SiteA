@@ -21,8 +21,22 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
   const [dragging, setDragging] = useState(false);
 
   const handleFile = (file) => {
-    if (!file || !file.type.startsWith("image/")) return;
-    const url = URL.createObjectURL(file);
+    if (!file) return;
+
+    // Some mobile pickers provide an empty MIME type, especially for HEIC
+    // photos. Let the server inspect and normalize the actual image bytes.
+    const hasImageType = file.type?.startsWith("image/");
+    const hasImageExtension = /\.(jpe?g|png|webp|heic|heif)$/i.test(file.name || "");
+    if (!hasImageType && !hasImageExtension) return;
+
+    let url;
+    try {
+      url = window.URL?.createObjectURL?.(file);
+    } catch (previewError) {
+      console.error("mobile image preview error", previewError);
+      return;
+    }
+    if (!url) return;
     onChange({ file, preview: url });
   };
 
@@ -76,7 +90,7 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
         style={{ display: "none" }}
         onChange={(e) => handleFile(e.target.files[0])}
       />
