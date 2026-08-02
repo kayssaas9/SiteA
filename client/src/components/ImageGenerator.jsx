@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import ImageUpload from "./ImageUpload.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import { getSafeUrl } from "../lib/safeUrl.js";
+import { appendUploadFile } from "../lib/mobileUpload.js";
 import "./ImageGenerator.css";
 
 const GENERATION_COST = 100;
@@ -277,12 +278,23 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
         unlockedCount >= 1 ? refs.ref1?.file || null : null,
         unlockedCount >= 2 ? refs.ref2?.file || null : null,
       ];
-      if (mainFile) form.append("image", mainFile);
-      if (ref1File) form.append("reference_1", ref1File);
-      if (ref2File) form.append("reference_2", ref2File);
+       appendUploadFile(form, "image", mainFile);
+       appendUploadFile(form, "reference_1", ref1File, "astra-reference-1.jpg");
+       appendUploadFile(form, "reference_2", ref2File, "astra-reference-2.jpg");
 
-      const res = await fetch("/api/generate", { method: "POST", body: form });
-      const data = await res.json();
+       const res = await fetch("/api/generate", {
+         method: "POST",
+         body: form,
+         cache: "no-store",
+         headers: { Accept: "application/json" },
+       });
+       const responseText = await res.text();
+       let data = {};
+       try {
+         data = responseText ? JSON.parse(responseText) : {};
+       } catch {
+         throw new Error(`Le serveur a renvoyé une réponse invalide (${res.status}).`);
+       }
 
       if (!res.ok) {
         if (res.status === 402) {

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { appendUploadFile } from "../lib/mobileUpload.js";
 import "./ImageUpload.css";
 
 const CameraIcon = () => (
@@ -31,7 +32,7 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
 
     let cancelled = false;
     const form = new FormData();
-    form.append("image", value.file);
+    appendUploadFile(form, "image", value.file);
     setPreviewUrl(null);
     setPreviewState("loading");
 
