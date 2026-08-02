@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
 import "./Landing.css";
 
 const CUSTOMER_REVIEWS = [
@@ -48,21 +49,14 @@ function HeroBackground() {
 }
 
 function LiveGenerationCounter() {
-  const [count] = useState(() => {
-    const today = new Date();
-    const dateSeed = today.getFullYear() * 10000
-      + (today.getMonth() + 1) * 100
-      + today.getDate();
-    const dailyVariation = (dateSeed * 9301 + 49297) % 233280;
-    return 10000 + Math.floor((dailyVariation / 233280) * 10001);
-  });
+  const [count] = useState(formatDailyGenerationCount);
 
   return (
     <div className="live-generation-counter" aria-live="polite">
       <span className="live-counter-people" aria-hidden="true">
         🧑🏻‍🦰👩🏼‍🦱🧑🏽‍🦲
       </span>
-      <strong>{count.toLocaleString("fr-FR")}</strong>
+      <strong>{count}</strong>
       <span>personnes ont généré une image aujourd'hui</span>
     </div>
   );

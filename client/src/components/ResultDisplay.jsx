@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import DownloadButton from "./DownloadButton.jsx";
+import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
 import "./ResultDisplay.css";
 
 export default function ResultDisplay({
@@ -46,6 +47,7 @@ export default function ResultDisplay({
   if (!imageUrl) return null;
 
   if (showcase) {
+    const generationCount = formatDailyGenerationCount();
     const reviews = [
       { author: "Arthur_M78", text: "Cette IA me met une tempête aux autres, je vous recommande !" },
       { author: "Sarah_H", text: "Super réaliste, j'étais un peu sceptique au début mais c'est absolument parfait." },
@@ -67,7 +69,7 @@ export default function ResultDisplay({
             </div>
             <div className="result-social-proof">
               <span className="result-social-avatars" aria-hidden="true">👥</span>
-              <strong>21 298</strong> personnes ont généré une image aujourd'hui
+              <strong>{generationCount}</strong> personnes ont généré une image aujourd'hui
             </div>
             {teaser ? (
               <Link className="result-showcase-bottom-cta" to="/pricing">
@@ -125,7 +127,7 @@ export default function ResultDisplay({
 
             <div className="result-showcase-stats">
               <span className="result-stat-avatars" aria-hidden="true">👨🏻‍🚀👩🏽‍🎨🧑🏼‍🔧</span>
-              <strong>21 298</strong>
+              <strong>{generationCount}</strong>
               <span>personnes ont généré une photo aujourd'hui</span>
             </div>
 
