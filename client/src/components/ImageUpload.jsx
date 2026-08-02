@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { appendUploadFile } from "../lib/mobileUpload.js";
+import { appendUploadFile, prepareUploadFile } from "../lib/mobileUpload.js";
 import "./ImageUpload.css";
 
 const CameraIcon = () => (
@@ -31,6 +31,12 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
     }
 
     let cancelled = false;
+    if (typeof value.preview === "string" && value.preview) {
+      setPreviewUrl(value.preview);
+      setPreviewState("ready");
+      return undefined;
+    }
+
     const form = new FormData();
     appendUploadFile(form, "image", value.file);
     setPreviewUrl(null);
@@ -63,9 +69,9 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
     return () => {
       cancelled = true;
     };
-  }, [value?.file]);
+  }, [value?.file, value?.preview]);
 
-  const handleFile = (file) => {
+  const handleFile = async (file) => {
     if (!file) return;
 
     // Some mobile pickers provide an empty MIME type, especially for HEIC
@@ -74,7 +80,13 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
     const hasImageExtension = /\.(jpe?g|png|webp|heic|heif)$/i.test(file.name || "");
     if (!hasImageType && !hasImageExtension) return;
 
-    onChange({ file, preview: null });
+    try {
+      const prepared = await prepareUploadFile(file);
+      onChange(prepared);
+    } catch (prepareError) {
+      console.warn("Mobile image preparation failed, keeping original.", prepareError);
+      onChange({ file, preview: null });
+    }
   };
 
   const onDrop = (e) => {
