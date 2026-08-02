@@ -538,8 +538,9 @@ export async function createGeneration(req, res) {
       return res.status(500).json({ error: "Impossible de charger votre compte." });
     }
 
+    const subscriber = isSubscriber(user.plan);
     let currentCredits = user.credits ?? 0;
-    if (currentCredits <= 0) {
+    if (currentCredits <= 0 && !subscriber) {
       freeTeaserClaimed = await claimFreeTeaser(clerkUserId);
 
       if (!freeTeaserClaimed) {
@@ -548,17 +549,24 @@ export async function createGeneration(req, res) {
         const refreshedUser = await ensureUser(clerkUserId);
         currentCredits = refreshedUser?.credits ?? 0;
 
-        if (currentCredits <= 0) {
-          return res.status(402).json({
-            code: "FREE_TEASER_USED",
-            error: "Votre aperçu gratuit a déjà été utilisé. Rechargez vos crédits ou abonnez-vous pour générer un nouveau résultat.",
-          });
-        }
       }
     }
 
-    const subscriber = isSubscriber(user.plan);
-    const teaser = freeTeaserClaimed || !subscriber || currentCredits < GENERATION_COST;
+    if (!freeTeaserClaimed && currentCredits < GENERATION_COST) {
+      const isFreeAccountWithoutCredits = !subscriber && currentCredits <= 0;
+      return res.status(402).json({
+        code: isFreeAccountWithoutCredits ? "FREE_TEASER_USED" : "INSUFFICIENT_CREDITS",
+        error: isFreeAccountWithoutCredits
+          ? "Votre aperçu gratuit a déjà été utilisé. Rechargez vos crédits ou abonnez-vous pour générer un nouveau résultat."
+          : `Il vous faut au moins ${GENERATION_COST} crédits pour générer une image nette.`,
+      });
+    }
+
+    if (freeTeaserClaimed) {
+      currentCredits = 0;
+    }
+
+    const teaser = freeTeaserClaimed;
 
     const files = req.files || {};
     const allFiles = [
@@ -578,12 +586,14 @@ export async function createGeneration(req, res) {
     }
 
     const trimmedPrompt = prompt.trim();
-    let finalPrompt = trimmedPrompt;
+    let finalPrompt = `${trimmedPrompt}
+
+Create the final image as a vertical 9:16 portrait composition, with the complete car visible and centered in frame.`;
     if (referenceFileIds.length > 0) {
       if (mode === "car") {
-        finalPrompt = `Replace the main vehicle in the reference image completely with: ${trimmedPrompt}. Preserve the background, lighting, and camera angle. Do not keep the original car body or add superficial details on top of it — the vehicle must be fully replaced.`;
+        finalPrompt = `Replace the main vehicle in the reference image completely with: ${trimmedPrompt}. Preserve the background, lighting, and camera angle. Do not keep the original car body or add superficial details on top of it — the vehicle must be fully replaced. Create the final image as a vertical 9:16 portrait composition, with the complete car visible and centered in frame.`;
       } else if (mode === "outfit") {
-        finalPrompt = `Apply the following outfit to the person in the reference image: ${trimmedPrompt}. Preserve the person's pose, body shape, background, and lighting. The original clothing should be fully replaced, not just covered with accessories.`;
+        finalPrompt = `Apply the following outfit to the person in the reference image: ${trimmedPrompt}. Preserve the person's pose, body shape, background, and lighting. The original clothing should be fully replaced, not just covered with accessories. Create the final image as a vertical 9:16 portrait composition, with the complete subject visible and centered in frame.`;
       }
     }
 

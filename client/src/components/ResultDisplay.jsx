@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import DownloadButton from "./DownloadButton.jsx";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
@@ -14,6 +15,23 @@ export default function ResultDisplay({
   showcase = false,
   onNewGeneration,
 }) {
+  const imageFrameRef = useRef(null);
+
+  const handleFullscreen = async () => {
+    const frame = imageFrameRef.current;
+    if (!frame) return;
+
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else if (frame.requestFullscreen) {
+        await frame.requestFullscreen();
+      }
+    } catch (fullscreenError) {
+      console.error("fullscreen error", fullscreenError);
+    }
+  };
+
   if (loading) {
     return (
       <div className="result-box loading">
@@ -45,6 +63,35 @@ export default function ResultDisplay({
   }
 
   if (!imageUrl) return null;
+
+  if (showcase && !teaser) {
+    return (
+      <div className="result-box result-credit-showcase">
+        <div className="result-credit-image-frame" ref={imageFrameRef}>
+          <img className="result-credit-image" src={imageUrl} alt="Résultat généré" />
+        </div>
+
+        <div className="result-credit-actions">
+          <Link className="result-credit-action result-credit-action-snaprouge" to="/snaprouge">
+            Envoyer avec SnapRouge
+          </Link>
+          <DownloadButton
+            className="result-credit-action result-credit-action-download"
+            imageUrl={imageUrl}
+          >
+            Télécharger
+          </DownloadButton>
+          <button
+            type="button"
+            className="result-credit-action result-credit-action-fullscreen"
+            onClick={handleFullscreen}
+          >
+            Agrandir
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (showcase) {
     const generationCount = formatDailyGenerationCount();

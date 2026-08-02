@@ -45,6 +45,9 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
   const [generationProgress, setGenerationProgress] = useState(0);
   const [error, setError] = useState(null);
   const [showPricingModal, setShowPricingModal] = useState(false);
+  const [pricingMessage, setPricingMessage] = useState(
+    "Ton aperçu gratuit a déjà été utilisé. Active un abonnement pour continuer à générer.",
+  );
   const promptValueRef = useRef("");
   const promptRef = useRef(null);
   const activeGenerationIdRef = useRef(null);
@@ -252,9 +255,14 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 402 && data.code === "FREE_TEASER_USED") {
+        if (res.status === 402) {
           setLoading(false);
           setError(null);
+          setPricingMessage(
+            data.code === "INSUFFICIENT_CREDITS"
+              ? "Il te faut au moins 100 crédits pour générer une image nette. Recharge ton compte pour continuer."
+              : "Ton aperçu gratuit a déjà été utilisé. Active un abonnement pour continuer à générer.",
+          );
           setShowPricingModal(true);
           onResultChange?.({ loading: false, error: null, result: null });
           return;
@@ -437,7 +445,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
             <div className="pricing-modal-kicker">Il te manque des crédits</div>
             <h2 id="pricing-modal-title">Choisis ton offre pour générer</h2>
             <p className="pricing-modal-copy">
-              Ton aperçu gratuit a déjà été utilisé. Active un abonnement pour continuer à générer.
+              {pricingMessage}
             </p>
 
             <div className="pricing-modal-options">

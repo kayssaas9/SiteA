@@ -7,3 +7,4 @@
 - [Free teaser quota](free-teaser-quota.md) — Allow one real blurred teaser per zero-credit Clerk account, then require recharge or subscription.
 - [OneShot result URL handling](oneshot-result-urls.md) — Normalize variable image result shapes and reject invalid URLs before fetch or browser APIs.
 - [Generation reset and resume](generation-reset-resume.md) — An explicit new-generation action must bypass one automatic history-resume pass.
+- [Generation entitlements](generation-entitlements.md) — 100 credits unlock a full render; the blurred teaser is only for zero-credit free accounts.
