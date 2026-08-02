@@ -15,6 +15,16 @@ const PRICING_OPTIONS = [
   { name: "Expert", price: "39,99 €", details: "Crédits illimités" },
 ];
 
+const GENERATION_MESSAGES = [
+  "Analyse de ta photo",
+  "Ajustement de la lumière",
+  "Activation du rendu cinématique",
+  "Reconstruction des détails de la voiture",
+  "Harmonisation des couleurs",
+  "Ajout des finitions réalistes",
+  "Dernière vérification du rendu",
+];
+
 function getFriendlyGenerationError(message) {
   if (/ne peut pas être convertie|format.*(jpg|png)|heic|heif/i.test(message || "")) {
     return "Cette photo mobile n’est pas compatible. Enregistre-la en JPG ou PNG, puis réessaie.";
@@ -47,6 +57,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
+  const [generationMessageIndex, setGenerationMessageIndex] = useState(0);
   const [error, setError] = useState(null);
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [pricingMessage, setPricingMessage] = useState(
@@ -62,10 +73,16 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
   useEffect(() => {
     if (!loading) {
       setGenerationProgress(0);
+      setGenerationMessageIndex(0);
       return undefined;
     }
 
     setGenerationProgress((current) => Math.max(current, 8));
+    const messageTimer = window.setInterval(() => {
+      setGenerationMessageIndex((current) => (
+        (current + 1) % GENERATION_MESSAGES.length
+      ));
+    }, 3000);
     const progressTimer = window.setInterval(() => {
       setGenerationProgress((current) => {
         if (current >= 92) return current;
@@ -74,7 +91,10 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
       });
     }, 1200);
 
-    return () => window.clearInterval(progressTimer);
+    return () => {
+      window.clearInterval(progressTimer);
+      window.clearInterval(messageTimer);
+    };
   }, [loading]);
 
   const handleRefChange = (slot, value) => {
@@ -302,12 +322,12 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
     return (
       <div className="generation-progress" role="status" aria-live="polite">
         <div className="generation-progress-orbit" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-          <div className="generation-progress-spark">✦</div>
+          <span className="generation-progress-arc" />
+          <strong className="generation-progress-mark">A</strong>
         </div>
-        <p className="generation-progress-title">Ton rendu est en préparation</p>
+        <p className="generation-progress-title">
+          {GENERATION_MESSAGES[generationMessageIndex]}
+        </p>
         <p className="generation-progress-subtitle">
           Astra transforme ta photo en une image ultra-réaliste…
         </p>
@@ -328,7 +348,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
           </div>
         </div>
         <div className="generation-progress-steps" aria-hidden="true">
-          <span className="active">Analyse de ta photo</span>
+          <span className="active">{GENERATION_MESSAGES[generationMessageIndex]}</span>
           <i />
           <span>Création du rendu</span>
           <i />

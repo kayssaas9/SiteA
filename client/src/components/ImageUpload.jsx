@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./ImageUpload.css";
 
 const CameraIcon = () => (
@@ -19,6 +19,34 @@ const PhotoPlusIcon = () => (
 export default function ImageUpload({ label, hint, onChange, value, variant = "default" }) {
   const inputRef = useRef(null);
   const [dragging, setDragging] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    if (!value?.file || typeof window === "undefined") {
+      setPreviewUrl(null);
+      return undefined;
+    }
+
+    const file = value.file;
+    const isHeic = /heic|heif/i.test(`${file.type || ""} ${file.name || ""}`);
+    if (isHeic || typeof window.URL?.createObjectURL !== "function") {
+      setPreviewUrl(null);
+      return undefined;
+    }
+
+    let url = null;
+    try {
+      url = window.URL.createObjectURL(file);
+      setPreviewUrl(url);
+    } catch (previewError) {
+      console.warn("Aperçu local indisponible, upload maintenu.", previewError);
+      setPreviewUrl(null);
+    }
+
+    return () => {
+      if (url) window.URL.revokeObjectURL(url);
+    };
+  }, [value?.file]);
 
   const handleFile = (file) => {
     if (!file) return;
@@ -55,10 +83,18 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
     >
       {value ? (
         <div className="upload-preview">
-          <div className="upload-preview-fallback">
-            <span aria-hidden="true">✓</span>
-            <span>{value.file?.name || "Photo sélectionnée"}</span>
-          </div>
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt="Photo sélectionnée"
+              onError={() => setPreviewUrl(null)}
+            />
+          ) : (
+            <div className="upload-preview-fallback">
+              <span aria-hidden="true">✓</span>
+              <span>{value.file?.name || "Photo sélectionnée"}</span>
+            </div>
+          )}
           <button
             className="upload-remove"
             onClick={(e) => { e.stopPropagation(); onChange(null); }}

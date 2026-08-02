@@ -97,72 +97,46 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 116px;
-  height: 116px;
+  width: 132px;
+  height: 132px;
   margin-bottom: 28px;
 }
 
-.generation-progress-orbit::before,
-.generation-progress-orbit::after,
-.generation-progress-orbit span {
+.generation-progress-orbit::before {
   position: absolute;
-  inset: 0;
-  border: 1px solid rgba(35, 136, 255, 0.36);
+  inset: 3px;
+  border: 1px solid rgba(35, 136, 255, 0.16);
   border-radius: 50%;
   content: "";
 }
 
-.generation-progress-orbit::before {
-  animation: generation-orbit 2.4s ease-in-out infinite;
+.generation-progress-arc {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border: 5px solid transparent;
+  border-top-color: #2388ff;
+  border-right-color: #a977ff;
+  border-radius: 50%;
+  box-shadow: 0 0 22px rgba(35, 136, 255, 0.48);
+  animation: generation-arc-spin 1.15s linear infinite;
 }
 
-.generation-progress-orbit::after {
-  inset: 14px;
-  border-color: rgba(143, 92, 255, 0.42);
-  animation: generation-orbit 2.1s ease-in-out infinite reverse;
-}
-
-.generation-progress-orbit span:nth-child(1) {
-  inset: 3px 52px;
-  border: 0;
-  border-radius: 99px;
-  background: var(--accent);
-  box-shadow: 0 0 16px rgba(35, 136, 255, 0.8);
-  animation: generation-dot 1.8s linear infinite;
-}
-
-.generation-progress-orbit span:nth-child(2) {
-  inset: 52px 3px;
-  border: 0;
-  border-radius: 99px;
-  background: #a977ff;
-  box-shadow: 0 0 16px rgba(169, 119, 255, 0.8);
-  animation: generation-dot 1.8s linear infinite 0.6s;
-}
-
-.generation-progress-orbit span:nth-child(3) {
-  inset: 52px 52px 3px 3px;
-  border: 0;
-  border-radius: 99px;
-  background: #62d6ff;
-  box-shadow: 0 0 16px rgba(98, 214, 255, 0.8);
-  animation: generation-dot 1.8s linear infinite 1.2s;
-}
-
-.generation-progress-spark {
+.generation-progress-mark {
   position: relative;
   z-index: 1;
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  border: 1px solid rgba(35, 136, 255, 0.42);
-  border-radius: 50%;
-  background: rgba(8, 17, 29, 0.92);
-  color: #75c8ff;
-  font-size: 25px;
-  box-shadow: 0 0 30px rgba(35, 136, 255, 0.22);
-  animation: generation-spark 1.8s ease-in-out infinite;
+  width: 76px;
+  height: 76px;
+  color: #f4f8ff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 58px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  text-shadow: 0 0 24px rgba(35, 136, 255, 0.7);
+  animation: generation-mark-pulse 1.8s ease-in-out infinite;
 }
 
 .generation-progress-title {
@@ -238,17 +212,11 @@
   background: var(--border);
 }
 
-@keyframes generation-orbit {
-  0%, 100% { transform: scale(0.94) rotate(0deg); opacity: 0.56; }
-  50% { transform: scale(1.06) rotate(180deg); opacity: 1; }
+@keyframes generation-arc-spin {
+  to { transform: rotate(360deg); }
 }
 
-@keyframes generation-dot {
-  0%, 100% { transform: rotate(0deg) translateY(-53px) scale(0.7); }
-  50% { transform: rotate(180deg) translateY(-53px) scale(1.15); }
-}
-
-@keyframes generation-spark {
+@keyframes generation-mark-pulse {
   0%, 100% { transform: scale(0.94); filter: brightness(0.9); }
   50% { transform: scale(1.06); filter: brightness(1.35); }
 }
