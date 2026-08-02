@@ -20,29 +20,42 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
   const inputRef = useRef(null);
   const [dragging, setDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewState, setPreviewState] = useState("idle");
 
   useEffect(() => {
     if (!value?.file || typeof window === "undefined") {
       setPreviewUrl(null);
+      setPreviewState("idle");
       return undefined;
     }
 
     let cancelled = false;
     const form = new FormData();
     form.append("image", value.file);
+    setPreviewUrl(null);
+    setPreviewState("loading");
 
-    fetch("/api/image-preview", { method: "POST", body: form })
+    fetch("/api/image-preview", {
+      method: "POST",
+      body: form,
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    })
       .then(async (response) => {
         const data = await response.json().catch(() => ({}));
         if (!response.ok || typeof data.preview !== "string") {
           throw new Error(data.error || "Aperçu indisponible");
         }
-        if (!cancelled) setPreviewUrl(data.preview);
+        if (!cancelled) {
+          setPreviewUrl(data.preview);
+          setPreviewState("ready");
+        }
       })
       .catch((previewError) => {
         if (!cancelled) {
           console.warn("Aperçu serveur indisponible, upload maintenu.", previewError);
           setPreviewUrl(null);
+          setPreviewState("failed");
         }
       });
 
@@ -86,12 +99,24 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
             <img
               src={previewUrl}
               alt="Photo sélectionnée"
-              onError={() => setPreviewUrl(null)}
+              onError={() => {
+                setPreviewUrl(null);
+                setPreviewState("failed");
+              }}
             />
+          ) : previewState === "loading" ? (
+            <div className="upload-preview-loading" role="status" aria-live="polite">
+              <span className="upload-preview-spinner" aria-hidden="true" />
+              <span>Préparation de l’aperçu…</span>
+            </div>
           ) : (
             <div className="upload-preview-fallback">
-              <span aria-hidden="true">✓</span>
-              <span>{value.file?.name || "Photo sélectionnée"}</span>
+              <span aria-hidden="true">{previewState === "failed" ? "!" : "✓"}</span>
+              <span>
+                {previewState === "failed"
+                  ? "Aperçu indisponible — réessaie après publication"
+                  : (value.file?.name || "Photo sélectionnée")}
+              </span>
             </div>
           )}
           <button

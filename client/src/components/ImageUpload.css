@@ -145,6 +145,25 @@
   border-radius: var(--radius);
 }
 
+.upload-preview-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.upload-preview-spinner {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 2px solid rgba(35, 136, 255, 0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: uploadPreviewSpin 0.8s linear infinite;
+}
+
 .upload-preview-fallback {
   display: flex;
   align-items: center;
@@ -171,6 +190,14 @@
   border-radius: 50%;
   background: var(--accent);
   color: #06101d;
+}
+
+.upload-preview-fallback:has(span:first-child:not(:empty)) {
+  max-width: calc(100% - 64px);
+}
+
+@keyframes uploadPreviewSpin {
+  to { transform: rotate(360deg); }
 }
 
 .upload-remove {
