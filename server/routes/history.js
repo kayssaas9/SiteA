@@ -46,7 +46,7 @@ router.get("/:clerkUserId", async (req, res) => {
     data = refreshed.data ?? data;
   }
 
-  res.json((data ?? []).map(toClientGeneration));
+  res.json((data ?? []).map((item) => toClientGeneration(item, clerkUserId)));
 });
 
 /**
@@ -95,18 +95,21 @@ router.get("/:clerkUserId/search", async (req, res) => {
     data = refreshed.data ?? data;
   }
 
-  res.json((data ?? []).map(toClientGeneration));
+  res.json((data ?? []).map((item) => toClientGeneration(item, clerkUserId)));
 });
 
-function toClientGeneration(item) {
+function toClientGeneration(item, clerkUserId) {
   const status = item.status || "completed";
   const completed = status === "completed";
   const unlocked = completed && item.unlocked !== false;
+  const source = unlocked ? item.image_url : item.preview_url;
   return {
     id: item.id,
     mode: item.mode,
     prompt: item.prompt,
-    image_url: completed ? (unlocked ? item.image_url : item.preview_url) : null,
+    image_url: completed && source
+      ? `/api/generations/${encodeURIComponent(item.id)}/image?clerkUserId=${encodeURIComponent(clerkUserId)}`
+      : null,
     unlocked,
     status,
     error: item.error_message || null,

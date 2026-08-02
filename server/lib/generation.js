@@ -172,10 +172,71 @@ function clientGeneration(row, error = null) {
     status,
     unlocked,
     teaser,
-    imageUrl: status === "completed"
-      ? (unlocked ? row.image_url : row.preview_url)
+    imageUrl: status === "completed" && (unlocked ? row.image_url : row.preview_url)
+      ? `/api/generations/${encodeURIComponent(row.id)}/image?clerkUserId=${encodeURIComponent(row.clerk_user_id)}`
       : null,
     error: error || row.error_message || null,
+  };
+}
+
+export async function getGenerationImage(generationId, clerkUserId) {
+  const { data: row, error } = await supabaseAdmin
+    .from("generations")
+    .select("id, clerk_user_id, status, image_url, preview_url, unlocked")
+    .eq("id", generationId)
+    .eq("clerk_user_id", clerkUserId)
+    .single();
+
+  if (error || !row) {
+    const notFound = error?.code === "PGRST116";
+    const imageError = new Error(notFound ? "Image introuvable." : error?.message || "Impossible de charger l'image.");
+    imageError.statusCode = notFound ? 404 : 500;
+    throw imageError;
+  }
+
+  if (row.status !== "completed") {
+    const imageError = new Error("Cette génération n'est pas encore terminée.");
+    imageError.statusCode = 404;
+    throw imageError;
+  }
+
+  const source = row.unlocked ? row.image_url : row.preview_url;
+  if (typeof source !== "string" || !source.trim()) {
+    const imageError = new Error("URL d'image indisponible.");
+    imageError.statusCode = 404;
+    throw imageError;
+  }
+
+  if (source.startsWith("data:image/")) {
+    const match = source.match(/^data:(image\/[a-z0-9.+-]+);base64,(.+)$/i);
+    if (!match) {
+      const imageError = new Error("Format d'aperçu invalide.");
+      imageError.statusCode = 502;
+      throw imageError;
+    }
+    return {
+      contentType: match[1],
+      buffer: Buffer.from(match[2], "base64"),
+    };
+  }
+
+  const validUrl = normalizeHttpUrl(source);
+  if (!validUrl) {
+    const imageError = new Error("URL d'image invalide.");
+    imageError.statusCode = 502;
+    throw imageError;
+  }
+
+  const upstream = await fetch(validUrl);
+  if (!upstream.ok) {
+    const imageError = new Error(`Impossible de charger l'image (${upstream.status}).`);
+    imageError.statusCode = 502;
+    throw imageError;
+  }
+
+  return {
+    contentType: upstream.headers.get("content-type")?.split(";")[0] || "image/jpeg",
+    buffer: Buffer.from(await upstream.arrayBuffer()),
   };
 }
 
@@ -213,7 +274,7 @@ async function finalizeGeneration(row, imageUrl) {
   if (!claimed) {
     const { data: current, error: readError } = await supabaseAdmin
       .from("generations")
-      .select("id, status, image_url, preview_url, unlocked, teaser, error_message")
+      .select("id, clerk_user_id, status, image_url, preview_url, unlocked, teaser, error_message")
       .eq("id", row.id)
       .single();
     if (readError || !current) throw readError || new Error("Generation introuvable.");
@@ -273,7 +334,7 @@ async function finalizeGeneration(row, imageUrl) {
       .update(completedUpdate)
       .eq("id", claimed.id)
       .eq("status", "finalizing")
-      .select("id, status, image_url, preview_url, unlocked, teaser, error_message")
+      .select("id, clerk_user_id, status, image_url, preview_url, unlocked, teaser, error_message")
       .single();
 
     if (saveError || !completed) throw saveError || new Error("Erreur lors de l'enregistrement dans l'historique.");

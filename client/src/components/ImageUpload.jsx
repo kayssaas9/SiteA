@@ -29,15 +29,10 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
     const hasImageExtension = /\.(jpe?g|png|webp|heic|heif)$/i.test(file.name || "");
     if (!hasImageType && !hasImageExtension) return;
 
-    let url;
-    try {
-      url = window.URL?.createObjectURL?.(file);
-    } catch (previewError) {
-      console.error("mobile image preview error", previewError);
-      return;
-    }
-    if (!url) return;
-    onChange({ file, preview: url });
+    const reader = new FileReader();
+    reader.onload = () => onChange({ file, preview: reader.result });
+    reader.onerror = () => console.error("mobile image preview error", reader.error);
+    reader.readAsDataURL(file);
   };
 
   const onDrop = (e) => {
