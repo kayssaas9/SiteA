@@ -26,14 +26,33 @@ const GENERATION_MESSAGES = [
   "Dernière vérification du rendu",
 ];
 
+function getErrorMessage(value, fallback = "La génération a échoué.") {
+  if (typeof value === "string" && value.trim()) return value.trim();
+  if (value instanceof Error && value.message) return value.message;
+  if (value && typeof value === "object") {
+    for (const key of ["message", "error", "detail", "description"]) {
+      const nested = getErrorMessage(value[key], "");
+      if (nested) return nested;
+    }
+    try {
+      const serialized = JSON.stringify(value);
+      if (serialized && serialized !== "{}") return serialized;
+    } catch {
+      // Keep a readable fallback for unexpected structured errors.
+    }
+  }
+  return fallback;
+}
+
 function getFriendlyGenerationError(message) {
-  if (/ne peut pas être convertie|format.*(jpg|png)|heic|heif/i.test(message || "")) {
+  const readableMessage = getErrorMessage(message);
+  if (/ne peut pas être convertie|format.*(jpg|png)|heic|heif/i.test(readableMessage)) {
     return "Cette photo mobile n’est pas compatible. Enregistre-la en JPG ou PNG, puis réessaie.";
   }
-  if (/string did not match the pattern|invalid url|url d.?image/i.test(message || "")) {
+  if (/string did not match the pattern|invalid url|url d.?image/i.test(readableMessage)) {
     return "Le service d’image a renvoyé un résultat invalide. Réessaie avec une autre image ou description.";
   }
-  return message || "La génération a échoué.";
+  return readableMessage;
 }
 
 const PlusIcon = () => (
@@ -309,7 +328,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
           onResultChange?.({ loading: false, error: null, result: null });
           return;
         }
-        throw new Error(data.error || "La génération a échoué");
+        throw new Error(getErrorMessage(data.error));
       }
       if (data.generationId) {
         activeGenerationIdRef.current = data.generationId;

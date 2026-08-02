@@ -33,6 +33,16 @@ app.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
+app.use((error, _req, res, _next) => {
+  console.error("Image preview upload failed:", error);
+  const status = error?.code === "LIMIT_FILE_SIZE" ? 413 : 400;
+  return res.status(status).json({
+    error: status === 413
+      ? "Cette image dépasse la limite de 10 Mo."
+      : "L’aperçu de cette image est indisponible. Réessaie avec une autre photo.",
+  });
+});
+
 export default function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");

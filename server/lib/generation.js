@@ -27,6 +27,24 @@ function normalizeHttpUrl(value) {
   }
 }
 
+function errorMessage(value, fallback = "Une erreur est survenue.") {
+  if (typeof value === "string" && value.trim()) return value.trim();
+  if (value instanceof Error && value.message) return value.message;
+  if (value && typeof value === "object") {
+    for (const key of ["message", "error", "detail", "description"]) {
+      const nested = errorMessage(value[key], "");
+      if (nested) return nested;
+    }
+    try {
+      const serialized = JSON.stringify(value);
+      if (serialized && serialized !== "{}") return serialized;
+    } catch {
+      // Keep the safe fallback for circular or otherwise unserializable errors.
+    }
+  }
+  return fallback;
+}
+
 async function oneshotFetch(path, opts = {}) {
   const res = await fetch(`${ONESHOT_BASE_URL}${path}`, {
     ...opts,
@@ -46,7 +64,7 @@ async function oneshotFetch(path, opts = {}) {
   }
 
   if (!res.ok) {
-    const message = data?.error?.message || data?.__text || `Erreur ${res.status}`;
+    const message = errorMessage(data?.error || data?.message || data?.__text, `Erreur ${res.status}`);
     const error = new Error(message);
     error.status = res.status;
     error.body = data;
@@ -66,9 +84,10 @@ export async function normalizeImage(buffer) {
     // Only invoke the HEIC decoder when the file has an HEIC/HEIF signature.
     // Calling it for a malformed JPG/PNG hides the useful sharp error and
     // produces the misleading “input buffer is not a HEIC image” message.
-    const isHeicSignature = buffer.length >= 12
-      && buffer.toString("ascii", 4, 12) === "ftypheic";
-    if (!isHeicSignature) {
+    const isHeifSignature = buffer.length >= 12
+      && buffer.toString("ascii", 4, 8) === "ftyp"
+      && /^(heic|heix|hevc|hevx|heif|mif1|msf1)/i.test(buffer.toString("ascii", 8, 12));
+    if (!isHeifSignature) {
       throw sharpError;
     }
 
@@ -426,7 +445,10 @@ export async function getGenerationStatus(generationId, clerkUserId) {
   }
 
   if (job.status === "failed") {
-    const message = job.error?.message || `Le job a échoué (${job.error?.code || "unknown"}).`;
+    const message = errorMessage(
+      job.error,
+      `Le job a échoué (${job.error?.code || "unknown"}).`,
+    );
     return failGeneration(row, message);
   }
 

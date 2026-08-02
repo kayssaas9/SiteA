@@ -61,6 +61,18 @@ app.post("/api/generate", upload.fields([
   { name: "reference_2", maxCount: 1 },
 ]), createGeneration);
 
+// Keep multipart failures JSON-shaped so mobile clients never receive an HTML
+// error page or a stringified object such as "[object Object]".
+app.use((error, _req, res, _next) => {
+  console.error("Multipart upload failed:", error);
+  const status = error?.code === "LIMIT_FILE_SIZE" ? 413 : 400;
+  return res.status(status).json({
+    error: status === 413
+      ? "Cette image dépasse la limite de 10 Mo."
+      : "Le fichier envoyé est invalide. Réessaie avec une autre photo.",
+  });
+});
+
 // ── Health check ─────────────────────────────────────────────────────────────
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
