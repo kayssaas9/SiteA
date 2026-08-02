@@ -42,6 +42,7 @@ export default function ImageGenerator({ onResultChange }) {
   const [hasPrompt, setHasPrompt] = useState(false);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(0);
   const [error, setError] = useState(null);
   const [showPricingModal, setShowPricingModal] = useState(false);
   const promptValueRef = useRef("");
@@ -50,6 +51,25 @@ export default function ImageGenerator({ onResultChange }) {
   const pollGenerationRef = useRef(null);
 
   const unlockedCount = plan === "expert" ? 2 : plan === "pro" ? 1 : 0;
+
+  useEffect(() => {
+    if (!loading) {
+      setGenerationProgress(0);
+      return undefined;
+    }
+
+    setGenerationProgress((current) => Math.max(current, 8));
+    const progressTimer = window.setInterval(() => {
+      setGenerationProgress((current) => {
+        if (current >= 92) return current;
+        const increment = current < 35 ? 7 : current < 70 ? 4 : 2;
+        return Math.min(92, current + increment);
+      });
+    }, 1200);
+
+    return () => window.clearInterval(progressTimer);
+  }, [loading]);
+
   const handleRefChange = (slot, value) => {
     setRefs((r) => ({ ...r, [slot]: value }));
   };
@@ -268,6 +288,22 @@ export default function ImageGenerator({ onResultChange }) {
         <p className="generation-progress-subtitle">
           Astra transforme ta photo en une image ultra-réaliste…
         </p>
+        <div className="generation-progress-meter">
+          <div className="generation-progress-meta">
+            <span>Création de ton image</span>
+            <strong>{generationProgress}%</strong>
+          </div>
+          <div
+            className="generation-progress-track"
+            role="progressbar"
+            aria-label="Progression de la création de l'image"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow={generationProgress}
+          >
+            <span style={{ width: `${generationProgress}%` }} />
+          </div>
+        </div>
         <div className="generation-progress-steps" aria-hidden="true">
           <span className="active">Analyse de ta photo</span>
           <i />
