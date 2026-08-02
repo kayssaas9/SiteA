@@ -55,13 +55,22 @@ async function oneshotFetch(path, opts = {}) {
   return data;
 }
 
-async function normalizeImage(buffer) {
+export async function normalizeImage(buffer) {
   try {
     return await sharp(buffer)
       .rotate()
       .jpeg({ quality: 92, progressive: true })
       .toBuffer();
   } catch (sharpError) {
+    // Only invoke the HEIC decoder when the file has an HEIC/HEIF signature.
+    // Calling it for a malformed JPG/PNG hides the useful sharp error and
+    // produces the misleading “input buffer is not a HEIC image” message.
+    const isHeicSignature = buffer.length >= 12
+      && buffer.toString("ascii", 4, 12) === "ftypheic";
+    if (!isHeicSignature) {
+      throw sharpError;
+    }
+
     // sharp in the production image does not always include HEIC support.
     // Use the dedicated decoder for iPhone HEIC/HEIF uploads, then keep the
     // same JPEG normalization pipeline for the rest of the upload flow.

@@ -12,7 +12,7 @@ import historyRoute  from "./routes/history.js";
 import surveyRoute   from "./routes/survey.js";
 import referralRoute from "./routes/referral.js";
 import generationsRoute from "./routes/generations.js";
-import { createGeneration } from "./lib/generation.js";
+import { createGeneration, normalizeImage } from "./lib/generation.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app  = express();
@@ -36,6 +36,24 @@ app.use("/api/history",  historyRoute);
 app.use("/api/survey",   surveyRoute);
 app.use("/api/referral", referralRoute);
 app.use("/api/generations", generationsRoute);
+
+app.post("/api/image-preview", upload.single("image"), async (req, res) => {
+  if (!req.file?.buffer) {
+    return res.status(400).json({ error: "Image manquante." });
+  }
+
+  try {
+    const normalizedBuffer = await normalizeImage(req.file.buffer);
+    return res.json({
+      preview: `data:image/jpeg;base64,${normalizedBuffer.toString("base64")}`,
+    });
+  } catch (error) {
+    console.error("Image preview normalization failed:", error.message);
+    return res.status(422).json({
+      error: "Cette image ne peut pas être prévisualisée. Elle sera tout de même testée lors de la génération.",
+    });
+  }
+});
 
 app.post("/api/generate", upload.fields([
   { name: "image", maxCount: 1 },

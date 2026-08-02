@@ -6,13 +6,12 @@ export function getSafeUrl(value, { allowDataImage = false } = {}) {
     return candidate;
   }
 
-  try {
-    const parsed = new URL(candidate, window.location.origin);
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
-    return parsed.href;
-  } catch {
-    return null;
-  }
+  // Keep Safari away from URL parsing for image and payment strings. Relative
+  // Astra API paths are valid; external redirects must be explicit HTTP(S)
+  // URLs without whitespace or control characters.
+  if (/^\/(?!\/)[^\s"'<>]*$/.test(candidate)) return candidate;
+  if (/^https?:\/\/[^\s"'<>]+$/i.test(candidate)) return candidate;
+  return null;
 }
 
 export function navigateToSafeUrl(value) {

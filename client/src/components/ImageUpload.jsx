@@ -27,24 +27,27 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
       return undefined;
     }
 
-    const file = value.file;
-    const isHeic = /heic|heif/i.test(`${file.type || ""} ${file.name || ""}`);
-    if (isHeic || typeof window.URL?.createObjectURL !== "function") {
-      setPreviewUrl(null);
-      return undefined;
-    }
+    let cancelled = false;
+    const form = new FormData();
+    form.append("image", value.file);
 
-    let url = null;
-    try {
-      url = window.URL.createObjectURL(file);
-      setPreviewUrl(url);
-    } catch (previewError) {
-      console.warn("Aperçu local indisponible, upload maintenu.", previewError);
-      setPreviewUrl(null);
-    }
+    fetch("/api/image-preview", { method: "POST", body: form })
+      .then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || typeof data.preview !== "string") {
+          throw new Error(data.error || "Aperçu indisponible");
+        }
+        if (!cancelled) setPreviewUrl(data.preview);
+      })
+      .catch((previewError) => {
+        if (!cancelled) {
+          console.warn("Aperçu serveur indisponible, upload maintenu.", previewError);
+          setPreviewUrl(null);
+        }
+      });
 
     return () => {
-      if (url) window.URL.revokeObjectURL(url);
+      cancelled = true;
     };
   }, [value?.file]);
 
@@ -57,10 +60,6 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
     const hasImageExtension = /\.(jpe?g|png|webp|heic|heif)$/i.test(file.name || "");
     if (!hasImageType && !hasImageExtension) return;
 
-    // Keep the browser out of the image decoding path. In particular, Safari
-    // can throw “The string did not match the pattern” while creating a local
-    // preview for camera-produced files. The server validates and converts
-    // the original bytes before sending them to OneShot.
     onChange({ file, preview: null });
   };
 
