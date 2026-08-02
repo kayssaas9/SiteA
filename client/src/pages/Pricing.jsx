@@ -145,7 +145,9 @@ export default function Pricing() {
   }, [location, userPlan]);
 
   const hasSubscription = ["basic", "pro", "expert"].includes(userPlan);
-  const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
+  const activePacks = hasSubscription
+    ? SUBSCRIBER_PACKS.filter((pack) => userPlan !== "expert" || pack.id !== "pack_20k")
+    : NON_SUBSCRIBER_PACKS;
 
   const handleCheckout = async (priceEnvKey, mode, itemId) => {
     if (!user) {
