@@ -90,9 +90,6 @@ export default function Generate() {
   const { credits, plan, loading } = useUserData();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
-  const availablePacks = plan === "expert"
-    ? SUBSCRIBER_PACKS.filter((pack) => pack.id !== "pack_20k")
-    : SUBSCRIBER_PACKS;
   const [resultState, setResultState] = useState({
     loading: false,
     result: null,
@@ -195,7 +192,7 @@ export default function Generate() {
               </Link>
             ) : isSubscriber ? (
               <div className="recharge-cards">
-                {availablePacks.map((pack, idx) => (
+                {SUBSCRIBER_PACKS.map((pack, idx) => (
                   <div key={pack.id} className={`recharge-card delay-${idx + 1}`}>
                     {pack.popular && <div className="recharge-popular">POPULAIRE</div>}
                     <div className="recharge-credits">{pack.credits.toLocaleString("fr-FR")} crédits</div>

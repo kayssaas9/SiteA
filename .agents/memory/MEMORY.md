@@ -8,7 +8,7 @@
 - [OneShot result URL handling](oneshot-result-urls.md) — Normalize variable image result shapes and reject invalid URLs before fetch or browser APIs.
 - [Generation reset and resume](generation-reset-resume.md) — An explicit new-generation action must bypass one automatic history-resume pass.
 - [Generation entitlements](generation-entitlements.md) — 100 credits unlock a full render; the blurred teaser is only for zero-credit free accounts.
-- [Credit balance semantics](credit-balance-semantics.md) — Expert grants 20,000 subscription credits, while purchased packs accumulate without a global balance cap.
+- [Credit balance semantics](credit-balance-semantics.md) — Expert has a 20,000-credit server balance cap; packs remain visible in the UI.
 - [Generation counting](generation-counting.md) — Count finalized generations on the database transition to completed, including successful teasers.
 - [Mobile image normalization](mobile-image-normalization.md) — Accept MIME-less mobile images and convert HEIC/HEIF to JPEG before OneShot.
 - [Mobile result proxy](mobile-result-proxy.md) — Stream generated images through Astra instead of exposing upstream OneShot URLs to mobile browsers.

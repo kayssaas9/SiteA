@@ -1,5 +1,6 @@
 import express from "express";
 import { supabaseAdmin } from "../lib/supabase.js";
+import { MAX_EXPERT_CREDITS } from "../lib/stripe.js";
 
 const router = express.Router();
 
@@ -80,7 +81,7 @@ router.post("/apply", express.json(), async (req, res) => {
   // Get or create the referee row.
   const { data: referee, error: refereeError } = await supabaseAdmin
     .from("users")
-    .select("clerk_user_id, credits, referred_by")
+    .select("clerk_user_id, plan, credits, referred_by")
     .eq("clerk_user_id", clerkUserId)
     .single();
 
@@ -95,7 +96,9 @@ router.post("/apply", express.json(), async (req, res) => {
 
   // Apply the referral in a single upsert + credit update.
   const refereeCredits = referee.credits ?? 0;
-  const newRefereeCredits = refereeCredits + 100;
+  const newRefereeCredits = referee.plan === "expert"
+    ? Math.min(MAX_EXPERT_CREDITS, refereeCredits + 100)
+    : refereeCredits + 100;
 
   const { error: updateError } = await supabaseAdmin
     .from("users")

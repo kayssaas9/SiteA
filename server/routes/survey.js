@@ -1,5 +1,6 @@
 import express from "express";
 import { supabaseAdmin } from "../lib/supabase.js";
+import { MAX_EXPERT_CREDITS } from "../lib/stripe.js";
 
 const router = express.Router();
 
@@ -134,7 +135,9 @@ router.post("/submit", express.json(), async (req, res) => {
 
   // Mark user as completed and credit 400 credits.
   const previousCredits = userRow.credits ?? 0;
-  const newCredits = previousCredits + 400;
+  const newCredits = userRow.plan === "expert"
+    ? Math.min(MAX_EXPERT_CREDITS, previousCredits + 400)
+    : previousCredits + 400;
   console.log(`Crediting survey reward: ${clerkUserId}: ${previousCredits} → ${newCredits}`);
   const { error: updateError } = await supabaseAdmin
     .from("users")

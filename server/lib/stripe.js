@@ -26,6 +26,10 @@ export const PRICE_CREDITS = {
   [process.env.VITE_STRIPE_PRICE_PACK_2K]: 2000,
 };
 
+// Expert is marketed as unlimited, but its server-side credit balance is capped
+// at 20,000 credits.
+export const MAX_EXPERT_CREDITS = 20000;
+
 // Plans keyed by price ID (monthly and annual variants map to the same plan)
 export const PRICE_PLANS = {
   [process.env.VITE_STRIPE_PRICE_BASIQUE]:        "basic",
