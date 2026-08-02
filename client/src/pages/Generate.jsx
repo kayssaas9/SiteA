@@ -26,6 +26,15 @@ const SUBSCRIBER_PACKS = [
   { id: "pack_20k", name: "Pack Max", credits: 20000, price: "49€", priceEnvKey: "VITE_STRIPE_PRICE_PACK_20K" },
 ];
 
+const ACTIVE_GENERATIONS_KEY = "astraActiveGenerationIds";
+const PENDING_UNLOCK_KEY = "astraPendingGenerationId";
+
+function clearGenerationResumeState() {
+  window.localStorage.removeItem(ACTIVE_GENERATIONS_KEY);
+  window.localStorage.removeItem(PENDING_UNLOCK_KEY);
+  window.sessionStorage.removeItem(PENDING_UNLOCK_KEY);
+}
+
 function PackCheckoutButton({ pack }) {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
@@ -132,11 +141,14 @@ export default function Generate() {
                 imageUrl={resultState.result.imageUrl}
                 teaser={resultState.result.teaser}
                 showcase
-                onNewGeneration={() => setResultState({
-                  loading: false,
-                  result: null,
-                  error: null,
-                })}
+                onNewGeneration={() => {
+                  clearGenerationResumeState();
+                  setResultState({
+                    loading: false,
+                    result: null,
+                    error: null,
+                  });
+                }}
               />
             </div>
           ) : (
