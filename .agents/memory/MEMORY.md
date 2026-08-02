@@ -6,3 +6,4 @@
 - [Teaser unlock security](teaser-unlock-security.md) — Keep original image URLs server-side and unlock only the exact generation attached to payment.
 - [Free teaser quota](free-teaser-quota.md) — Allow one real blurred teaser per zero-credit Clerk account, then require recharge or subscription.
 - [OneShot result URL handling](oneshot-result-urls.md) — Normalize variable image result shapes and reject invalid URLs before fetch or browser APIs.
+- [Generation reset and resume](generation-reset-resume.md) — An explicit new-generation action must bypass one automatic history-resume pass.
