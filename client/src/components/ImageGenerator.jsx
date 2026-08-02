@@ -3,7 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 import ImageUpload from "./ImageUpload.jsx";
 import { useUserData } from "../hooks/useUserData.js";
-import { normalizeImageFileForUpload } from "../lib/normalizeImageFile.js";
+import { getSafeUrl } from "../lib/safeUrl.js";
 import "./ImageGenerator.css";
 
 const GENERATION_COST = 100;
@@ -154,9 +154,10 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
         return;
       }
 
-      if (data.imageUrl && isCurrent) {
+      const safeImageUrl = getSafeUrl(data.imageUrl, { allowDataImage: true });
+      if (safeImageUrl && isCurrent) {
         const nextResult = {
-          imageUrl: data.imageUrl,
+          imageUrl: safeImageUrl,
           teaser: Boolean(data.teaser),
           generationId: data.id,
         };
@@ -251,11 +252,11 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
       form.append("mode", "car");
       form.append("prompt", prompt);
       form.append("clerk_user_id", user?.id || "");
-      const [mainFile, ref1File, ref2File] = await Promise.all([
-        normalizeImageFileForUpload(mainPhoto?.file),
-        unlockedCount >= 1 ? normalizeImageFileForUpload(refs.ref1?.file) : null,
-        unlockedCount >= 2 ? normalizeImageFileForUpload(refs.ref2?.file) : null,
-      ]);
+      const [mainFile, ref1File, ref2File] = [
+        mainPhoto?.file || null,
+        unlockedCount >= 1 ? refs.ref1?.file || null : null,
+        unlockedCount >= 2 ? refs.ref2?.file || null : null,
+      ];
       if (mainFile) form.append("image", mainFile);
       if (ref1File) form.append("reference_1", ref1File);
       if (ref2File) form.append("reference_2", ref2File);

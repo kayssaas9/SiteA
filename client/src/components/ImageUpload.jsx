@@ -29,10 +29,11 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
     const hasImageExtension = /\.(jpe?g|png|webp|heic|heif)$/i.test(file.name || "");
     if (!hasImageType && !hasImageExtension) return;
 
-    const reader = new FileReader();
-    reader.onload = () => onChange({ file, preview: reader.result });
-    reader.onerror = () => console.error("mobile image preview error", reader.error);
-    reader.readAsDataURL(file);
+    // Keep the browser out of the image decoding path. In particular, Safari
+    // can throw “The string did not match the pattern” while creating a local
+    // preview for camera-produced files. The server validates and converts
+    // the original bytes before sending them to OneShot.
+    onChange({ file, preview: null });
   };
 
   const onDrop = (e) => {
@@ -54,7 +55,10 @@ export default function ImageUpload({ label, hint, onChange, value, variant = "d
     >
       {value ? (
         <div className="upload-preview">
-          <img src={value.preview} alt="Image ajoutée" />
+          <div className="upload-preview-fallback">
+            <span aria-hidden="true">✓</span>
+            <span>{value.file?.name || "Photo sélectionnée"}</span>
+          </div>
           <button
             className="upload-remove"
             onClick={(e) => { e.stopPropagation(); onChange(null); }}

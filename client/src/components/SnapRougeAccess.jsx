@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./SnapRougeAccess.css";
+import { navigateToSafeUrl } from "../lib/safeUrl.js";
 
 const SNAP_ROUGE_PRICE_KEY = "VITE_STRIPE_PRICE_SNAPROUGE";
 
@@ -105,7 +106,7 @@ export default function SnapRougeAccess() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la création du paiement");
       if (!data.url) throw new Error("URL de paiement manquante");
-      window.location.href = data.url;
+      navigateToSafeUrl(data.url);
     } catch (err) {
       console.error("SnapRouge unlock error:", err);
       setError(err.message);

@@ -5,6 +5,7 @@ import ImageGenerator from "../components/ImageGenerator.jsx";
 import ResultDisplay from "../components/ResultDisplay.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
+import { navigateToSafeUrl } from "../lib/safeUrl.js";
 import "./Generate.css";
 
 const ZapIcon = () => (
@@ -66,7 +67,7 @@ function PackCheckoutButton({ pack }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la création du paiement");
-      window.location.href = data.url;
+       navigateToSafeUrl(data.url);
     } catch (err) {
       setError(err.message);
       setLoading(false);

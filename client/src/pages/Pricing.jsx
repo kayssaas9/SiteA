@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Pricing.css";
+import { navigateToSafeUrl } from "../lib/safeUrl.js";
 
 const PLANS = [
   {
@@ -172,7 +173,7 @@ export default function Pricing() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la création du paiement");
-      window.location.href = data.url;
+      navigateToSafeUrl(data.url);
     } catch (err) {
       setError(err.message);
     } finally {

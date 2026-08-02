@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import DownloadButton from "./DownloadButton.jsx";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
+import { getSafeUrl } from "../lib/safeUrl.js";
 import "./ResultDisplay.css";
 
 export default function ResultDisplay({
@@ -16,6 +17,7 @@ export default function ResultDisplay({
   onNewGeneration,
 }) {
   const imageFrameRef = useRef(null);
+  const safeImageUrl = getSafeUrl(imageUrl, { allowDataImage: true });
 
   const handleFullscreen = async () => {
     const frame = imageFrameRef.current;
@@ -52,7 +54,7 @@ export default function ResultDisplay({
     );
   }
 
-  if (!imageUrl && showEmpty) {
+  if (!safeImageUrl && showEmpty) {
     return (
       <div className="result-box empty">
         <div className="result-empty-icon" aria-hidden="true">✦</div>
@@ -62,13 +64,24 @@ export default function ResultDisplay({
     );
   }
 
-  if (!imageUrl) return null;
+  if (!safeImageUrl) {
+    if (!loading && !error) {
+      return (
+        <div className="result-box error">
+          <div className="result-error-icon">⚠️</div>
+          <p className="result-status">Résultat indisponible</p>
+          <p className="result-sub">L’adresse de l’image reçue est invalide. Relance la génération.</p>
+        </div>
+      );
+    }
+    return null;
+  }
 
   if (showcase && !teaser) {
     return (
       <div className="result-box result-credit-showcase">
         <div className="result-credit-image-frame" ref={imageFrameRef}>
-          <img className="result-credit-image" src={imageUrl} alt="Résultat généré" />
+            <img className="result-credit-image" src={safeImageUrl} alt="Résultat généré" />
         </div>
 
         <div className="result-credit-actions">
@@ -77,7 +90,7 @@ export default function ResultDisplay({
           </Link>
           <DownloadButton
             className="result-credit-action result-credit-action-download"
-            imageUrl={imageUrl}
+            imageUrl={safeImageUrl}
           >
             Télécharger
           </DownloadButton>
@@ -110,7 +123,7 @@ export default function ResultDisplay({
             <div className={`result-visual ${teaser ? "is-teaser" : ""}`}>
               <img
                 className="result-img"
-                src={imageUrl}
+                src={safeImageUrl}
                 alt={teaser ? "Aperçu flouté du résultat" : "Résultat généré"}
               />
             </div>
@@ -126,7 +139,7 @@ export default function ResultDisplay({
             ) : (
               <DownloadButton
                 className="result-showcase-bottom-cta"
-                imageUrl={imageUrl}
+                 imageUrl={safeImageUrl}
               >
                 ⬇ Télécharger mon résultat
               </DownloadButton>
@@ -150,7 +163,7 @@ export default function ResultDisplay({
             ) : (
               <DownloadButton
                 className="result-showcase-cta"
-                imageUrl={imageUrl}
+                imageUrl={safeImageUrl}
               >
                 ⬇ Télécharger la version HD
               </DownloadButton>
@@ -205,7 +218,7 @@ export default function ResultDisplay({
         {teaser ? "✨ Aperçu de votre résultat" : "✨ Votre résultat"}
       </div>
       <div className={`result-visual ${teaser ? "is-teaser" : ""}`}>
-        <img className="result-img" src={imageUrl} alt={teaser ? "Aperçu flouté du résultat" : "Résultat généré"} />
+        <img className="result-img" src={safeImageUrl} alt={teaser ? "Aperçu flouté du résultat" : "Résultat généré"} />
         {teaser && (
           <div className="result-teaser-overlay">
             <p>Ton résultat est prêt</p>
@@ -219,7 +232,7 @@ export default function ResultDisplay({
       {!teaser && (
         <DownloadButton
           className="result-download"
-          imageUrl={imageUrl}
+          imageUrl={safeImageUrl}
         >
           ⬇ Télécharger
         </DownloadButton>

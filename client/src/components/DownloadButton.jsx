@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getSafeUrl } from "../lib/safeUrl.js";
 
 export default function DownloadButton({
   imageUrl,
@@ -19,54 +20,24 @@ export default function DownloadButton({
     setError("");
 
     try {
-      const response = await fetch(imageUrl);
-      if (!response.ok) throw new Error(`download_${response.status}`);
+      const safeImageUrl = getSafeUrl(imageUrl);
+      if (!safeImageUrl) throw new Error("image_url_invalid");
 
-      const total = Number(response.headers.get("content-length")) || 0;
-      const reader = response.body?.getReader();
-      let blob;
-
-      if (!reader) {
-        blob = await response.blob();
-        setProgress(100);
-      } else {
-        const chunks = [];
-        let received = 0;
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          chunks.push(value);
-          received += value.length;
-          if (total > 0) {
-            setProgress(Math.min(99, Math.round((received / total) * 100)));
-          }
-        }
-
-        blob = new Blob(chunks, {
-          type: response.headers.get("content-type") || "image/jpeg",
-        });
-        setProgress(100);
-      }
-
-      const objectUrl = URL.createObjectURL(blob);
+      // Opening the same-origin proxy is supported by iOS Safari and avoids
+      // Blob/object URLs, which can throw a pattern exception on mobile.
       const link = document.createElement("a");
-      link.href = objectUrl;
+      link.href = safeImageUrl;
       link.download = filename;
-      document.body.appendChild(link);
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
       link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      setProgress(100);
     } catch (downloadError) {
       console.error("image download error", downloadError);
       setError("Téléchargement direct indisponible");
 
-      const fallback = document.createElement("a");
-      fallback.href = imageUrl;
-      fallback.download = filename;
-      fallback.target = "_blank";
-      fallback.rel = "noreferrer";
-      fallback.click();
+      const safeImageUrl = getSafeUrl(imageUrl);
+      if (safeImageUrl) window.open(safeImageUrl, "_blank", "noopener,noreferrer");
     } finally {
       window.setTimeout(() => {
         setDownloading(false);
