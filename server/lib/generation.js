@@ -122,7 +122,7 @@ async function pollOneShotJob(jobId) {
 async function ensureUser(clerkUserId) {
   const { data: existingUser } = await supabaseAdmin
     .from("users")
-    .select("clerk_user_id, plan, credits")
+    .select("clerk_user_id, plan, credits, free_teaser_used")
     .eq("clerk_user_id", clerkUserId)
     .maybeSingle();
 
@@ -137,7 +137,7 @@ async function ensureUser(clerkUserId) {
       snaprouge_unlocked: false,
       survey_completed: false,
     })
-    .select("clerk_user_id, plan, credits")
+    .select("clerk_user_id, plan, credits, free_teaser_used")
     .single();
 
   if (error) {
@@ -145,6 +145,29 @@ async function ensureUser(clerkUserId) {
     return null;
   }
   return createdUser;
+}
+
+async function claimFreeTeaser(clerkUserId) {
+  const { data, error } = await supabaseAdmin.rpc("claim_free_teaser", {
+    p_clerk_user_id: clerkUserId,
+  });
+
+  if (error) {
+    console.error("claim_free_teaser RPC failed:", error.message);
+    throw new Error("Le teaser gratuit est temporairement indisponible. Réessayez plus tard.");
+  }
+
+  return data === true;
+}
+
+async function releaseFreeTeaser(clerkUserId) {
+  const { error } = await supabaseAdmin.rpc("release_free_teaser", {
+    p_clerk_user_id: clerkUserId,
+  });
+
+  if (error) {
+    console.error("release_free_teaser RPC failed:", error.message);
+  }
 }
 
 async function consumeCredits(clerkUserId, maximum) {
@@ -250,6 +273,9 @@ async function grantReferralReward(clerkUserId) {
 }
 
 export async function createGeneration(req, res) {
+  let freeTeaserClaimed = false;
+  let freeTeaserPersisted = false;
+
   try {
     const { mode, prompt, clerk_user_id: clerkUserId } = req.body;
 
@@ -264,16 +290,32 @@ export async function createGeneration(req, res) {
     }
 
     const user = await ensureUser(clerkUserId);
-    const currentCredits = user?.credits ?? 0;
-    if (!user || currentCredits <= 0) {
-      return res.status(402).json({
-        code: "NO_CREDITS",
-        error: "Vous n'avez plus de crédits. Rechargez votre compte pour lancer une génération.",
-      });
+    if (!user) {
+      return res.status(500).json({ error: "Impossible de charger votre compte." });
+    }
+
+    let currentCredits = user.credits ?? 0;
+
+    if (currentCredits <= 0) {
+      freeTeaserClaimed = await claimFreeTeaser(clerkUserId);
+
+      if (!freeTeaserClaimed) {
+        // A payment or credit refill may have happened after ensureUser read
+        // the row. Re-read before returning the quota error.
+        const refreshedUser = await ensureUser(clerkUserId);
+        currentCredits = refreshedUser?.credits ?? 0;
+
+        if (currentCredits <= 0) {
+          return res.status(402).json({
+            code: "FREE_TEASER_USED",
+            error: "Votre aperçu gratuit a déjà été utilisé. Rechargez vos crédits ou abonnez-vous pour générer un nouveau résultat.",
+          });
+        }
+      }
     }
 
     const subscriber = isSubscriber(user.plan);
-    const teaser = !subscriber || currentCredits < GENERATION_COST;
+    const teaser = freeTeaserClaimed || !subscriber || currentCredits < GENERATION_COST;
 
     const files = req.files || {};
     const allFiles = [
@@ -330,8 +372,10 @@ export async function createGeneration(req, res) {
       return res.status(502).json({ error: pollErr.message });
     }
 
-    const consumed = await consumeCredits(clerkUserId, GENERATION_COST);
-    if (consumed <= 0) {
+    const consumed = freeTeaserClaimed
+      ? 0
+      : await consumeCredits(clerkUserId, GENERATION_COST);
+    if (!freeTeaserClaimed && consumed <= 0) {
       return res.status(402).json({
         code: "NO_CREDITS",
         error: "Vos crédits ont été utilisés pendant la génération. Rechargez votre compte.",
@@ -363,6 +407,8 @@ export async function createGeneration(req, res) {
       return res.status(500).json({ error: "Erreur lors de l'enregistrement dans l'historique." });
     }
 
+    // The free teaser is now safely persisted. Keep its one-use reservation.
+    freeTeaserPersisted = true;
     await grantReferralReward(clerkUserId);
     console.log(`✅ Saved ${unlocked ? "unlocked" : "teaser"} generation for ${clerkUserId}: ${generationId}`);
 
@@ -376,5 +422,13 @@ export async function createGeneration(req, res) {
   } catch (err) {
     console.error("Server error:", err);
     return res.status(500).json({ error: err.message });
+  } finally {
+    if (freeTeaserClaimed && !freeTeaserPersisted) {
+      await releaseFreeTeaser(clerkUserIdFromRequest(req));
+    }
   }
+}
+
+function clerkUserIdFromRequest(req) {
+  return typeof req.body?.clerk_user_id === "string" ? req.body.clerk_user_id.trim() : "";
 }

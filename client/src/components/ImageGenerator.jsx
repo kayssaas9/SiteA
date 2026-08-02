@@ -21,7 +21,7 @@ const MinusIcon = () => (
 
 export default function ImageGenerator() {
   const { user } = useUser();
-  const { plan, credits, loading: userDataLoading, refetch: refetchUserData } = useUserData();
+  const { plan, refetch: refetchUserData } = useUserData();
   const [mainPhoto, setMainPhoto] = useState(null);
   const [refs, setRefs] = useState({ ref1: null, ref2: null });
   const [showRefs, setShowRefs] = useState(false);
@@ -31,9 +31,6 @@ export default function ImageGenerator() {
   const [error, setError] = useState(null);
 
   const unlockedCount = plan === "expert" ? 2 : plan === "pro" ? 1 : 0;
-  const hasNoGenerationAccess =
-    !userDataLoading && credits <= 0;
-
   const handleRefChange = (slot, value) => {
     setRefs((r) => ({ ...r, [slot]: value }));
   };
@@ -93,11 +90,6 @@ export default function ImageGenerator() {
     if (loading || !prompt.trim()) return;
     setError(null);
     setResult(null);
-
-    if (hasNoGenerationAccess) {
-      setError("Vous n'avez plus de crédits.");
-      return;
-    }
 
     setLoading(true);
 
