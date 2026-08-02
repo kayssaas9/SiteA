@@ -130,10 +130,25 @@
 }
 
 .survey-message,
-.survey-loading {
+.survey-loading,
+.survey-access-block {
   text-align: center;
   padding: 80px 20px;
   color: var(--text-muted);
+}
+
+.survey-access-block {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.survey-access-block .badge {
+  display: inline-flex;
+  margin-bottom: 20px;
+}
+
+.survey-access-block .page-title {
+  margin-bottom: 16px;
 }
 
 @keyframes bounceIn {

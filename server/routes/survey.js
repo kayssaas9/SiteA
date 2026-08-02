@@ -21,6 +21,20 @@ const QUESTIONS = [
   { id: "q15", text: "Quelle fonctionnalité aimeriez-vous voir ajoutée ?" },
 ];
 
+const SUBSCRIBER_PLANS = new Set(["basic", "pro", "expert"]);
+
+function isSubscriber(plan) {
+  return SUBSCRIBER_PLANS.has(plan);
+}
+
+async function getUserForSurvey(clerkUserId) {
+  return supabaseAdmin
+    .from("users")
+    .select("plan, survey_completed, credits")
+    .eq("clerk_user_id", clerkUserId)
+    .single();
+}
+
 function validateOpenAnswer(text) {
   if (!text || text.length < 20) return false;
 
@@ -38,10 +52,15 @@ function validateOpenAnswer(text) {
 }
 
 /**
- * GET /api/survey/questions
+ * GET /api/survey/questions/:clerkUserId
  * Returns the survey question list.
  */
-router.get("/questions", (_req, res) => {
+router.get("/questions/:clerkUserId", async (req, res) => {
+  const { data, error } = await getUserForSurvey(req.params.clerkUserId);
+  if (error || !data) return res.status(404).json({ error: "Utilisateur introuvable." });
+  if (!isSubscriber(data.plan)) {
+    return res.status(403).json({ error: "Le questionnaire est réservé aux abonnés." });
+  }
   res.json(QUESTIONS);
 });
 
@@ -51,13 +70,12 @@ router.get("/questions", (_req, res) => {
  */
 router.get("/status/:clerkUserId", async (req, res) => {
   const { clerkUserId } = req.params;
-  const { data, error } = await supabaseAdmin
-    .from("users")
-    .select("survey_completed")
-    .eq("clerk_user_id", clerkUserId)
-    .single();
+  const { data, error } = await getUserForSurvey(clerkUserId);
 
   if (error) return res.status(404).json({ error: "User not found" });
+  if (!isSubscriber(data.plan)) {
+    return res.status(403).json({ error: "Le questionnaire est réservé aux abonnés." });
+  }
   res.json({ completed: data.survey_completed ?? false });
 });
 
@@ -77,14 +95,14 @@ router.post("/submit", express.json(), async (req, res) => {
   }
 
   // Check the user row exists and survey is not already completed.
-  const { data: userRow, error: userError } = await supabaseAdmin
-    .from("users")
-    .select("survey_completed, credits")
-    .eq("clerk_user_id", clerkUserId)
-    .single();
+  const { data: userRow, error: userError } = await getUserForSurvey(clerkUserId);
 
   if (userError || !userRow) {
     return res.status(404).json({ error: "Utilisateur introuvable." });
+  }
+
+  if (!isSubscriber(userRow.plan)) {
+    return res.status(403).json({ error: "Le questionnaire est réservé aux abonnés." });
   }
 
   if (userRow.survey_completed) {

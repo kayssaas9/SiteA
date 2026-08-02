@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserData } from "../hooks/useUserData.js";
 import "./Survey.css";
 
@@ -12,7 +12,8 @@ const INITIAL_ANSWERS = () => ({
 export default function Survey() {
   const { user } = useUser();
   const navigate = useNavigate();
-  const { refetch } = useUserData();
+  const { plan, loading: userDataLoading, refetch } = useUserData();
+  const isSubscriber = ["basic", "pro", "expert"].includes(plan);
   const [questions, setQuestions] = useState([]);
   const answersRef = useRef(INITIAL_ANSWERS());
   const [loading, setLoading] = useState(true);
@@ -22,21 +23,27 @@ export default function Survey() {
   const [creditsEarned, setCreditsEarned] = useState(0);
 
   useEffect(() => {
-    if (!user) return;
-    fetch(`/api/survey/status/${user.id}`)
+    if (!user || userDataLoading || !isSubscriber) {
+      if (!userDataLoading) setLoading(false);
+      return undefined;
+    }
+
+    fetch(`/api/survey/status/${encodeURIComponent(user.id)}`)
       .then((r) => r.json())
       .then((status) => {
         if (status.completed) {
           setCompleted(true);
           setLoading(false);
         } else {
-          fetch("/api/survey/questions")
+          fetch(`/api/survey/questions/${encodeURIComponent(user.id)}`)
             .then((r) => r.json())
             .then((data) => setQuestions(data))
             .finally(() => setLoading(false));
         }
-      });
-  }, [user?.id]);
+      })
+      .catch(() => setLoading(false));
+    return undefined;
+  }, [isSubscriber, user?.id, userDataLoading]);
 
   const handleAnswer = (id, value) => {
     answersRef.current[id] = value;
@@ -88,13 +95,32 @@ export default function Survey() {
     );
   }
 
-  if (loading) {
+  if (userDataLoading || loading) {
     return (
       <main className="survey-page">
         <div className="blob blob-1" />
         <div className="blob blob-2" />
         <div className="page fade-up">
-          <div className="survey-loading">Chargement…</div>
+          <div className="survey-loading">Vérification de ton abonnement…</div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!isSubscriber) {
+    return (
+      <main className="survey-page">
+        <div className="blob blob-1" />
+        <div className="blob blob-2" />
+        <div className="page survey-access-block fade-up">
+          <div className="badge">Réservé aux abonnés</div>
+          <h1 className="page-title">Le questionnaire est réservé aux membres abonnés</h1>
+          <p className="survey-subtitle">
+            Active un abonnement pour accéder au questionnaire et gagner 400 crédits.
+          </p>
+          <Link className="btn btn-primary" to="/pricing">
+            Voir les abonnements
+          </Link>
         </div>
       </main>
     );

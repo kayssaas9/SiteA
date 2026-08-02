@@ -14,7 +14,8 @@ const PLAN_LABELS = {
 
 export default function Account() {
   const { user } = useUser();
-  const { plan, credits, surveyCompleted, refetch } = useUserData();
+  const { plan, credits, surveyCompleted, loading: userDataLoading, refetch } = useUserData();
+  const isSubscriber = ["basic", "pro", "expert"].includes(plan);
   const { hasAccess: snapRougeAccess, loading: snapRougeLoading } = useSnapRougeAccess();
   const navigate = useNavigate();
   const [referral, setReferral] = useState({ code: "", count: 0, earned: 0, loading: true });
@@ -212,7 +213,7 @@ export default function Account() {
           </div>
         </div>
 
-        {!surveyCompleted && (
+        {!userDataLoading && isSubscriber && !surveyCompleted && (
           <div className="survey-card card fade-up delay-3">
             <div className="survey-card-header">
               <span className="survey-icon">📋</span>

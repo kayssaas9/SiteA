@@ -20,7 +20,8 @@ export default function Header() {
   const { isSignedIn } = useUser();
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
-  const { surveyCompleted, refetch: refetchUserData } = useUserData();
+  const { plan, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
+  const isSubscriber = ["basic", "pro", "expert"].includes(plan);
   const [menuOpen, setMenuOpen] = useState(false);
   const isLanding = pathname === "/";
 
@@ -135,7 +136,7 @@ const navLink = (to, label, className = "") => (
             )
           ) : (
             <>
-              {(!isSignedIn || !surveyCompleted) && (
+              {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
                 <Link to="/survey" className="btn btn-outline header-btn survey-nav-btn">
                   Gagne 400 crédits
                 </Link>
@@ -216,7 +217,7 @@ const navLink = (to, label, className = "") => (
               )
             ) : (
               <>
-                {(!isSignedIn || !surveyCompleted) && (
+                {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
                   <Link to="/survey" className="btn btn-primary mobile-menu-btn survey-mobile-btn">
                     Gagne 400 crédits
                   </Link>
