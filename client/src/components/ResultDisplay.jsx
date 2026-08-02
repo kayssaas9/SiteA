@@ -9,6 +9,7 @@ export default function ResultDisplay({
   loadingSubtext = "Cela prend généralement 10 à 30 secondes",
   error,
   showEmpty = false,
+  showcase = false,
 }) {
   if (loading) {
     return (
@@ -41,6 +42,95 @@ export default function ResultDisplay({
   }
 
   if (!imageUrl) return null;
+
+  if (showcase) {
+    const reviews = [
+      { author: "Arthur_M78", text: "Cette IA me met une tempête aux autres, je vous recommande !" },
+      { author: "Sarah_H", text: "Super réaliste, j'étais un peu sceptique au début mais c'est absolument parfait." },
+      { author: "Nextaz_Goat", text: "Merci beaucoup vous avez fait un super travail. C'est un des meilleurs sites que j'ai eu." },
+      { author: "Marc_Ant75", text: "Site très sérieux qui ne cesse de s'améliorer de jour en jour." },
+    ];
+
+    return (
+      <div className={`result-box result-showcase ${teaser ? "is-teaser" : "is-unlocked"}`}>
+        <div className="result-showcase-grid">
+          <div className="result-showcase-media">
+            <div className="result-showcase-media-badge">✦ APERÇU ASTRA</div>
+            <div className={`result-visual ${teaser ? "is-teaser" : ""}`}>
+              <img
+                className="result-img"
+                src={imageUrl}
+                alt={teaser ? "Aperçu flouté du résultat" : "Résultat généré"}
+              />
+            </div>
+            <div className="result-social-proof">
+              <span className="result-social-avatars" aria-hidden="true">👥</span>
+              <strong>21 298</strong> personnes ont généré une image aujourd'hui
+            </div>
+            {teaser ? (
+              <Link className="result-showcase-bottom-cta" to="/pricing">
+                <span aria-hidden="true">🔒</span>
+                Débloquer ma photo maintenant
+              </Link>
+            ) : (
+              <a className="result-showcase-bottom-cta" href={imageUrl} download="astra-resultat.jpg">
+                ⬇ Télécharger mon résultat
+              </a>
+            )}
+          </div>
+
+          <div className="result-showcase-panel">
+            <div className="result-showcase-kicker">TON RENDU PERSONNALISÉ</div>
+            <h2>{teaser ? "Ton résultat est prêt" : "Ton rendu est prêt"}</h2>
+            <p className="result-showcase-copy">
+              {teaser
+                ? "Imagine la réaction de tes amis quand ils verront ça. Débloque la version HD sans floutage pour l'envoyer directement."
+                : "Ton rendu personnalisé est prêt à être téléchargé et partagé."}
+            </p>
+
+            {teaser ? (
+              <Link className="result-showcase-cta" to="/pricing">
+                <span aria-hidden="true">🔒</span>
+                Accéder à la version sans floutage
+              </Link>
+            ) : (
+              <a className="result-showcase-cta" href={imageUrl} download="astra-resultat.jpg">
+                ⬇ Télécharger la version HD
+              </a>
+            )}
+
+            <div className="result-guarantee">
+              <span aria-hidden="true">✓</span>
+              <strong>Satisfait ou remboursé immédiatement</strong>
+            </div>
+            <div className="result-secure">♙ Paiement sécurisé via Stripe</div>
+
+            <div className="result-showcase-stats">
+              <span className="result-stat-avatars" aria-hidden="true">👨🏻‍🚀👩🏽‍🎨🧑🏼‍🔧</span>
+              <strong>21 298</strong>
+              <span>personnes ont généré une photo aujourd'hui</span>
+            </div>
+
+            <div className="result-reviews" aria-label="Avis clients">
+              <div className="result-reviews-header">
+                <strong>Ils ont testé Astra</strong>
+                <span>★★★★★</span>
+              </div>
+              <div className="result-reviews-scroll">
+                {reviews.map((review) => (
+                  <article className="result-review-card" key={review.author}>
+                    <div className="result-review-stars" aria-label="5 étoiles">★★★★★</div>
+                    <p>“{review.text}”</p>
+                    <strong>— {review.author}</strong>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="result-box success">

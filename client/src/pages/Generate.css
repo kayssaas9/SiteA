@@ -51,14 +51,167 @@
   margin: 0 auto 32px;
 }
 
-.generate-result-slot {
+.generate-showcase {
   width: 100%;
-  max-width: 720px;
-  margin: 0 auto 24px;
+  max-width: 1000px;
+  margin: 0 auto 40px;
 }
 
-.generate-result-slot .result-box {
+.generate-showcase .result-box {
   margin-top: 0;
+}
+
+.generate-toolbox.is-generating {
+  max-width: 1000px;
+}
+
+.generate-inline-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 14px auto 0;
+  color: #fca5a5;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Full-space generation state */
+.generation-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 390px;
+  padding: 48px 24px;
+  border: 1px solid rgba(35, 136, 255, 0.22);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(35, 136, 255, 0.14), transparent 32%),
+    linear-gradient(145deg, rgba(16, 24, 36, 0.92), rgba(3, 5, 8, 0.96));
+  text-align: center;
+  overflow: hidden;
+}
+
+.generation-progress-orbit {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 116px;
+  height: 116px;
+  margin-bottom: 28px;
+}
+
+.generation-progress-orbit::before,
+.generation-progress-orbit::after,
+.generation-progress-orbit span {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(35, 136, 255, 0.36);
+  border-radius: 50%;
+  content: "";
+}
+
+.generation-progress-orbit::before {
+  animation: generation-orbit 2.4s ease-in-out infinite;
+}
+
+.generation-progress-orbit::after {
+  inset: 14px;
+  border-color: rgba(143, 92, 255, 0.42);
+  animation: generation-orbit 2.1s ease-in-out infinite reverse;
+}
+
+.generation-progress-orbit span:nth-child(1) {
+  inset: 3px 52px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--accent);
+  box-shadow: 0 0 16px rgba(35, 136, 255, 0.8);
+  animation: generation-dot 1.8s linear infinite;
+}
+
+.generation-progress-orbit span:nth-child(2) {
+  inset: 52px 3px;
+  border: 0;
+  border-radius: 99px;
+  background: #a977ff;
+  box-shadow: 0 0 16px rgba(169, 119, 255, 0.8);
+  animation: generation-dot 1.8s linear infinite 0.6s;
+}
+
+.generation-progress-orbit span:nth-child(3) {
+  inset: 52px 52px 3px 3px;
+  border: 0;
+  border-radius: 99px;
+  background: #62d6ff;
+  box-shadow: 0 0 16px rgba(98, 214, 255, 0.8);
+  animation: generation-dot 1.8s linear infinite 1.2s;
+}
+
+.generation-progress-spark {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(35, 136, 255, 0.42);
+  border-radius: 50%;
+  background: rgba(8, 17, 29, 0.92);
+  color: #75c8ff;
+  font-size: 25px;
+  box-shadow: 0 0 30px rgba(35, 136, 255, 0.22);
+  animation: generation-spark 1.8s ease-in-out infinite;
+}
+
+.generation-progress-title {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: clamp(21px, 3vw, 28px);
+  font-weight: 750;
+}
+
+.generation-progress-subtitle {
+  max-width: 420px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.generation-progress-steps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  color: var(--text-faint);
+  font-size: 11px;
+}
+
+.generation-progress-steps span.active {
+  color: var(--accent);
+}
+
+.generation-progress-steps i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+@keyframes generation-orbit {
+  0%, 100% { transform: scale(0.94) rotate(0deg); opacity: 0.56; }
+  50% { transform: scale(1.06) rotate(180deg); opacity: 1; }
+}
+
+@keyframes generation-dot {
+  0%, 100% { transform: rotate(0deg) translateY(-53px) scale(0.7); }
+  50% { transform: rotate(180deg) translateY(-53px) scale(1.15); }
+}
+
+@keyframes generation-spark {
+  0%, 100% { transform: scale(0.94); filter: brightness(0.9); }
+  50% { transform: scale(1.06); filter: brightness(1.35); }
 }
 
 /* Generator card */
@@ -447,6 +600,18 @@
 
   .image-generator-v2 {
     padding: 24px;
+  }
+
+  .generation-progress {
+    min-height: 330px;
+    padding: 36px 18px;
+  }
+
+  .generation-progress-steps {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 260px;
+    line-height: 1.5;
   }
 
   .snaprouge-mini-banner {

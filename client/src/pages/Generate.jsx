@@ -126,20 +126,25 @@ export default function Generate() {
           </div>
         ) : isSignedIn ? (
           <>
-          <div className="generate-result-slot fade-up delay-2">
-            <ResultDisplay
-              imageUrl={resultState.result?.imageUrl}
-              teaser={resultState.result?.teaser}
-              loading={resultState.loading}
-              loadingMessage="Génération en cours…"
-              loadingSubtext="Cela prend généralement 10 à 30 secondes"
-              error={resultState.error}
-              showEmpty
-            />
-          </div>
-          <div className="generate-toolbox fade-up delay-2">
-            <ImageGenerator onResultChange={setResultState} />
-          </div>
+          {resultState.result?.imageUrl ? (
+            <div className="generate-showcase fade-up delay-2">
+              <ResultDisplay
+                imageUrl={resultState.result.imageUrl}
+                teaser={resultState.result.teaser}
+                showcase
+              />
+            </div>
+          ) : (
+            <div className={`generate-toolbox fade-up delay-2 ${resultState.loading ? "is-generating" : ""}`}>
+              <ImageGenerator onResultChange={setResultState} />
+              {resultState.error && (
+                <div className="generate-inline-error" role="alert">
+                  <span aria-hidden="true">⚠️</span>
+                  <span>{resultState.error}</span>
+                </div>
+              )}
+            </div>
+          )}
           </>
         ) : (
           <>

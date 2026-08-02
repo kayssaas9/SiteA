@@ -243,6 +243,30 @@ export default function ImageGenerator({ onResultChange }) {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="generation-progress" role="status" aria-live="polite">
+        <div className="generation-progress-orbit" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <div className="generation-progress-spark">✦</div>
+        </div>
+        <p className="generation-progress-title">Ton rendu est en préparation</p>
+        <p className="generation-progress-subtitle">
+          Astra transforme ta photo en une image ultra-réaliste…
+        </p>
+        <div className="generation-progress-steps" aria-hidden="true">
+          <span className="active">Analyse de ta photo</span>
+          <i />
+          <span>Création du rendu</span>
+          <i />
+          <span>Finitions</span>
+        </div>
+      </div>
+    );
+  }
+
   const ReferenceSlot = ({ slot, index, unlocked }) => {
     const value = refs[slot];
     const lockMessage =
