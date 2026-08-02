@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { Link } from "react-router-dom";
 import ImageUpload from "./ImageUpload.jsx";
 import ResultDisplay from "./ResultDisplay.jsx";
 import { useUserData } from "../hooks/useUserData.js";
 import "./ImageGenerator.css";
 
 const GENERATION_COST = 100;
-
-const PRICING_OPTIONS = [
-  { name: "Basique", price: "9,99 €", details: "2 500 crédits / mois" },
-  { name: "Pro", price: "19,99 €", details: "7 500 crédits / mois" },
-  { name: "Expert", price: "39,99 €", details: "Crédits illimités" },
-];
 
 const PlusIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
@@ -35,31 +28,11 @@ export default function ImageGenerator() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [pricingPreview, setPricingPreview] = useState(false);
   const [error, setError] = useState(null);
-  const [showPricingModal, setShowPricingModal] = useState(false);
 
   const unlockedCount = plan === "expert" ? 2 : plan === "pro" ? 1 : 0;
   const hasNoGenerationAccess =
     !userDataLoading && credits <= 0;
-
-  const startPricingPreview = () => {
-    setShowPricingModal(false);
-    setPricingPreview(true);
-    setLoading(true);
-  };
-
-  useEffect(() => {
-    if (!pricingPreview) return undefined;
-
-    const timer = window.setTimeout(() => {
-      setLoading(false);
-      setPricingPreview(false);
-      setShowPricingModal(true);
-    }, 2000);
-
-    return () => window.clearTimeout(timer);
-  }, [pricingPreview]);
 
   const handleRefChange = (slot, value) => {
     setRefs((r) => ({ ...r, [slot]: value }));
@@ -122,12 +95,11 @@ export default function ImageGenerator() {
     setResult(null);
 
     if (hasNoGenerationAccess) {
-      startPricingPreview();
+      setError("Vous n'avez plus de crédits.");
       return;
     }
 
     setLoading(true);
-    let pricingPreviewStarted = false;
 
     try {
       const form = new FormData();
@@ -142,11 +114,6 @@ export default function ImageGenerator() {
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 402 && data.code === "NO_CREDITS") {
-          pricingPreviewStarted = true;
-          startPricingPreview();
-          return;
-        }
         throw new Error(data.error || "La génération a échoué");
       }
       setResult({
@@ -163,7 +130,7 @@ export default function ImageGenerator() {
     } catch (err) {
       setError(err.message);
     } finally {
-      if (!pricingPreviewStarted) setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -261,56 +228,6 @@ export default function ImageGenerator() {
         error={error}
       />
 
-      {showPricingModal && !pricingPreview && (
-        <div
-          className="pricing-modal-backdrop"
-          role="presentation"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setShowPricingModal(false);
-          }}
-        >
-          <section
-            className="pricing-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="pricing-modal-title"
-          >
-            <button
-              type="button"
-              className="pricing-modal-close"
-              aria-label="Fermer"
-              onClick={() => setShowPricingModal(false)}
-            >
-              ×
-            </button>
-            <div className="pricing-modal-kicker">Il te manque des crédits</div>
-            <h2 id="pricing-modal-title">Choisis ton offre pour générer</h2>
-            <p className="pricing-modal-copy">
-              Chaque génération coûte {GENERATION_COST} crédits. Active une offre pour commencer.
-            </p>
-
-            <div className="pricing-modal-options">
-              {PRICING_OPTIONS.map((option) => (
-                <div className="pricing-modal-option" key={option.name}>
-                  <div>
-                    <strong>{option.name}</strong>
-                    <span>{option.details}</span>
-                  </div>
-                  <b>{option.price}</b>
-                </div>
-              ))}
-            </div>
-
-            <Link
-              to="/pricing"
-              className="btn btn-primary pricing-modal-cta"
-              onClick={() => setShowPricingModal(false)}
-            >
-              <span>Voir les tarifs</span>
-            </Link>
-          </section>
-        </div>
-      )}
     </div>
   );
 }
