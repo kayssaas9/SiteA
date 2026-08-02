@@ -13,8 +13,14 @@ const router = express.Router();
  */
 router.post("/", async (req, res) => {
   try {
-    const { priceId, clerkUserId, mode } = req.body || {};
-    const result = await createCheckoutSession({ priceId, clerkUserId, mode, req });
+    const { priceId, clerkUserId, mode, generationId } = req.body || {};
+    const result = await createCheckoutSession({
+      priceId,
+      clerkUserId,
+      mode,
+      generationId,
+      req,
+    });
     res.json(result);
   } catch (err) {
     console.error("Stripe checkout error:", err.message);

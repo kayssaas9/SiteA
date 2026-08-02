@@ -60,6 +60,12 @@ export function useUserData() {
     if (isLoaded && userId) fetch_();
   }, [fetch_, isLoaded, userId]);
 
+  useEffect(() => {
+    const refreshOnPayment = () => fetch_();
+    window.addEventListener("astra-user-data-changed", refreshOnPayment);
+    return () => window.removeEventListener("astra-user-data-changed", refreshOnPayment);
+  }, [fetch_]);
+
   return {
     plan: data?.plan ?? "free",
     credits: data?.credits ?? 0,

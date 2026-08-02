@@ -13,9 +13,7 @@ export default function History() {
     if (!user) return;
     setLoading(true);
     try {
-      const url = query
-        ? `/api/history/${user.id}/search?q=${encodeURIComponent(query)}`
-        : `/api/history/${user.id}`;
+      const url = `/api/history/${user.id}${query ? `?q=${encodeURIComponent(query)}` : ""}`;
       const res = await fetch(url);
       if (res.ok) setItems(await res.json());
     } catch (err) {
@@ -90,21 +88,28 @@ export default function History() {
               <div key={item.id} className={`history-card fade-up delay-${Math.min(idx % 4 + 1, 4)}`}>
                 <div className="history-thumb" onClick={() => setPreview(item)}>
                   {item.image_url ? (
-                    <img src={item.image_url} alt={item.prompt} loading="lazy" />
+                    <div className={`history-image-wrap ${item.unlocked ? "" : "is-teaser"}`}>
+                      <img src={item.image_url} alt={item.prompt} loading="lazy" />
+                      {!item.unlocked && <span className="history-teaser-badge">À débloquer</span>}
+                    </div>
                   ) : (
                     <div className="history-thumb-placeholder" />
                   )}
                   <div className="history-thumb-overlay">
                     <button className="thumb-action" title="Agrandir">👁</button>
-                    <a
-                      href={item.image_url}
-                      download
-                      className="thumb-action"
-                      title="Télécharger"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      ⬇
-                    </a>
+                    {item.unlocked ? (
+                      <a
+                        href={item.image_url}
+                        download
+                        className="thumb-action"
+                        title="Télécharger"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        ⬇
+                      </a>
+                    ) : (
+                      <LinkToPricing />
+                    )}
                   </div>
                 </div>
                 <div className="history-meta">
@@ -119,12 +124,27 @@ export default function History() {
         {preview && (
           <div className="preview-overlay" onClick={() => setPreview(null)}>
             <div className="preview-content" onClick={(e) => e.stopPropagation()}>
-              <img src={preview.image_url} alt={preview.prompt} />
+               <div className={preview.unlocked ? "" : "preview-teaser-image"}>
+                 <img src={preview.image_url} alt={preview.prompt} />
+               </div>
               <p>{preview.prompt}</p>
             </div>
           </div>
         )}
       </div>
     </main>
+  );
+}
+
+function LinkToPricing() {
+  return (
+    <a
+      href="/pricing"
+      className="thumb-action"
+      title="Débloquer"
+      onClick={(e) => e.stopPropagation()}
+    >
+      🔓
+    </a>
   );
 }

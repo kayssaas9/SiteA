@@ -18,7 +18,13 @@ function getRequestOrigin(req) {
   return "http://localhost:5000";
 }
 
-export async function createCheckoutSession({ priceId, clerkUserId, mode = "subscription", req }) {
+export async function createCheckoutSession({
+  priceId,
+  clerkUserId,
+  mode = "subscription",
+  generationId,
+  req,
+}) {
   if (!priceId || !clerkUserId) {
     const error = new Error("priceId and clerkUserId are required");
     error.statusCode = 400;
@@ -53,16 +59,20 @@ export async function createCheckoutSession({ priceId, clerkUserId, mode = "subs
   }
 
   const origin = getRequestOrigin(req);
+  const metadata = {
+    clerk_user_id: clerkUserId,
+    ...(generationId ? { generation_id: generationId } : {}),
+  };
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     customer_email: user?.email || undefined,
     mode,
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/?checkout=success`,
+    success_url: `${origin}/generate?checkout=success`,
     cancel_url: `${origin}/pricing?checkout=cancelled`,
-    metadata: { clerk_user_id: clerkUserId },
+    metadata,
     ...(mode === "subscription" && {
-      subscription_data: { metadata: { clerk_user_id: clerkUserId } },
+      subscription_data: { metadata },
     }),
   });
 

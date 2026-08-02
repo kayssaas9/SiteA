@@ -45,7 +45,12 @@ function PackCheckoutButton({ pack }) {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, clerkUserId: user.id, mode: "payment" }),
+        body: JSON.stringify({
+          priceId,
+          clerkUserId: user.id,
+          mode: "payment",
+          generationId: window.sessionStorage.getItem("astraPendingGenerationId") || undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la création du paiement");

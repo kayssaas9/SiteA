@@ -162,10 +162,11 @@ export default function Pricing() {
     setError(null);
 
     try {
+      const generationId = window.sessionStorage.getItem("astraPendingGenerationId") || undefined;
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, clerkUserId: user.id, mode }),
+        body: JSON.stringify({ priceId, clerkUserId: user.id, mode, generationId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la création du paiement");

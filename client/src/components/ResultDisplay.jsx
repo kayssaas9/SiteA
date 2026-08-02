@@ -1,7 +1,9 @@
 import "./ResultDisplay.css";
+import { Link } from "react-router-dom";
 
 export default function ResultDisplay({
   imageUrl,
+  teaser = false,
   loading,
   loadingMessage = "Génération en cours…",
   loadingSubtext = "Cela prend généralement 10 à 30 secondes",
@@ -31,17 +33,32 @@ export default function ResultDisplay({
 
   return (
     <div className="result-box success">
-      <div className="result-label">✨ Votre résultat</div>
-      <img className="result-img" src={imageUrl} alt="Résultat généré" />
-      <a
-        className="result-download"
-        href={imageUrl}
-        download="astra-resultat.jpg"
-        target="_blank"
-        rel="noreferrer"
-      >
-        ⬇ Télécharger
-      </a>
+      <div className="result-label">
+        {teaser ? "✨ Aperçu de votre résultat" : "✨ Votre résultat"}
+      </div>
+      <div className={`result-visual ${teaser ? "is-teaser" : ""}`}>
+        <img className="result-img" src={imageUrl} alt={teaser ? "Aperçu flouté du résultat" : "Résultat généré"} />
+        {teaser && (
+          <div className="result-teaser-overlay">
+            <p>Ton résultat est prêt</p>
+            <span>Débloque l'image en qualité nette</span>
+            <Link className="result-unlock-btn" to="/pricing">
+              Débloquer ce résultat
+            </Link>
+          </div>
+        )}
+      </div>
+      {!teaser && (
+        <a
+          className="result-download"
+          href={imageUrl}
+          download="astra-resultat.jpg"
+          target="_blank"
+          rel="noreferrer"
+        >
+          ⬇ Télécharger
+        </a>
+      )}
     </div>
   );
 }

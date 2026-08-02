@@ -28,7 +28,7 @@ const MinusIcon = () => (
 
 export default function ImageGenerator() {
   const { user } = useUser();
-  const { plan, credits, loading: userDataLoading } = useUserData();
+  const { plan, credits, loading: userDataLoading, refetch: refetchUserData } = useUserData();
   const [mainPhoto, setMainPhoto] = useState(null);
   const [refs, setRefs] = useState({ ref1: null, ref2: null });
   const [showRefs, setShowRefs] = useState(false);
@@ -41,7 +41,7 @@ export default function ImageGenerator() {
 
   const unlockedCount = plan === "expert" ? 2 : plan === "pro" ? 1 : 0;
   const hasNoGenerationAccess =
-    !userDataLoading && plan === "free" && credits < GENERATION_COST;
+    !userDataLoading && credits <= 0;
 
   const startPricingPreview = () => {
     setShowPricingModal(false);
@@ -64,6 +64,57 @@ export default function ImageGenerator() {
   const handleRefChange = (slot, value) => {
     setRefs((r) => ({ ...r, [slot]: value }));
   };
+
+  const loadGeneration = async (generationId) => {
+    if (!generationId || !user?.id) return null;
+
+    const res = await fetch(
+      `/api/generations/${encodeURIComponent(generationId)}?clerkUserId=${encodeURIComponent(user.id)}&fresh=${Date.now()}`,
+      { cache: "no-store", headers: { "Cache-Control": "no-cache" } },
+    );
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (data.imageUrl) {
+      setResult({
+        imageUrl: data.imageUrl,
+        teaser: !data.unlocked,
+        generationId: data.id,
+      });
+    }
+    return data;
+  };
+
+  // Stripe sends the user away from the generator. Keep the generation id in
+  // session storage so the exact teaser can become sharp after payment.
+  useEffect(() => {
+    const generationId = window.sessionStorage.getItem("astraPendingGenerationId");
+    if (!generationId || !user?.id) return undefined;
+
+    let cancelled = false;
+    let attempts = 0;
+    let timer;
+
+    const refresh = async () => {
+      if (cancelled) return;
+      const data = await loadGeneration(generationId);
+      if (data?.unlocked) {
+        window.sessionStorage.removeItem("astraPendingGenerationId");
+        await refetchUserData();
+        return;
+      }
+
+      // The Stripe webhook may arrive just after the redirect.
+      attempts += 1;
+      if (attempts < 40) timer = window.setTimeout(refresh, 1500);
+    };
+
+    refresh();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [refetchUserData, user?.id]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -91,14 +142,24 @@ export default function ImageGenerator() {
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 402 && plan === "free") {
+        if (res.status === 402 && data.code === "NO_CREDITS") {
           pricingPreviewStarted = true;
           startPricingPreview();
           return;
         }
         throw new Error(data.error || "La génération a échoué");
       }
-      setResult(data.imageUrl);
+      setResult({
+        imageUrl: data.imageUrl,
+        teaser: Boolean(data.teaser),
+        generationId: data.generationId,
+      });
+      window.dispatchEvent(new Event("astra-user-data-changed"));
+      if (data.teaser && data.generationId) {
+        window.sessionStorage.setItem("astraPendingGenerationId", data.generationId);
+      } else {
+        window.sessionStorage.removeItem("astraPendingGenerationId");
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -186,7 +247,8 @@ export default function ImageGenerator() {
       </div>
 
       <ResultDisplay
-        imageUrl={result}
+        imageUrl={result?.imageUrl}
+        teaser={result?.teaser}
         loading={loading}
         loadingMessage="Génération en cours…"
         loadingSubtext="Cela prend généralement 10 à 30 secondes"

@@ -48,6 +48,7 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
             .from("users")
             .update({ snaprouge_unlocked: true })
             .eq("clerk_user_id", clerkUserId);
+          await unlockGeneration(clerkUserId, obj.metadata?.generation_id);
           console.log(`🔓 SnapRouge unlocked → ${clerkUserId}`);
           return res.json({ received: true });
         }
@@ -55,6 +56,7 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
         const credits = PRICE_CREDITS[priceId] ?? 0;
         if (credits > 0) {
           await addCredits(clerkUserId, credits);
+          await unlockGeneration(clerkUserId, obj.metadata?.generation_id);
           console.log(`💳 +${credits} credits (pack) → ${clerkUserId}`);
         }
       } catch (err) {
@@ -73,7 +75,7 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
         });
         const subscription = session.subscription;
         if (subscription) {
-          await processSubscription(subscription, clerkUserId);
+          await processSubscription(subscription, clerkUserId, obj.metadata?.generation_id);
         }
       } catch (err) {
         console.error(`Subscription checkout session retrieve failed for ${obj.id}:`, err.message);
@@ -90,7 +92,7 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
     const clerkUserId = obj.metadata?.clerk_user_id;
     if (!clerkUserId) return res.json({ received: true });
 
-    await processSubscription(obj, clerkUserId);
+    await processSubscription(obj, clerkUserId, obj.metadata?.generation_id);
   }
 
   // ── customer.subscription.deleted ───────────────────────────────────────
@@ -110,7 +112,7 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
 });
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-async function processSubscription(subscription, clerkUserId) {
+async function processSubscription(subscription, clerkUserId, generationId) {
   const priceId = subscription.items?.data?.[0]?.price?.id;
   if (!priceId) return false;
 
@@ -134,6 +136,7 @@ async function processSubscription(subscription, clerkUserId) {
     console.log(`⏭ Subscription ${subscription.id} already credited, skipping.`);
     // Still ensure the plan field is up to date in case it was changed manually.
     await supabaseAdmin.from("users").update({ plan }).eq("clerk_user_id", clerkUserId);
+    await unlockGeneration(clerkUserId, generationId);
     return true;
   }
 
@@ -150,6 +153,7 @@ async function processSubscription(subscription, clerkUserId) {
     .from("users")
     .update({ plan })
     .eq("clerk_user_id", clerkUserId);
+  await unlockGeneration(clerkUserId, generationId);
 
   console.log(`🔄 Plan → ${plan}, +${credits} credits added for ${clerkUserId} (subscription ${subscription.id})`);
   return true;
@@ -177,6 +181,28 @@ async function addCredits(clerkUserId, amount) {
       .update({ credits: current + amount })
       .eq("clerk_user_id", clerkUserId);
   }
+}
+
+async function unlockGeneration(clerkUserId, generationId) {
+  if (!generationId) {
+    console.log(`⏭ No teaser generation attached to payment → ${clerkUserId}`);
+    return true;
+  }
+
+  const { error } = await supabaseAdmin
+    .from("generations")
+    .update({ unlocked: true })
+    .eq("clerk_user_id", clerkUserId)
+    .eq("id", generationId)
+    .eq("unlocked", false);
+
+  if (error) {
+    console.error(`Failed to unlock generation ${generationId} for ${clerkUserId}:`, error.message);
+    return false;
+  }
+
+  console.log(`🔓 Teaser generation unlocked → ${generationId} (${clerkUserId})`);
+  return true;
 }
 
 export default router;
