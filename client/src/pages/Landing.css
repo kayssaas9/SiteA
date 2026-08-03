@@ -59,36 +59,25 @@
   display: flex;
   width: 200%;
   height: 100%;
-  animation: hero-pan 20s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1);
   will-change: transform;
+}
+
+.hero-photo-slide {
+  display: flex;
+  flex: 0 0 50%;
+  width: 50%;
+  height: 100%;
 }
 
 .hero-photo {
   position: relative;
-  flex: 0 0 25%;
-  width: auto;
+  flex: 0 0 50%;
+  width: 50%;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(1.08) contrast(1.04);
-}
-
-@keyframes hero-pan {
-  from {
-    transform: translateX(0);
-  }
-  12% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(-50%);
-  }
-  62% {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
 }
 
 .hero-background-center {
@@ -745,6 +734,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-photo-track {
-    animation: none;
+    transition: none;
   }
 }

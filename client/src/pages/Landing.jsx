@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
@@ -30,23 +30,44 @@ const LANDING_EXAMPLES = [
   },
 ];
 
-const HERO_IMAGES = [
-  "/landing-examples/hero-lamborghini-road.png",
-  "/landing-examples/hero-watch.png",
-  "/landing-examples/hero-couple.png",
-  "/landing-examples/hero-jet.png",
+const HERO_IMAGE_PAIRS = [
+  [
+    "/landing-examples/hero-lamborghini-road.png",
+    "/landing-examples/hero-watch.png",
+  ],
+  [
+    "/landing-examples/hero-couple.png",
+    "/landing-examples/hero-jet.png",
+  ],
 ];
 
 function HeroBackground() {
+  const [activePair, setActivePair] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActivePair((currentPair) => (currentPair + 1) % HERO_IMAGE_PAIRS.length);
+    }, 7000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
   return (
     <div className="hero-background" aria-hidden="true">
-      <div className="hero-photo-track">
-        {HERO_IMAGES.map((image) => (
-          <div
-            className="hero-photo"
-            key={image}
-            style={{ backgroundImage: `url("${image}")` }}
-          />
+      <div
+        className="hero-photo-track"
+        style={{ transform: `translateX(-${activePair * 50}%)` }}
+      >
+        {HERO_IMAGE_PAIRS.map((pair, pairIndex) => (
+          <div className="hero-photo-slide" key={pairIndex}>
+            {pair.map((image) => (
+              <div
+                className="hero-photo"
+                key={image}
+                style={{ backgroundImage: `url("${image}")` }}
+              />
+            ))}
+          </div>
         ))}
       </div>
       <div className="hero-background-shade" />
