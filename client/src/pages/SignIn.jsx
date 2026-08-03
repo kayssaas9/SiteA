@@ -3,6 +3,7 @@ import { useSignIn, useUser } from "@clerk/clerk-react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
 import { getClerkLoadMessage, useClerkLoadState } from "../hooks/useClerkLoadState.js";
+import { continueWithGoogle } from "../lib/googleAuth.js";
 import "./SignIn.css";
 
 const GoogleIcon = () => (
@@ -63,13 +64,13 @@ export default function SignIn() {
     setError("");
 
     try {
-      await signIn.authenticateWithRedirect({
-        strategy: "oauth_google",
-        redirectUrl: "/sso-callback",
-        redirectUrlComplete: from,
-      });
+      await continueWithGoogle(
+        signIn.authenticateWithPopup,
+        from,
+        "Impossible de continuer avec Google. Réessaie.",
+      );
     } catch (err) {
-      setError(err.errors?.[0]?.message || err.message || "Impossible d’ouvrir Google. Réessaie.");
+      setError(err.message || "Impossible de continuer avec Google. Réessaie.");
       setLoading(false);
     }
   };
