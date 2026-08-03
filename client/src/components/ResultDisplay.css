@@ -6,6 +6,30 @@
   margin-top: 24px;
 }
 
+.result-reveal {
+  animation: resultReveal 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: center top;
+}
+
+@keyframes resultReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    filter: brightness(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-reveal {
+    animation: none;
+  }
+}
+
 .result-showcase {
   border-color: rgba(35, 136, 255, 0.22);
   background:

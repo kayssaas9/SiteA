@@ -83,7 +83,7 @@ export default function ResultDisplay({
 
   if (showcase && !teaser) {
     return (
-      <div className="result-box result-credit-showcase">
+      <div className="result-box result-credit-showcase result-reveal">
         <div className="result-credit-image-frame" ref={imageFrameRef}>
             <img className="result-credit-image" src={safeImageUrl} alt="Résultat généré" />
         </div>
@@ -154,7 +154,7 @@ export default function ResultDisplay({
     ];
 
     return (
-      <div className={`result-box result-showcase ${teaser ? "is-teaser" : "is-unlocked"}`}>
+      <div className={`result-box result-showcase result-reveal ${teaser ? "is-teaser" : "is-unlocked"}`}>
         <div className="result-showcase-grid">
           <div className="result-showcase-media">
             <div className="result-showcase-media-badge">✦ APERÇU ASTRA</div>
@@ -251,7 +251,7 @@ export default function ResultDisplay({
   }
 
   return (
-    <div className="result-box success">
+    <div className="result-box success result-reveal">
       <div className="result-label">
         {teaser ? "✨ Aperçu de votre résultat" : "✨ Votre résultat"}
       </div>
