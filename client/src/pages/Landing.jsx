@@ -138,6 +138,8 @@ export default function Landing() {
 
 function Examples() {
   const { isSignedIn } = useUser();
+  const [showMoreExamples, setShowMoreExamples] = useState(false);
+  const visibleExamples = showMoreExamples ? LANDING_EXAMPLES : LANDING_EXAMPLES.slice(0, 1);
 
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
@@ -145,8 +147,8 @@ function Examples() {
         Le résultat <span className="examples-title-accent">Astra</span>
       </h2>
 
-      <div className="examples-grid">
-        {LANDING_EXAMPLES.map((example) => (
+      <div className="examples-list">
+        {visibleExamples.map((example) => (
           <div className="example-showcase" key={example.original}>
             <div className="example-showcase-comparison">
               <div className="example-side">
@@ -197,8 +199,13 @@ function Examples() {
         ))}
       </div>
 
-      <button className="examples-more" type="button">
-        Voir plus d'exemples
+      <button
+        className="examples-more"
+        type="button"
+        onClick={() => setShowMoreExamples((isShowingMore) => !isShowingMore)}
+        aria-expanded={showMoreExamples}
+      >
+        {showMoreExamples ? "Réduire les exemples" : "Voir plus d'exemples"}
       </button>
 
       <Link to={isSignedIn ? "/generate" : "/sign-up"} className="btn btn-primary examples-cta">
