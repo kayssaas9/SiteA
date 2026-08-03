@@ -35,11 +35,11 @@ function HeroBackground() {
     <div className="hero-background" aria-hidden="true">
       <div
         className="hero-photo hero-photo-left"
-        style={{ backgroundImage: 'url("/landing-hero/hero-lamborghini-road.png")' }}
+        style={{ backgroundImage: 'url("/landing-examples/hero-lamborghini-road.png")' }}
       />
       <div
         className="hero-photo hero-photo-right"
-        style={{ backgroundImage: 'url("/landing-hero/hero-watch.png")' }}
+        style={{ backgroundImage: 'url("/landing-examples/hero-watch.png")' }}
       />
       <div className="hero-background-shade" />
       <div className="hero-background-center" />
