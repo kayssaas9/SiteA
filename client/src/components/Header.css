@@ -41,15 +41,18 @@
   border-radius: 22px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14);
   transition:
-    max-width 0.2s ease,
-    height 0.2s ease,
-    padding 0.2s ease,
-    border-radius 0.2s ease,
-    box-shadow 0.2s ease;
+    max-width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease,
+    background 0.45s ease;
+  will-change: max-width, height, padding, border-radius;
 }
 
 .header-landing.is-scrolled {
   padding-top: 10px;
+  transition: padding-top 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .header-landing.is-scrolled .header-inner {
@@ -88,11 +91,15 @@
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
   padding: 11px 20px;
   font-size: 13px;
-  transition: padding 0.2s ease, font-size 0.2s ease;
+  transition: padding 0.45s cubic-bezier(0.22, 1, 0.36, 1), font-size 0.45s ease;
 }
 
 .header-landing:not(.is-scrolled) .logo-text {
   font-size: 22px;
+}
+
+.header-landing .logo-text {
+  transition: font-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .header-landing:not(.is-scrolled) .logo-dot {
@@ -100,13 +107,29 @@
   height: 11px;
 }
 
+.header-landing .logo-dot {
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .header-landing:not(.is-scrolled) .nav-link {
   font-size: 14px;
+}
+
+.header-landing .nav-link {
+  transition: color 0.2s ease, font-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .header-landing:not(.is-scrolled) .header-btn {
   padding: 11px 20px;
   font-size: 13px;
+}
+
+.header-landing .header-btn {
+  transition:
+    padding 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    font-size 0.45s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .header-app .survey-nav-btn {
