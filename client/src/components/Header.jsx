@@ -12,11 +12,22 @@ export default function Header() {
   const { plan, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [landingScrolled, setLandingScrolled] = useState(false);
   const isLanding = pathname === "/";
 
   useEffect(() => {
     setMenuOpen(false);
-  }, [pathname]);
+    if (!isLanding) setLandingScrolled(false);
+  }, [pathname, isLanding]);
+
+  useEffect(() => {
+    if (!isLanding) return undefined;
+
+    const handleScroll = () => setLandingScrolled(window.scrollY > 32);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLanding]);
 
   useEffect(() => {
     const handleSurveyCompleted = () => refetchUserData();
@@ -77,7 +88,7 @@ const navLink = (to, label, className = "") => (
   );
 
   return (
-    <header className={`header ${isLanding ? "header-landing" : "header-app"}`}>
+    <header className={`header ${isLanding ? "header-landing" : "header-app"} ${landingScrolled ? "is-scrolled" : ""}`}>
       <div className="header-inner">
         <Link to="/" className="logo">
           <span className="logo-dot" />
