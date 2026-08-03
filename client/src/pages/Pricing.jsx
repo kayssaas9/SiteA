@@ -10,8 +10,8 @@ const PLANS = [
   {
     id: "basic",
     name: "Basique",
-    monthlyPriceCents: 999,
-    annualPriceCents: 9900,
+    originalPrice: "11,99 €",
+    price: "9,99 €",
     period: "/mois",
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 99€/an",
@@ -36,8 +36,8 @@ const PLANS = [
   {
     id: "pro",
     name: "Pro",
-    monthlyPriceCents: 1999,
-    annualPriceCents: 19900,
+    originalPrice: "24,99 €",
+    price: "19,99 €",
     period: "/mois",
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 199€/an",
@@ -69,8 +69,8 @@ const PLANS = [
   {
     id: "expert",
     name: "Expert",
-    monthlyPriceCents: 3999,
-    annualPriceCents: 39900,
+    originalPrice: "49,99 €",
+    price: "39,99 €",
     period: "/mois",
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 399€/an",
@@ -126,13 +126,6 @@ const SNAP_ROUGE = {
   description: "Découvre comment envoyer tes photos IA générées sur le site en snap rouge indétectable.",
 };
 
-const PROMO_CODE = "DECOUVERTE";
-const PROMO_PERCENT = 20;
-
-function formatPrice(cents) {
-  return `${(cents / 100).toFixed(2).replace(".", ",")} €`;
-}
-
 export default function Pricing() {
   const { user } = useUser();
   const { plan: userPlan } = useUserData();
@@ -154,7 +147,7 @@ export default function Pricing() {
   const hasSubscription = ["basic", "pro", "expert"].includes(userPlan);
   const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
 
-  const handleCheckout = async (priceEnvKey, mode, itemId, promotionCode) => {
+  const handleCheckout = async (priceEnvKey, mode, itemId) => {
     if (!user) {
       setError("Connectez-vous d'abord pour continuer.");
       return;
@@ -181,7 +174,9 @@ export default function Pricing() {
           clerkUserId: user.id,
           mode,
           generationId,
-          ...(promotionCode ? { promotionCode } : {}),
+          ...(location.state?.fromNoCreditModal && mode === "subscription"
+            ? { promotionCode: "DECOUVERTE" }
+            : {}),
         }),
       });
       const data = await res.json();
@@ -206,10 +201,6 @@ export default function Pricing() {
           <div className="pricing-guarantee fade-up">
             <ShieldIcon /> Satisfait ou remboursé immédiatement
           </div>
-          <div className="promo-banner fade-up" role="note">
-            <strong>-20 % avec le code {PROMO_CODE}</strong>
-            <span>Remise appliquée automatiquement au paiement de ton abonnement.</span>
-          </div>
         </div>
 
         <div className="billing-toggle fade-up">
@@ -232,8 +223,6 @@ export default function Pricing() {
         <div className="plans-grid">
           {PLANS.map((plan, idx) => {
             const isCurrentPlan = plan.id === userPlan;
-            const basePriceCents = isAnnual ? plan.annualPriceCents : plan.monthlyPriceCents;
-            const discountedPrice = formatPrice(Math.round(basePriceCents * (1 - PROMO_PERCENT / 100)));
             return (
               <div
                 key={plan.id}
@@ -246,24 +235,15 @@ export default function Pricing() {
                 )}
                 <div className="plan-name-v2">{plan.name}</div>
                 <div className="plan-price-block">
-                  <div className="plan-promo-label">DECOUVERTE · -20 %</div>
-                  <div className="plan-original-price">
-                    {formatPrice(basePriceCents)}
-                    <span>{isAnnual ? " / an" : " / mois"}</span>
-                  </div>
+                  <div className="plan-original-price">{plan.originalPrice}</div>
                   <div className="plan-price-v2">
-                    {discountedPrice}
-                    <span className="plan-period-v2">{isAnnual ? "/an" : plan.period}</span>
+                    {plan.price}<span className="plan-period-v2">{plan.period}</span>
                   </div>
                 </div>
                 <div className="plan-guarantee">
                   <ShieldIcon /> Satisfait ou remboursé immédiatement
                 </div>
-                <div className="plan-billing">
-                  {isAnnual
-                    ? `Facturé ${discountedPrice}/an avec ${PROMO_CODE}`
-                    : `Facturé mensuellement avec ${PROMO_CODE}`}
-                </div>
+                <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
                 <div className="plan-includes-title">Votre forfait inclut :</div>
                 <div className="plan-credits-box">
                   <div className="plan-credits-main">
@@ -306,8 +286,7 @@ export default function Pricing() {
                     onClick={() => handleCheckout(
                       isAnnual ? plan.annualPriceEnvKey : plan.monthlyPriceEnvKey,
                       "subscription",
-                      plan.id,
-                      PROMO_CODE
+                      plan.id
                     )}
                     disabled={loading === plan.id}
                     type="button"

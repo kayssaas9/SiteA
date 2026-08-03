@@ -529,6 +529,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
 
             <Link
               to="/pricing"
+              state={{ fromNoCreditModal: true }}
               className="btn btn-primary pricing-modal-cta"
               onClick={() => setShowPricingModal(false)}
             >
