@@ -101,6 +101,52 @@
   color: var(--text);
 }
 
+.result-image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.94);
+  cursor: zoom-out;
+}
+
+.result-image-lightbox-image {
+  display: block;
+  max-width: min(94vw, 900px);
+  max-height: 94vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65);
+  cursor: default;
+}
+
+.result-image-lightbox-close {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(18, 22, 29, 0.9);
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.result-image-lightbox-close:hover {
+  background: rgba(35, 136, 255, 0.8);
+}
+
 .result-credit-action:disabled {
   cursor: wait;
   opacity: 0.8;

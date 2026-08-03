@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import DownloadButton from "./DownloadButton.jsx";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
@@ -17,22 +17,26 @@ export default function ResultDisplay({
   onNewGeneration,
 }) {
   const imageFrameRef = useRef(null);
+  const [isImageExpanded, setIsImageExpanded] = useState(false);
   const safeImageUrl = getSafeUrl(imageUrl, { allowDataImage: true });
 
-  const handleFullscreen = async () => {
-    const frame = imageFrameRef.current;
-    if (!frame) return;
+  useEffect(() => {
+    if (!isImageExpanded) return undefined;
 
-    try {
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      } else if (frame.requestFullscreen) {
-        await frame.requestFullscreen();
-      }
-    } catch (fullscreenError) {
-      console.error("fullscreen error", fullscreenError);
-    }
-  };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setIsImageExpanded(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isImageExpanded]);
+
+  const handleFullscreen = () => setIsImageExpanded(true);
 
   if (loading) {
     return (
@@ -102,6 +106,31 @@ export default function ResultDisplay({
             Agrandir
           </button>
         </div>
+        {isImageExpanded && (
+          <div
+            className="result-image-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image agrandie"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setIsImageExpanded(false);
+            }}
+          >
+            <button
+              type="button"
+              className="result-image-lightbox-close"
+              aria-label="Fermer l’image agrandie"
+              onClick={() => setIsImageExpanded(false)}
+            >
+              ×
+            </button>
+            <img
+              className="result-image-lightbox-image"
+              src={safeImageUrl}
+              alt="Résultat généré agrandi"
+            />
+          </div>
+        )}
       </div>
     );
   }
