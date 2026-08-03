@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useSignUp, useUser } from "@clerk/clerk-react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
 import { getClerkLoadMessage, useClerkLoadState } from "../hooks/useClerkLoadState.js";
 import "./SignUp.css";
@@ -17,6 +17,7 @@ const GoogleIcon = () => (
 export default function SignUp() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const { isSignedIn } = useUser();
+  const navigate = useNavigate();
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -81,6 +82,7 @@ export default function SignUp() {
       setEmail(emailRef.current?.value || "");
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
+        navigate("/generate", { replace: true });
       } else if (result.status === "missing_requirements") {
         await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
         setVerificationStep(true);
@@ -105,6 +107,7 @@ export default function SignUp() {
       });
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
+        navigate("/generate", { replace: true });
       } else {
         setError("Code incorrect. Vérifie et réessaie.");
       }

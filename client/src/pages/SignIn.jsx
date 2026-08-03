@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useSignIn, useUser } from "@clerk/clerk-react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
 import { getClerkLoadMessage, useClerkLoadState } from "../hooks/useClerkLoadState.js";
 import "./SignIn.css";
@@ -17,6 +17,7 @@ const GoogleIcon = () => (
 export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const { isSignedIn } = useUser();
+  const navigate = useNavigate();
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -84,6 +85,7 @@ export default function SignIn() {
       });
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
+        navigate("/generate", { replace: true });
       } else {
         setError("Impossible de se connecter. Vérifiez vos identifiants.");
       }
@@ -126,6 +128,7 @@ export default function SignIn() {
       });
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
+        navigate("/generate", { replace: true });
       } else {
         setError("Impossible de réinitialiser le mot de passe.");
       }
