@@ -17,3 +17,4 @@
 - [Clerk OAuth redirect](clerk-oauth-redirect.md) — OAuth callbacks need force redirect props when sign-up must always land on a protected app route.
 - [Stripe subscription promo](stripe-promo-code.md) — DECOUVERTE gives 20% off subscriptions only; packs and SnapRouge stay at regular price.
 - [Vercel public assets](vercel-public-assets.md) — New landing images should use the established public asset path and be verified with a deployed 200 response.
+- [Hero pair carousel](hero-pair-carousel.md) — Use explicit state-driven paired slides when background rotation must be visibly reliable.
