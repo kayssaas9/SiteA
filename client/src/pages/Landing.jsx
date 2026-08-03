@@ -27,10 +27,10 @@ const HERO_BACKGROUNDS = [
 const LANDING_EXAMPLES = [
   {
     original: "BMW M3 G80",
-    result: "Lamborghini Urus Novitec",
+    result: "Lamborghini Aventador SVJ",
     ending: "décor identique.",
     beforeImage: "/landing-examples/bmw-m3-g80-before.png",
-    afterImage: "/landing-examples/lamborghini-urus-novitec-after.png",
+    afterImage: "/landing-examples/lamborghini-aventador-svj-after.png",
   },
   {
     original: "Montre Rolex Dayjust en classe",
