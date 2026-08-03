@@ -58,14 +58,14 @@ export default function SignUp() {
     setError("");
 
     try {
-      window.sessionStorage.setItem("astraGoogleSignUpRedirect", "1");
+      window.localStorage.setItem("astraGoogleSignUpRedirect", "1");
       await signUp.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: `${window.location.origin}/sso-callback`,
         redirectUrlComplete: `${window.location.origin}/generate`,
       });
     } catch (err) {
-      window.sessionStorage.removeItem("astraGoogleSignUpRedirect");
+      window.localStorage.removeItem("astraGoogleSignUpRedirect");
       setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || err.message || "Impossible de continuer avec Google. Réessaie.");
       setLoading(false);
     }
