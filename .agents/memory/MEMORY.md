@@ -12,4 +12,4 @@
 - [Generation counting](generation-counting.md) — Count finalized generations on the database transition to completed, including successful teasers.
 - [Mobile image normalization](mobile-image-normalization.md) — Accept MIME-less mobile images and convert HEIC/HEIF to JPEG before OneShot.
 - [Mobile result proxy](mobile-result-proxy.md) — Stream generated images through Astra instead of exposing upstream OneShot URLs to mobile browsers.
-- [Landing navbar motion](landing-navbar-motion.md) — Keep the landing navbar resize tied continuously to scroll progress, not a threshold class, to avoid a visible pop.
+- [Landing navbar motion](landing-navbar-motion.md) — Use two fixed landing navbar sizes with a smooth transition at the scroll threshold and no backdrop blur.
