@@ -1,10 +1,8 @@
 import { useClerk } from "@clerk/clerk-react";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function SsoCallback() {
   const clerk = useClerk();
-  const navigate = useNavigate();
   const started = useRef(false);
   const [error, setError] = useState("");
 
@@ -22,11 +20,11 @@ export default function SsoCallback() {
             signUpFallbackRedirectUrl: "/generate",
           },
           async () => {
-            navigate("/generate", { replace: true });
+            window.location.replace("/generate");
           },
         );
 
-        navigate("/generate", { replace: true });
+        window.location.replace("/generate");
       } catch (err) {
         console.error("Clerk OAuth callback error:", err);
         setError("Impossible de finaliser la connexion. Réessaie.");
@@ -34,7 +32,7 @@ export default function SsoCallback() {
     };
 
     finishOAuth();
-  }, [clerk, navigate]);
+  }, [clerk]);
 
   if (error) {
     return (
