@@ -42,17 +42,17 @@
   border-radius: 22px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14);
   transition:
-    width 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    padding 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    border-radius 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.7s ease,
-    background 0.7s ease;
+    width 1.2s ease-in-out,
+    height 1.2s ease-in-out,
+    padding 1.2s ease-in-out,
+    border-radius 1.2s ease-in-out,
+    box-shadow 1.2s ease-in-out,
+    background 1.2s ease-in-out;
   will-change: width, height, padding, border-radius;
 }
 
 .header-landing {
-  transition: padding-top 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: padding-top 1.2s ease-in-out;
 }
 
 .header-landing.is-scrolled {
@@ -95,7 +95,7 @@
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
   padding: 11px 20px;
   font-size: 13px;
-  transition: padding 0.45s cubic-bezier(0.22, 1, 0.36, 1), font-size 0.45s ease;
+  transition: padding 1.2s ease-in-out, font-size 1.2s ease-in-out;
 }
 
 .header-landing:not(.is-scrolled) .logo-text {
@@ -103,7 +103,7 @@
 }
 
 .header-landing .logo-text {
-  transition: font-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: font-size 1.2s ease-in-out;
 }
 
 .header-landing:not(.is-scrolled) .logo-dot {
@@ -112,7 +112,7 @@
 }
 
 .header-landing .logo-dot {
-  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: width 1.2s ease-in-out, height 1.2s ease-in-out;
 }
 
 .header-landing:not(.is-scrolled) .nav-link {
@@ -120,7 +120,7 @@
 }
 
 .header-landing .nav-link {
-  transition: color 0.2s ease, font-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: color 0.2s ease, font-size 1.2s ease-in-out;
 }
 
 .header-landing:not(.is-scrolled) .header-btn {
@@ -130,8 +130,8 @@
 
 .header-landing .header-btn {
   transition:
-    padding 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    font-size 0.45s ease,
+    padding 1.2s ease-in-out,
+    font-size 1.2s ease-in-out,
     background 0.25s ease,
     border-color 0.25s ease;
 }
