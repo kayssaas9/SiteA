@@ -31,35 +31,20 @@
 /* The landing header sits over the hero instead of reading like an app
    toolbar. Its translucent glass keeps the background visible underneath. */
 .header-landing .header-inner {
-  max-width: 1160px;
-  height: 66px;
-  padding: 0 24px;
+  max-width: calc(1160px - (260px * var(--landing-scroll-progress, 0)));
+  height: calc(66px - (16px * var(--landing-scroll-progress, 0)));
+  padding: 0 calc(24px - (8px * var(--landing-scroll-progress, 0)));
   background: rgba(0, 0, 0, 0.78);
   border-color: rgba(255, 255, 255, 0.13);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border-radius: 22px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14);
+  border-radius: calc(22px - (4px * var(--landing-scroll-progress, 0)));
+  box-shadow: 0 12px 36px rgba(0, 0, 0, calc(0.14 + (0.08 * var(--landing-scroll-progress, 0))));
   transition:
-    max-width 0.28s ease,
-    height 0.28s ease,
-    padding 0.28s ease,
-    border-radius 0.28s ease,
-    box-shadow 0.28s ease,
-    background 0.28s ease;
-}
-
-.header-landing.is-scrolled {
-  padding-top: 10px;
-}
-
-.header-landing.is-scrolled .header-inner {
-  max-width: 900px;
-  height: 50px;
-  padding: 0 16px;
-  border-radius: 18px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
-  background: rgba(0, 0, 0, 0.86);
+    max-width 0.12s linear,
+    height 0.12s linear,
+    padding 0.12s linear,
+    border-radius 0.12s linear;
 }
 
 .header-landing .nav-link {
@@ -87,27 +72,26 @@
   background: rgba(35, 136, 255, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.42);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
-  padding: 7px 15px;
-  font-size: 12px;
-  transition: padding 0.28s ease, font-size 0.28s ease;
+  padding: calc(11px - (4px * var(--landing-scroll-progress, 0))) calc(20px - (5px * var(--landing-scroll-progress, 0)));
+  font-size: calc(13px - (1px * var(--landing-scroll-progress, 0)));
 }
 
-.header-landing:not(.is-scrolled) .logo-text {
-  font-size: 22px;
+.header-landing .logo-text {
+  font-size: calc(22px - (2px * var(--landing-scroll-progress, 0)));
 }
 
-.header-landing:not(.is-scrolled) .logo-dot {
-  width: 11px;
-  height: 11px;
+.header-landing .logo-dot {
+  width: calc(11px - (1px * var(--landing-scroll-progress, 0)));
+  height: calc(11px - (1px * var(--landing-scroll-progress, 0)));
 }
 
-.header-landing:not(.is-scrolled) .nav-link {
-  font-size: 14px;
+.header-landing .nav-link {
+  font-size: calc(14px - (1px * var(--landing-scroll-progress, 0)));
 }
 
-.header-landing:not(.is-scrolled) .header-btn {
-  padding: 11px 20px;
-  font-size: 13px;
+.header-landing .header-btn {
+  padding: calc(11px - (2px * var(--landing-scroll-progress, 0))) calc(20px - (2px * var(--landing-scroll-progress, 0)));
+  font-size: calc(13px - (1px * var(--landing-scroll-progress, 0)));
 }
 
 .header-app .survey-nav-btn {
@@ -303,15 +287,10 @@
 }
 
 @media (max-width: 640px) {
-  .header-landing .header-inner,
-  .header-landing.is-scrolled .header-inner {
-    height: 54px;
-    padding: 0 16px;
-    border-radius: 16px;
-  }
-
-  .header-landing:not(.is-scrolled) .header-inner {
-    height: 60px;
+  .header-landing .header-inner {
+    height: calc(60px - (6px * var(--landing-scroll-progress, 0)));
+    padding: 0 calc(16px - (2px * var(--landing-scroll-progress, 0)));
+    border-radius: calc(18px - (2px * var(--landing-scroll-progress, 0)));
   }
 
   .nav-center { display: none; }

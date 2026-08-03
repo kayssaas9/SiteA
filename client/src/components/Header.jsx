@@ -12,21 +12,37 @@ export default function Header() {
   const { plan, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [landingScrolled, setLandingScrolled] = useState(false);
+  const [landingScrollProgress, setLandingScrollProgress] = useState(0);
   const isLanding = pathname === "/";
 
   useEffect(() => {
     setMenuOpen(false);
-    if (!isLanding) setLandingScrolled(false);
   }, [pathname, isLanding]);
 
   useEffect(() => {
-    if (!isLanding) return undefined;
+    if (!isLanding) {
+      setLandingScrollProgress(0);
+      return undefined;
+    }
 
-    const handleScroll = () => setLandingScrolled(window.scrollY > 32);
+    let frameId = 0;
+    const handleScroll = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0;
+        // The navbar follows the first 180px of the landing page instead of
+        // jumping between two sizes at a single scroll threshold.
+        const progress = Math.min(1, Math.max(0, window.scrollY / 180));
+        setLandingScrollProgress(progress);
+      });
+    };
+
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
   }, [isLanding]);
 
   useEffect(() => {
@@ -88,7 +104,10 @@ const navLink = (to, label, className = "") => (
   );
 
   return (
-    <header className={`header ${isLanding ? "header-landing" : "header-app"} ${landingScrolled ? "is-scrolled" : ""}`}>
+    <header
+      className={`header ${isLanding ? "header-landing" : "header-app"}`}
+      style={isLanding ? { "--landing-scroll-progress": landingScrollProgress } : undefined}
+    >
       <div className="header-inner">
         <Link to="/" className="logo">
           <span className="logo-dot" />
