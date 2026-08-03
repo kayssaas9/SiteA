@@ -15,3 +15,4 @@
 - [Landing navbar motion](landing-navbar-motion.md) — Use two fixed landing navbar sizes with a smooth transition at the scroll threshold and no backdrop blur.
 - [Clerk Google production provider](clerk-google-production.md) — Google OAuth must be enabled separately in the Replit-managed Clerk Production configuration.
 - [Clerk OAuth redirect](clerk-oauth-redirect.md) — OAuth callbacks need force redirect props when sign-up must always land on a protected app route.
+- [Stripe subscription promo](stripe-promo-code.md) — DECOUVERTE gives 20% off subscriptions only; packs and SnapRouge stay at regular price.

@@ -259,7 +259,11 @@ export default function Pricing() {
                 <div className="plan-guarantee">
                   <ShieldIcon /> Satisfait ou remboursé immédiatement
                 </div>
-                <div className="plan-billing">{isAnnual ? plan.annualBilling : plan.monthlyBilling}</div>
+                <div className="plan-billing">
+                  {isAnnual
+                    ? `Facturé ${discountedPrice}/an avec ${PROMO_CODE}`
+                    : `Facturé mensuellement avec ${PROMO_CODE}`}
+                </div>
                 <div className="plan-includes-title">Votre forfait inclut :</div>
                 <div className="plan-credits-box">
                   <div className="plan-credits-main">
