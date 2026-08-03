@@ -60,7 +60,7 @@ export default function SignUp() {
       await signUp.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: `${window.location.origin}/sso-callback`,
-        redirectUrlComplete: `${window.location.origin}/`,
+        redirectUrlComplete: `${window.location.origin}/generate`,
       });
     } catch (err) {
       setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || err.message || "Impossible de continuer avec Google. Réessaie.");

@@ -31,7 +31,7 @@ export default function SignIn() {
   const [resetSent, setResetSent] = useState(false);
   const clerkLoadError = useClerkLoadState(isLoaded);
 
-  if (isSignedIn) return <Navigate to="/" replace />;
+  if (isSignedIn) return <Navigate to="/generate" replace />;
   if (!isLoaded) {
     return (
       <div className="auth-page">
@@ -64,7 +64,7 @@ export default function SignIn() {
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: `${window.location.origin}/sso-callback`,
-        redirectUrlComplete: `${window.location.origin}/`,
+        redirectUrlComplete: `${window.location.origin}/generate`,
       });
     } catch (err) {
       setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || err.message || "Impossible de continuer avec Google. Réessaie.");
