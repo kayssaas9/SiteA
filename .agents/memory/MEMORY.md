@@ -13,3 +13,4 @@
 - [Mobile image normalization](mobile-image-normalization.md) — Accept MIME-less mobile images and convert HEIC/HEIF to JPEG before OneShot.
 - [Mobile result proxy](mobile-result-proxy.md) — Stream generated images through Astra instead of exposing upstream OneShot URLs to mobile browsers.
 - [Landing navbar motion](landing-navbar-motion.md) — Use two fixed landing navbar sizes with a smooth transition at the scroll threshold and no backdrop blur.
+- [Clerk Google production provider](clerk-google-production.md) — Google OAuth must be enabled separately in the Replit-managed Clerk Production configuration.
