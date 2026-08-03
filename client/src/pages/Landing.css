@@ -57,27 +57,29 @@
   inset: 0 auto 0 0;
   z-index: 0;
   display: flex;
-  width: 200%;
+  width: 400%;
   height: 100%;
-  transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1);
+  animation: hero-marquee 36s linear infinite;
   will-change: transform;
-}
-
-.hero-photo-slide {
-  display: flex;
-  flex: 0 0 50%;
-  width: 50%;
-  height: 100%;
 }
 
 .hero-photo {
   position: relative;
-  flex: 0 0 50%;
-  width: 50%;
+  flex: 0 0 12.5%;
+  width: 12.5%;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(1.08) contrast(1.04);
+}
+
+@keyframes hero-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .hero-background-center {
@@ -734,6 +736,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-photo-track {
-    transition: none;
+    animation: none;
   }
 }
