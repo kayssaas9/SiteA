@@ -10,8 +10,8 @@ const PLANS = [
   {
     id: "basic",
     name: "Basique",
-    originalPrice: "11,99 €",
-    price: "9,99 €",
+    monthlyPriceCents: 999,
+    annualPriceCents: 9900,
     period: "/mois",
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 99€/an",
@@ -36,8 +36,8 @@ const PLANS = [
   {
     id: "pro",
     name: "Pro",
-    originalPrice: "24,99 €",
-    price: "19,99 €",
+    monthlyPriceCents: 1999,
+    annualPriceCents: 19900,
     period: "/mois",
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 199€/an",
@@ -69,8 +69,8 @@ const PLANS = [
   {
     id: "expert",
     name: "Expert",
-    originalPrice: "49,99 €",
-    price: "39,99 €",
+    monthlyPriceCents: 3999,
+    annualPriceCents: 39900,
     period: "/mois",
     monthlyBilling: "Facturé mensuellement",
     annualBilling: "Facturé 399€/an",
@@ -126,6 +126,13 @@ const SNAP_ROUGE = {
   description: "Découvre comment envoyer tes photos IA générées sur le site en snap rouge indétectable.",
 };
 
+const PROMO_CODE = "DECOUVERTE";
+const PROMO_PERCENT = 20;
+
+function formatPrice(cents) {
+  return `${(cents / 100).toFixed(2).replace(".", ",")} €`;
+}
+
 export default function Pricing() {
   const { user } = useUser();
   const { plan: userPlan } = useUserData();
@@ -147,7 +154,7 @@ export default function Pricing() {
   const hasSubscription = ["basic", "pro", "expert"].includes(userPlan);
   const activePacks = hasSubscription ? SUBSCRIBER_PACKS : NON_SUBSCRIBER_PACKS;
 
-  const handleCheckout = async (priceEnvKey, mode, itemId) => {
+  const handleCheckout = async (priceEnvKey, mode, itemId, promotionCode) => {
     if (!user) {
       setError("Connectez-vous d'abord pour continuer.");
       return;
@@ -169,7 +176,13 @@ export default function Pricing() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, clerkUserId: user.id, mode, generationId }),
+        body: JSON.stringify({
+          priceId,
+          clerkUserId: user.id,
+          mode,
+          generationId,
+          ...(promotionCode ? { promotionCode } : {}),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la création du paiement");
@@ -193,6 +206,10 @@ export default function Pricing() {
           <div className="pricing-guarantee fade-up">
             <ShieldIcon /> Satisfait ou remboursé immédiatement
           </div>
+          <div className="promo-banner fade-up" role="note">
+            <strong>-20 % avec le code {PROMO_CODE}</strong>
+            <span>Remise appliquée automatiquement au paiement de ton abonnement.</span>
+          </div>
         </div>
 
         <div className="billing-toggle fade-up">
@@ -215,6 +232,8 @@ export default function Pricing() {
         <div className="plans-grid">
           {PLANS.map((plan, idx) => {
             const isCurrentPlan = plan.id === userPlan;
+            const basePriceCents = isAnnual ? plan.annualPriceCents : plan.monthlyPriceCents;
+            const discountedPrice = formatPrice(Math.round(basePriceCents * (1 - PROMO_PERCENT / 100)));
             return (
               <div
                 key={plan.id}
@@ -227,9 +246,14 @@ export default function Pricing() {
                 )}
                 <div className="plan-name-v2">{plan.name}</div>
                 <div className="plan-price-block">
-                  <div className="plan-original-price">{plan.originalPrice}</div>
+                  <div className="plan-promo-label">DECOUVERTE · -20 %</div>
+                  <div className="plan-original-price">
+                    {formatPrice(basePriceCents)}
+                    <span>{isAnnual ? " / an" : " / mois"}</span>
+                  </div>
                   <div className="plan-price-v2">
-                    {plan.price}<span className="plan-period-v2">{plan.period}</span>
+                    {discountedPrice}
+                    <span className="plan-period-v2">{isAnnual ? "/an" : plan.period}</span>
                   </div>
                 </div>
                 <div className="plan-guarantee">
@@ -278,7 +302,8 @@ export default function Pricing() {
                     onClick={() => handleCheckout(
                       isAnnual ? plan.annualPriceEnvKey : plan.monthlyPriceEnvKey,
                       "subscription",
-                      plan.id
+                      plan.id,
+                      PROMO_CODE
                     )}
                     disabled={loading === plan.id}
                     type="button"

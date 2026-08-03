@@ -11,9 +11,9 @@ const GENERATION_COST = 100;
 const ACTIVE_GENERATIONS_KEY = "astraActiveGenerationIds";
 const PENDING_UNLOCK_KEY = "astraPendingGenerationId";
 const PRICING_OPTIONS = [
-  { name: "Basique", price: "9,99 €", details: "2 500 crédits / mois" },
-  { name: "Pro", price: "19,99 €", details: "7 500 crédits / mois" },
-  { name: "Expert", price: "39,99 €", details: "Crédits illimités" },
+  { name: "Basique", price: "7,99 €", originalPrice: "9,99 €", details: "2 500 crédits / mois" },
+  { name: "Pro", price: "15,99 €", originalPrice: "19,99 €", details: "7 500 crédits / mois" },
+  { name: "Expert", price: "31,99 €", originalPrice: "39,99 €", details: "Crédits illimités" },
 ];
 
 const GENERATION_MESSAGES = [
@@ -508,6 +508,9 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
             <p className="pricing-modal-copy">
               {pricingMessage}
             </p>
+            <div className="pricing-modal-promo">
+              -20 % avec le code <strong>DECOUVERTE</strong>
+            </div>
 
             <div className="pricing-modal-options">
               {PRICING_OPTIONS.map((option) => (
@@ -516,7 +519,10 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
                     <strong>{option.name}</strong>
                     <span>{option.details}</span>
                   </div>
-                  <b>{option.price}</b>
+                  <b>
+                    <del>{option.originalPrice}</del>
+                    {option.price}
+                  </b>
                 </div>
               ))}
             </div>

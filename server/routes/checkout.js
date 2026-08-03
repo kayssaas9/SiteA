@@ -13,12 +13,13 @@ const router = express.Router();
  */
 router.post("/", async (req, res) => {
   try {
-    const { priceId, clerkUserId, mode, generationId } = req.body || {};
+    const { priceId, clerkUserId, mode, generationId, promotionCode } = req.body || {};
     const result = await createCheckoutSession({
       priceId,
       clerkUserId,
       mode,
       generationId,
+      promotionCode,
       req,
     });
     res.json(result);

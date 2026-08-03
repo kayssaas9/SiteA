@@ -157,6 +157,30 @@
   line-height: 1.55;
 }
 
+.pricing-modal-promo {
+  margin: 0 0 16px;
+  padding: 9px 12px;
+  border: 1px solid rgba(232, 180, 85, 0.4);
+  border-radius: 10px;
+  background: rgba(232, 180, 85, 0.1);
+  color: #e8b455;
+  font-size: 13px;
+  text-align: center;
+}
+
+.pricing-modal-option b {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.pricing-modal-option b del {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
 .pricing-modal-options {
   display: flex;
   flex-direction: column;

@@ -101,6 +101,29 @@
   width: fit-content;
 }
 
+.promo-banner {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  margin: 8px auto 0;
+  padding: 10px 16px;
+  border: 1px solid rgba(232, 180, 85, 0.45);
+  border-radius: 12px;
+  background: rgba(232, 180, 85, 0.1);
+  color: #e8b455;
+}
+
+.promo-banner strong {
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+.promo-banner span {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
 .pricing-guarantee svg {
   flex-shrink: 0;
 }
@@ -178,6 +201,19 @@
   color: var(--text-muted);
   text-decoration: line-through;
   opacity: 0.8;
+}
+
+.plan-original-price span {
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.plan-promo-label {
+  color: #e8b455;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .plan-price-v2 {
