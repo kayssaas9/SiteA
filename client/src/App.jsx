@@ -1,4 +1,4 @@
-import { createBrowserRouter, Link, Navigate, Outlet, RouterProvider, useLocation } from "react-router-dom";
+import { createBrowserRouter, Link, Navigate, Outlet, RouterProvider, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import Header from "./components/Header.jsx";
@@ -31,6 +31,7 @@ function Layout() {
   return (
     <div className={`app ${pathname === "/" ? "landing-layout" : ""}`}>
       <Header />
+      <GoogleSignUpRedirect />
       <ScrollToTop />
       <Outlet />
       <FakeActivityNotification visible={showActivityNotification} />
@@ -44,6 +45,22 @@ function Layout() {
       </footer>
     </div>
   );
+}
+
+function GoogleSignUpRedirect() {
+  const { isLoaded, isSignedIn } = useUser();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    if (window.sessionStorage.getItem("astraGoogleSignUpRedirect") !== "1") return;
+
+    window.sessionStorage.removeItem("astraGoogleSignUpRedirect");
+    if (pathname === "/") navigate("/generate", { replace: true });
+  }, [isLoaded, isSignedIn, navigate, pathname]);
+
+  return null;
 }
 
 function AppWithReferral() {
