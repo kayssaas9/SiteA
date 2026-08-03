@@ -105,6 +105,15 @@ export default function ResultDisplay({
           >
             Agrandir
           </button>
+          {onNewGeneration && (
+            <button
+              type="button"
+              className="result-credit-action result-credit-action-new"
+              onClick={onNewGeneration}
+            >
+              Générer une autre image
+            </button>
+          )}
         </div>
         {isImageExpanded && (
           <div
