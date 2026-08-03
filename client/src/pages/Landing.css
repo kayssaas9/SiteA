@@ -49,35 +49,37 @@
   position: absolute;
   inset: 0;
   z-index: 1;
+  background: rgba(14, 15, 18, 0.38);
 }
 
 .hero-photo {
   position: absolute;
-  inset: 0;
-  opacity: 0;
-  background-position: center 72%;
+  top: 0;
+  bottom: 0;
+  width: 51%;
+  background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  filter: saturate(1.08);
-  /* Keep the completed zoom when the image becomes inactive so it
-     never visibly snaps back during the crossfade. */
-  transform: scale(1.1);
-  transition: opacity 0.8s ease-in-out;
-  will-change: opacity, transform;
+  filter: saturate(1.08) contrast(1.04);
 }
 
-.hero-photo.is-active {
-  opacity: 1;
-  animation: hero-ken-burns 3s ease-out both;
+.hero-photo-left {
+  left: 0;
+  background-position: center;
 }
 
-.hero-background-shade {
-  background: rgba(14, 15, 18, 0.34);
+.hero-photo-right {
+  right: 0;
+  background-position: center;
 }
 
-@keyframes hero-ken-burns {
-  from { transform: scale(1.1); }
-  to { transform: scale(1.16); }
+.hero-background-center {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(14, 15, 18, 0.08) 0%, rgba(14, 15, 18, 0.2) 36%, rgba(14, 15, 18, 0.78) 50%, rgba(14, 15, 18, 0.2) 64%, rgba(14, 15, 18, 0.08) 100%),
+    linear-gradient(180deg, rgba(14, 15, 18, 0.58) 0%, rgba(14, 15, 18, 0.12) 35%, rgba(14, 15, 18, 0.46) 100%);
 }
 
 .hero .badge {
@@ -710,6 +712,16 @@
 
   .hero-cta .btn {
     width: min(100%, 300px);
+  }
+
+  .hero-photo {
+    width: 52%;
+  }
+
+  .hero-background-center {
+    background:
+      linear-gradient(90deg, rgba(14, 15, 18, 0.16) 0%, rgba(14, 15, 18, 0.72) 50%, rgba(14, 15, 18, 0.16) 100%),
+      linear-gradient(180deg, rgba(14, 15, 18, 0.62) 0%, rgba(14, 15, 18, 0.18) 38%, rgba(14, 15, 18, 0.52) 100%);
   }
 
   .faq-section { padding: 60px 16px; }

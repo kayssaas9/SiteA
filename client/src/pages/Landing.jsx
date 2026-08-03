@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
@@ -11,17 +11,6 @@ const CUSTOMER_REVIEWS = [
   { username: "@nox_rsx", review: "Super rapide et hyper réaliste, surtout les reflets sur la carrosserie.", rating: 5 },
   { username: "@lil_turbo", review: "Astra m'a permis de visualiser exactement le look que je voulais pour ma caisse.", rating: 5 },
   { username: "@drift.max", review: "Le avant/après est tellement convaincant que je l'ai posté direct en story.", rating: 5 },
-];
-
-const HERO_BACKGROUNDS = [
-  "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=85",
 ];
 
 const LANDING_EXAMPLES = [
@@ -42,26 +31,18 @@ const LANDING_EXAMPLES = [
 ];
 
 function HeroBackground() {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveIndex((currentIndex) => (currentIndex + 1) % HERO_BACKGROUNDS.length);
-    }, 3000);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
   return (
     <div className="hero-background" aria-hidden="true">
-      {HERO_BACKGROUNDS.map((image, index) => (
-        <div
-          key={image}
-          className={`hero-photo ${index === activeIndex ? "is-active" : ""}`}
-          style={{ backgroundImage: `url("${image}")` }}
-        />
-      ))}
+      <div
+        className="hero-photo hero-photo-left"
+        style={{ backgroundImage: 'url("/landing-hero/hero-lamborghini-road.png")' }}
+      />
+      <div
+        className="hero-photo hero-photo-right"
+        style={{ backgroundImage: 'url("/landing-hero/hero-watch.png")' }}
+      />
       <div className="hero-background-shade" />
+      <div className="hero-background-center" />
     </div>
   );
 }
