@@ -29,11 +29,15 @@ const LANDING_EXAMPLES = [
     original: "BMW M3 G80",
     result: "Lamborghini Urus Novitec",
     ending: "décor identique.",
+    beforeImage: "/landing-examples/bmw-m3-g80-before.png",
+    afterImage: "/landing-examples/lamborghini-urus-novitec-after.png",
   },
   {
     original: "Montre Rolex Dayjust en classe",
     result: "Richard Mille Bubba Watson",
     ending: "même poignet.",
+    beforeImage: "/landing-examples/rolex-dayjust-before.png",
+    afterImage: "/landing-examples/richard-mille-bubba-watson-after.png",
   },
 ];
 
@@ -148,6 +152,11 @@ function Examples() {
               <div className="example-side">
                 <span className="example-badge example-badge-before">AVANT</span>
                 <div className="example-image example-before">
+                  <img
+                    className="example-photo"
+                    src={example.beforeImage}
+                    alt={example.original}
+                  />
                   <div className="example-caption">
                     <strong>Photo originale :</strong>{" "}
                     <span className="example-caption-detail">{example.original}</span>
@@ -163,6 +172,11 @@ function Examples() {
                   APRÈS
                 </span>
                 <div className="example-image example-after">
+                  <img
+                    className="example-photo"
+                    src={example.afterImage}
+                    alt={example.result}
+                  />
                   <span className="example-quality-badge">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
