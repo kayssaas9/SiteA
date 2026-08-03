@@ -421,6 +421,16 @@
   animation: example-fade 0.4s ease;
 }
 
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.examples-grid .example-showcase {
+  min-width: 0;
+}
+
 @keyframes example-fade {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -561,6 +571,7 @@
 
 @media (max-width: 640px) {
   .examples-section { padding: 60px 16px 60px; }
+  .examples-grid { grid-template-columns: 1fr; }
   .example-showcase-comparison { grid-template-columns: 1fr; gap: 24px; }
   .example-image { max-height: 460px; }
   .example-quality-badge { top: 12px; right: 12px; }

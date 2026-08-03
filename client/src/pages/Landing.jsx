@@ -24,6 +24,19 @@ const HERO_BACKGROUNDS = [
   "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=85",
 ];
 
+const LANDING_EXAMPLES = [
+  {
+    original: "BMW M3 G80",
+    result: "Lamborghini Urus Novitec",
+    ending: "décor identique.",
+  },
+  {
+    original: "Montre Rolex Dayjust en classe",
+    result: "Richard Mille Bubba Watson",
+    ending: "même poignet.",
+  },
+];
+
 function HeroBackground() {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -128,40 +141,46 @@ function Examples() {
         Le résultat <span className="examples-title-accent">Astra</span>
       </h2>
 
-      <div className="example-showcase">
-        <div className="example-showcase-comparison">
-          <div className="example-side">
-            <span className="example-badge example-badge-before">AVANT</span>
-            <div className="example-image example-before">
-              <div className="example-caption">
-                <strong>Photo originale :</strong>{" "}
-                <span className="example-caption-detail">[description du véhicule]</span>
+      <div className="examples-grid">
+        {LANDING_EXAMPLES.map((example) => (
+          <div className="example-showcase" key={example.original}>
+            <div className="example-showcase-comparison">
+              <div className="example-side">
+                <span className="example-badge example-badge-before">AVANT</span>
+                <div className="example-image example-before">
+                  <div className="example-caption">
+                    <strong>Photo originale :</strong>{" "}
+                    <span className="example-caption-detail">{example.original}</span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div className="example-side">
-            <span className="example-badge example-badge-after">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-              </svg>
-              APRÈS
-            </span>
-            <div className="example-image example-after">
-              <span className="example-quality-badge">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                </svg>
-                ULTRA-RÉALISTE
-              </span>
-              <div className="example-caption">
-                <div className="example-caption-title">Ultra-réalisme Astra ✨</div>
-                <strong>Résultat Astra :</strong> Transformation en{" "}
-                <span className="example-caption-detail">[modèle cible]</span>, décor identique.
+              <div className="example-side">
+                <span className="example-badge example-badge-after">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>
+                  APRÈS
+                </span>
+                <div className="example-image example-after">
+                  <span className="example-quality-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                    </svg>
+                    ULTRA-RÉALISTE
+                  </span>
+                  <div className="example-caption">
+                    <div className="example-caption-title">Ultra-réalisme Astra ✨</div>
+                    <strong>Résultat Astra :</strong> Transformation en{" "}
+                    <span className="example-caption-detail">
+                      {example.result}, {example.ending}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ))}
       </div>
 
       <button className="examples-more" type="button">
