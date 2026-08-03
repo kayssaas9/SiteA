@@ -244,7 +244,7 @@ export default function Account() {
           ) : (
             <div className="snaprouge-locked">
               <p>Accès non débloqué. Débloquez-le avec un abonnement Pro/Expert ou l'achat à 9 €.</p>
-              <Link to="/pricing" className="btn btn-snaprouge">
+              <Link to="/snaprouge" className="btn btn-snaprouge">
                 Débloquer SnapRouge
               </Link>
             </div>
