@@ -30,17 +30,25 @@ const LANDING_EXAMPLES = [
   },
 ];
 
+const HERO_IMAGES = [
+  "/landing-examples/hero-lamborghini-road.png",
+  "/landing-examples/hero-watch.png",
+  "/landing-examples/hero-couple.png",
+  "/landing-examples/hero-jet.png",
+];
+
 function HeroBackground() {
   return (
     <div className="hero-background" aria-hidden="true">
-      <div
-        className="hero-photo hero-photo-left"
-        style={{ backgroundImage: 'url("/landing-examples/hero-lamborghini-road.png")' }}
-      />
-      <div
-        className="hero-photo hero-photo-right"
-        style={{ backgroundImage: 'url("/landing-examples/hero-watch.png")' }}
-      />
+      <div className="hero-photo-track">
+        {HERO_IMAGES.map((image) => (
+          <div
+            className="hero-photo"
+            key={image}
+            style={{ backgroundImage: `url("${image}")` }}
+          />
+        ))}
+      </div>
       <div className="hero-background-shade" />
       <div className="hero-background-center" />
     </div>
