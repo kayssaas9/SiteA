@@ -5,17 +5,6 @@ import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import "./Header.css";
 
-function CreditsBadge() {
-  const { plan, credits, loading } = useUserData();
-  if (loading) return <span className="credits-badge skeleton" />;
-  return (
-    <Link to="/pricing" className="credits-badge" title="Voir les crédits">
-      <span className="credits-count">{plan === "expert" ? "Illimités" : credits.toLocaleString("fr-FR")}</span>
-      <span className="credits-label">crédits</span>
-    </Link>
-  );
-}
-
 export default function Header() {
   const { isSignedIn } = useUser();
   const { pathname } = useLocation();
@@ -151,7 +140,6 @@ const navLink = (to, label, className = "") => (
               </SignedOut>
 
               <SignedIn>
-                <CreditsBadge />
                 <SignOutButton />
               </SignedIn>
             </>
@@ -232,7 +220,6 @@ const navLink = (to, label, className = "") => (
                 </SignedOut>
 
                 <SignedIn>
-                  <CreditsBadge />
                   <SignOutButton />
                 </SignedIn>
               </>

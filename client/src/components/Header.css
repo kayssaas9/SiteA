@@ -155,50 +155,6 @@
   background: var(--accent-soft);
 }
 
-/* Credits badge */
-.credits-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--accent-soft);
-  border: 0.5px solid rgba(35, 136, 255, 0.32);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 100px;
-  text-decoration: none;
-  transition: background 0.2s, border-color 0.2s;
-  white-space: nowrap;
-}
-
-.credits-badge:hover {
-  background: rgba(35, 136, 255, 0.24);
-  border-color: rgba(35, 136, 255, 0.5);
-}
-
-.credits-badge.skeleton {
-  width: 90px;
-  height: 30px;
-  background: var(--surface-hover);
-  animation: pulse 1.4s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.credits-label {
-  font-size: 12px;
-  opacity: 0.8;
-  font-weight: 500;
-}
-
-.credits-count {
-  font-variant-numeric: tabular-nums;
-}
-
 /* Mobile menu toggle */
 .mobile-menu-toggle {
   display: none;
@@ -304,11 +260,6 @@
   width: 100%;
   padding: 12px;
   font-size: 14px;
-}
-
-.mobile-menu .credits-badge {
-  width: fit-content;
-  align-self: center;
 }
 
 @media (max-width: 640px) {
