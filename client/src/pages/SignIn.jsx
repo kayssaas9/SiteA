@@ -65,8 +65,8 @@ export default function SignIn() {
     try {
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
-        redirectUrl: `${window.location.origin}/sso-callback`,
-        redirectUrlComplete: `${window.location.origin}${from}`,
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: from,
       });
     } catch (err) {
       setError(err.errors?.[0]?.message || err.message || "Impossible d’ouvrir Google. Réessaie.");

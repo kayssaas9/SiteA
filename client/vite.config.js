@@ -22,12 +22,16 @@ const publicEnv = {
     process.env.VITE_CRISP_WEBSITE_ID
     || process.env.CRISP_WEBSITE_ID
     || "",
+  clerkProxyUrl:
+    process.env.VITE_CLERK_PROXY_URL
+    || "",
 };
 
 export default defineConfig({
   plugins: [react()],
   define: {
     "import.meta.env.VITE_CLERK_PUBLISHABLE_KEY": JSON.stringify(publicEnv.clerkPublishableKey),
+    "import.meta.env.VITE_CLERK_PROXY_URL": JSON.stringify(publicEnv.clerkProxyUrl),
     "import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY": JSON.stringify(publicEnv.stripePublishableKey),
     "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(publicEnv.supabaseUrl),
     "import.meta.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(publicEnv.supabaseAnonKey),
