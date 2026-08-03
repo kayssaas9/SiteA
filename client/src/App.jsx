@@ -24,9 +24,32 @@ import "./App.css";
 
 function Layout() {
   const { pathname } = useLocation();
+  const { isLoaded, isSignedIn } = useUser();
   const showActivityNotification = pathname === "/"
     || pathname === "/pricing"
     || pathname === "/generate";
+
+  const googleSignUpPending =
+    pathname === "/"
+    && window.localStorage.getItem("astraGoogleSignUpRedirect") === "1";
+
+  useEffect(() => {
+    if (googleSignUpPending && isLoaded && isSignedIn) {
+      window.localStorage.removeItem("astraGoogleSignUpRedirect");
+    }
+  }, [googleSignUpPending, isLoaded, isSignedIn]);
+
+  if (googleSignUpPending) {
+    if (!isLoaded) {
+      return <div className="app-route-loading" aria-live="polite">Chargement…</div>;
+    }
+
+    if (isSignedIn) {
+      return <Navigate to="/generate" replace />;
+    }
+
+    return <div className="app-route-loading" aria-live="polite">Finalisation de la connexion…</div>;
+  }
 
   return (
     <div className={`app ${pathname === "/" ? "landing-layout" : ""}`}>
@@ -47,17 +70,7 @@ function Layout() {
 }
 
 function AppWithReferral() {
-  const { user, isLoaded, isSignedIn } = useUser();
-
-  useEffect(() => {
-    if (!isLoaded || !isSignedIn) return;
-    if (window.localStorage.getItem("astraGoogleSignUpRedirect") !== "1") return;
-
-    window.localStorage.removeItem("astraGoogleSignUpRedirect");
-    if (window.location.pathname !== "/generate") {
-      window.location.replace("/generate");
-    }
-  }, [isLoaded, isSignedIn]);
+  const { user } = useUser();
 
   useEffect(() => {
     if (!user) return;
