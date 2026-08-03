@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useSignIn, useUser } from "@clerk/clerk-react";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import AuthNav from "../components/AuthNav.jsx";
 import { getClerkLoadMessage, useClerkLoadState } from "../hooks/useClerkLoadState.js";
 import "./SignIn.css";
@@ -17,8 +17,6 @@ const GoogleIcon = () => (
 export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const { isSignedIn } = useUser();
-  const location = useLocation();
-  const from = location.state?.from || "/generate";
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -33,7 +31,7 @@ export default function SignIn() {
   const [resetSent, setResetSent] = useState(false);
   const clerkLoadError = useClerkLoadState(isLoaded);
 
-  if (isSignedIn) return <Navigate to={from} replace />;
+  if (isSignedIn) return <Navigate to="/" replace />;
   if (!isLoaded) {
     return (
       <div className="auth-page">
@@ -66,7 +64,7 @@ export default function SignIn() {
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: `${window.location.origin}/sso-callback`,
-        redirectUrlComplete: `${window.location.origin}${from}`,
+        redirectUrlComplete: `${window.location.origin}/`,
       });
     } catch (err) {
       setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || err.message || "Impossible de continuer avec Google. Réessaie.");
