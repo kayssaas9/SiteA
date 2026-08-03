@@ -138,8 +138,8 @@ export default function Landing() {
 
 function Examples() {
   const { isSignedIn } = useUser();
-  const [showMoreExamples, setShowMoreExamples] = useState(false);
-  const visibleExamples = showMoreExamples ? LANDING_EXAMPLES : LANDING_EXAMPLES.slice(0, 1);
+  const [exampleIndex, setExampleIndex] = useState(0);
+  const example = LANDING_EXAMPLES[exampleIndex];
 
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
@@ -147,65 +147,60 @@ function Examples() {
         Le résultat <span className="examples-title-accent">Astra</span>
       </h2>
 
-      <div className="examples-list">
-        {visibleExamples.map((example) => (
-          <div className="example-showcase" key={example.original}>
-            <div className="example-showcase-comparison">
-              <div className="example-side">
-                <span className="example-badge example-badge-before">AVANT</span>
-                <div className="example-image example-before">
-                  <img
-                    className="example-photo"
-                    src={example.beforeImage}
-                    alt={example.original}
-                  />
-                  <div className="example-caption">
-                    <strong>Photo originale :</strong>{" "}
-                    <span className="example-caption-detail">{example.original}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="example-side">
-                <span className="example-badge example-badge-after">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                  </svg>
-                  APRÈS
-                </span>
-                <div className="example-image example-after">
-                  <img
-                    className="example-photo"
-                    src={example.afterImage}
-                    alt={example.result}
-                  />
-                  <span className="example-quality-badge">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                    </svg>
-                    ULTRA-RÉALISTE
-                  </span>
-                  <div className="example-caption">
-                    <div className="example-caption-title">Ultra-réalisme Astra ✨</div>
-                    <strong>Résultat Astra :</strong> Transformation en{" "}
-                    <span className="example-caption-detail">
-                      {example.result}, {example.ending}
-                    </span>
-                  </div>
-                </div>
+      <div className="example-showcase">
+        <div className="example-showcase-comparison">
+          <div className="example-side">
+            <span className="example-badge example-badge-before">AVANT</span>
+            <div className="example-image example-before">
+              <img
+                className="example-photo"
+                src={example.beforeImage}
+                alt={example.original}
+              />
+              <div className="example-caption">
+                <strong>Photo originale :</strong>{" "}
+                <span className="example-caption-detail">{example.original}</span>
               </div>
             </div>
           </div>
-        ))}
+
+          <div className="example-side">
+            <span className="example-badge example-badge-after">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+              APRÈS
+            </span>
+            <div className="example-image example-after">
+              <img
+                className="example-photo"
+                src={example.afterImage}
+                alt={example.result}
+              />
+              <span className="example-quality-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                ULTRA-RÉALISTE
+              </span>
+              <div className="example-caption">
+                <div className="example-caption-title">Ultra-réalisme Astra ✨</div>
+                <strong>Résultat Astra :</strong> Transformation en{" "}
+                <span className="example-caption-detail">
+                  {example.result}, {example.ending}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <button
         className="examples-more"
         type="button"
-        onClick={() => setShowMoreExamples((isShowingMore) => !isShowingMore)}
-        aria-expanded={showMoreExamples}
+        onClick={() => setExampleIndex((currentIndex) => (currentIndex + 1) % LANDING_EXAMPLES.length)}
       >
-        {showMoreExamples ? "Réduire les exemples" : "Voir plus d'exemples"}
+        Voir plus d'exemples
       </button>
 
       <Link to={isSignedIn ? "/generate" : "/sign-up"} className="btn btn-primary examples-cta">
