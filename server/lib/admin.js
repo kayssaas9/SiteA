@@ -29,6 +29,30 @@ function getPrimaryEmail(user) {
   return primary?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || "";
 }
 
+function toClerkRequest(req) {
+  const rawUrl = typeof req.url === "string" ? req.url : "/";
+  const protocol = req.headers?.["x-forwarded-proto"]?.split(",")[0]?.trim()
+    || (req.socket?.encrypted ? "https" : "http");
+  const host = req.headers?.host || req.headers?.["x-forwarded-host"] || "localhost";
+  const url = /^https?:\/\//i.test(rawUrl)
+    ? rawUrl
+    : `${protocol}://${host}${rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`}`;
+  const headers = new Headers();
+
+  for (const [name, value] of Object.entries(req.headers || {})) {
+    if (Array.isArray(value)) {
+      value.forEach((item) => headers.append(name, String(item)));
+    } else if (value != null) {
+      headers.set(name, String(value));
+    }
+  }
+
+  return new Request(url, {
+    method: req.method || "GET",
+    headers,
+  });
+}
+
 /**
  * The browser only uses the email whitelist to decide whether to show the
  * navigation link. This server-side check is the actual authorization gate.
@@ -37,7 +61,7 @@ export async function getAdminContext(req) {
   if (!process.env.CLERK_SECRET_KEY) return null;
 
   try {
-    const auth = await clerkClient.authenticateRequest(req, {
+    const auth = await clerkClient.authenticateRequest(toClerkRequest(req), {
       acceptsToken: "session_token",
     });
 
