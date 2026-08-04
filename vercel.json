@@ -7,6 +7,7 @@
     { "source": "/generate", "destination": "/index.html" },
     { "source": "/pricing", "destination": "/index.html" },
     { "source": "/account", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/index.html" },
     { "source": "/history", "destination": "/index.html" },
     { "source": "/survey", "destination": "/index.html" },
     { "source": "/mentions-legales", "destination": "/index.html" },

@@ -20,6 +20,8 @@ import FakeActivityNotification from "./components/FakeActivityNotification.jsx"
 import Terms from "./pages/Terms.jsx";
 import Privacy from "./pages/Privacy.jsx";
 import LegalNotices from "./pages/LegalNotices.jsx";
+import Admin from "./pages/Admin.jsx";
+import { isAdminUser } from "./lib/admin.js";
 import "./App.css";
 
 function Layout() {
@@ -99,6 +101,17 @@ function RequireSignedIn({ children }) {
   return isSignedIn ? children : <Navigate to="/" replace />;
 }
 
+function RequireAdmin({ children }) {
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  if (!isLoaded) {
+    return <div className="app-route-loading" aria-live="polite">Chargement…</div>;
+  }
+
+  if (!isSignedIn) return <Navigate to="/" replace />;
+  return isAdminUser(user) ? children : <Navigate to="/generate" replace />;
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -108,6 +121,7 @@ const router = createBrowserRouter([
       { path: "generate", element: <RequireSignedIn><Generate /></RequireSignedIn> },
       { path: "pricing", element: <RequireSignedIn><Pricing /></RequireSignedIn> },
       { path: "account", element: <RequireSignedIn><Account /></RequireSignedIn> },
+      { path: "admin", element: <RequireAdmin><Admin /></RequireAdmin> },
       { path: "history", element: <RequireSignedIn><History /></RequireSignedIn> },
       { path: "survey", element: <RequireSignedIn><Survey /></RequireSignedIn> },
       { path: "mentions-legales", element: <LegalNotices /> },

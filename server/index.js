@@ -12,6 +12,7 @@ import historyRoute  from "./routes/history.js";
 import surveyRoute   from "./routes/survey.js";
 import referralRoute from "./routes/referral.js";
 import generationsRoute from "./routes/generations.js";
+import adminRoute      from "./routes/admin.js";
 import { createGeneration, normalizeImage } from "./lib/generation.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,6 +37,7 @@ app.use("/api/history",  historyRoute);
 app.use("/api/survey",   surveyRoute);
 app.use("/api/referral", referralRoute);
 app.use("/api/generations", generationsRoute);
+app.use("/api/admin",     adminRoute);
 
 app.post("/api/image-preview", upload.single("image"), async (req, res) => {
   if (!req.file?.buffer) {

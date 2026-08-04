@@ -3,14 +3,16 @@ import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
+import { isAdminUser } from "../lib/admin.js";
 import "./Header.css";
 
 export default function Header() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const { plan, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
+  const isAdmin = isAdminUser(user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [landingScrolled, setLandingScrolled] = useState(false);
   const isLanding = pathname === "/";
@@ -68,6 +70,7 @@ const navLink = (to, label, className = "") => (
     { to: "/snaprouge", label: "SnapRouge", className: "snaprouge-nav-link" },
     ...(isSignedIn ? [{ to: "/history", label: "Historique" }] : []),
     ...(isSignedIn ? [{ to: "/account", label: "Compte" }] : []),
+    ...(isAdmin ? [{ to: "/admin", label: "Admin", className: "admin-nav-link" }] : []),
   ];
 
   const landingNavItems = [
@@ -110,6 +113,7 @@ const navLink = (to, label, className = "") => (
               {navLink("/snaprouge", "SnapRouge", "snaprouge-nav-link")}
               {isSignedIn && navLink("/history", "Historique")}
               {isSignedIn && navLink("/account", "Compte")}
+              {isAdmin && navLink("/admin", "Admin", "admin-nav-link")}
             </>
           )}
         </nav>
