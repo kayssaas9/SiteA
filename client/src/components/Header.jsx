@@ -201,9 +201,6 @@ const navLink = (to, label, className = "") => (
                   <Link to="/generate" className="btn btn-primary mobile-menu-btn">
                     Accéder à l’app
                   </Link>
-                  <SignedIn>
-                    <SignOutButton />
-                  </SignedIn>
                 </>
               ) : (
                 <>
@@ -231,9 +228,6 @@ const navLink = (to, label, className = "") => (
                   </Link>
                 </SignedOut>
 
-                <SignedIn>
-                  <SignOutButton />
-                </SignedIn>
               </>
             )}
           </div>
