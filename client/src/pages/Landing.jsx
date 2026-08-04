@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
@@ -38,9 +38,33 @@ const HERO_IMAGES = [
 ];
 
 function HeroBackground() {
+  const trackRef = useRef(null);
+
+  useEffect(() => {
+    let animationFrame;
+    const duration = 18000;
+    const start = performance.now();
+
+    const moveTrack = (now) => {
+      const sequenceWidth = window.innerWidth * 2;
+      const progress = ((now - start) % duration) / duration;
+      const offset = -(progress * sequenceWidth);
+
+      if (trackRef.current) {
+        trackRef.current.style.transform = `translate3d(${offset}px, 0, 0)`;
+      }
+
+      animationFrame = window.requestAnimationFrame(moveTrack);
+    };
+
+    animationFrame = window.requestAnimationFrame(moveTrack);
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, []);
+
   return (
     <div className="hero-background" aria-hidden="true">
-      <div className="hero-photo-track">
+      <div ref={trackRef} className="hero-photo-track">
         {[...HERO_IMAGES, ...HERO_IMAGES].map((image, imageIndex) => (
           <div
             className="hero-photo"
