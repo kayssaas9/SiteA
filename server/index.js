@@ -14,6 +14,7 @@ import surveyRoute   from "./routes/survey.js";
 import referralRoute from "./routes/referral.js";
 import generationsRoute from "./routes/generations.js";
 import adminRoute      from "./routes/admin.js";
+import { clerkProxyMiddleware, CLERK_PROXY_PATH } from "./middlewares/clerkProxyMiddleware.js";
 import { createGeneration, normalizeImage } from "./lib/generation.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -27,6 +28,8 @@ app.use(cors());
 // ── Webhook routes need raw body — mount BEFORE express.json ─────────────────
 app.use("/api/webhook/stripe", webhookStripe);   // raw body handled inside route
 app.use("/api/webhook/clerk",  webhookClerk);    // raw body handled inside route
+
+app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
 
 // Attach Clerk's verified session to every non-webhook request before the API
 // routes inspect authentication state.

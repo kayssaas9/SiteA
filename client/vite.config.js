@@ -24,6 +24,7 @@ const publicEnv = {
     || "",
   clerkProxyUrl:
     process.env.VITE_CLERK_PROXY_URL
+    || (process.env.NODE_ENV === "production" ? "/api/__clerk" : "")
     || "",
 };
 
