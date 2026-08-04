@@ -151,9 +151,6 @@ const navLink = (to, label, className = "") => (
                 </Link>
               </SignedOut>
 
-              <SignedIn>
-                <SignOutButton />
-              </SignedIn>
             </>
           )}
 
