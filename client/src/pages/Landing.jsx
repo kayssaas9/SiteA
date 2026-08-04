@@ -90,14 +90,14 @@ function ReviewsMarquee() {
 
   useEffect(() => {
     let animationFrame;
-    const duration = 42000;
+    const duration = 60000;
     const start = performance.now();
 
     const moveReviews = (now) => {
       const sequence = trackRef.current?.firstElementChild;
       const sequenceWidth = sequence ? sequence.getBoundingClientRect().width + 16 : 0;
       const progress = ((now - start) % duration) / duration;
-      const offset = -(progress * sequenceWidth);
+      const offset = -sequenceWidth + (progress * sequenceWidth);
 
       if (trackRef.current && sequenceWidth > 0) {
         trackRef.current.style.transform = `translate3d(${offset}px, 0, 0)`;
