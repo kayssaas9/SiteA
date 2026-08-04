@@ -7,11 +7,22 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    linear-gradient(180deg, rgba(7, 10, 15, 0.78) 0%, rgba(7, 10, 15, 0.62) 42%, rgba(7, 10, 15, 0.9) 100%),
-    url("/landing-examples/generate-winter-lake.jpg") center top / cover no-repeat;
+  background: url("/landing-examples/generate-winter-lake.jpg") center top / cover no-repeat;
   content: "";
-  opacity: 0.82;
+  pointer-events: none;
+}
+
+.generate-page::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(7, 10, 15, 0.18) 0%,
+    rgba(7, 10, 15, 0.08) 45%,
+    rgba(7, 10, 15, 0.34) 100%
+  );
+  content: "";
   pointer-events: none;
 }
 
