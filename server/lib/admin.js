@@ -1,10 +1,18 @@
-import { clerkClient, getAuth } from "@clerk/express";
+import { createClerkClient, verifyToken } from "@clerk/backend";
 import { supabaseAdmin } from "./supabase.js";
 
 export const ADMIN_EMAILS = new Set([
   "kays.amr9@gmail.com",
   "kays.saas9@gmail.com",
 ]);
+
+const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+  publishableKey:
+    process.env.CLERK_PUBLISHABLE_KEY
+    || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    || process.env.VITE_CLERK_PUBLISHABLE_KEY,
+});
 
 export function normalizeEmail(email) {
   return typeof email === "string" ? email.trim().toLowerCase() : "";
@@ -21,13 +29,49 @@ function getPrimaryEmail(user) {
   return primary?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || "";
 }
 
+function getSessionTokens(req) {
+  const authorization = req.headers?.authorization || "";
+  const bearerToken = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
+  const cookieHeader = req.headers?.cookie || "";
+  const cookieTokens = cookieHeader
+    .split(";")
+    .map((part) => part.trim())
+    .filter((part) => part.startsWith("__session=") || part.startsWith("__session_"))
+    .map((part) => {
+      const separator = part.indexOf("=");
+      if (separator === -1) return "";
+      try {
+        return decodeURIComponent(part.slice(separator + 1));
+      } catch {
+        return "";
+      }
+    })
+    .filter(Boolean);
+
+  return [bearerToken, ...cookieTokens].filter(Boolean);
+}
+
 /**
  * The browser only uses the email whitelist to decide whether to show the
  * navigation link. This server-side check is the actual authorization gate.
  */
 export async function getAdminContext(req) {
   try {
-    const { userId } = getAuth(req);
+    if (!process.env.CLERK_SECRET_KEY) return null;
+
+    let userId = null;
+    for (const token of getSessionTokens(req)) {
+      try {
+        const claims = await verifyToken(token, {
+          secretKey: process.env.CLERK_SECRET_KEY,
+        });
+        userId = claims?.sub || null;
+        if (userId) break;
+      } catch {
+        // Try the next Clerk session cookie candidate.
+      }
+    }
+
     if (!userId) return null;
 
     const user = await clerkClient.users.getUser(userId);
