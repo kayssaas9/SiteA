@@ -42,7 +42,7 @@ function HeroBackground() {
 
   useEffect(() => {
     let animationFrame;
-    const duration = 18000;
+    const duration = 30000;
     const start = performance.now();
 
     const moveTrack = (now) => {
