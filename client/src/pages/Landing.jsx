@@ -307,24 +307,22 @@ function FaqAccordion() {
               onClick={() => toggle(idx)}
               type="button"
               aria-expanded={openIndex === idx}
-              aria-controls="faq-answer"
+              aria-controls={`faq-answer-${idx}`}
             >
               {item.question}
               <svg className="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
+            <div
+              id={`faq-answer-${idx}`}
+              className="faq-answer"
+              aria-hidden={openIndex !== idx}
+            >
+              <div className="faq-answer-inner">{item.answer}</div>
+            </div>
           </div>
         ))}
-      </div>
-      <div
-        id="faq-answer"
-        className={`faq-answer faq-answer-bottom ${openIndex !== null ? "visible" : ""}`}
-        aria-hidden={openIndex === null}
-      >
-        <div className="faq-answer-inner">
-          {openIndex === null ? null : FAQS[openIndex].answer}
-        </div>
       </div>
     </section>
   );
