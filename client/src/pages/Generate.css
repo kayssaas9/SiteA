@@ -3,29 +3,6 @@
   overflow: hidden;
 }
 
-.generate-page::before {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: url("/landing-examples/generate-winter-lake.jpg") center top / cover no-repeat;
-  content: "";
-  pointer-events: none;
-}
-
-.generate-page::after {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(7, 10, 15, 0.18) 0%,
-    rgba(7, 10, 15, 0.08) 45%,
-    rgba(7, 10, 15, 0.34) 100%
-  );
-  content: "";
-  pointer-events: none;
-}
-
 .generate-content {
   position: relative;
   z-index: 1;
