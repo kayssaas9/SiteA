@@ -326,8 +326,13 @@
   display: flex;
   gap: 16px;
   width: max-content;
-  animation: reviews-marquee 38s linear infinite;
   will-change: transform;
+}
+
+.reviews-sequence {
+  display: flex;
+  gap: 16px;
+  flex-shrink: 0;
 }
 
 .review-card {
@@ -371,11 +376,6 @@
 .review-card p {
   font-size: 13px;
   line-height: 1.55;
-}
-
-@keyframes reviews-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-50% - 8px)); }
 }
 
 @media (max-width: 640px) {

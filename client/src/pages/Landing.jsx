@@ -11,6 +11,12 @@ const CUSTOMER_REVIEWS = [
   { username: "@nox_rsx", review: "Super rapide et hyper réaliste, surtout les reflets sur la carrosserie.", rating: 5 },
   { username: "@lil_turbo", review: "Astra m'a permis de visualiser exactement le look que je voulais pour ma caisse.", rating: 5 },
   { username: "@drift.max", review: "Le avant/après est tellement convaincant que je l'ai posté direct en story.", rating: 5 },
+  { username: "@daily_gti", review: "J'ai changé la couleur et les jantes de ma GTI en quelques secondes. Le résultat est bluffant.", rating: 5 },
+  { username: "@luxeautomotive", review: "Les détails de carrosserie et les reflets sont vraiment propres, même en zoomant.", rating: 5 },
+  { username: "@rs6.addict", review: "Parfait pour essayer plusieurs styles avant de passer chez le préparateur.", rating: 5 },
+  { username: "@maria_drive", review: "L'outil est simple à utiliser et les rendus donnent immédiatement des idées.", rating: 5 },
+  { username: "@blacklist_06", review: "J'ai testé trois looks différents sur ma voiture, tous très réalistes.", rating: 5 },
+  { username: "@urban_rider", review: "Le résultat final ressemble vraiment à une photo prise en studio.", rating: 5 },
 ];
 
 const LANDING_EXAMPLES = [
@@ -79,6 +85,55 @@ function HeroBackground() {
   );
 }
 
+function ReviewsMarquee() {
+  const trackRef = useRef(null);
+
+  useEffect(() => {
+    let animationFrame;
+    const duration = 42000;
+    const start = performance.now();
+
+    const moveReviews = (now) => {
+      const sequence = trackRef.current?.firstElementChild;
+      const sequenceWidth = sequence ? sequence.getBoundingClientRect().width + 16 : 0;
+      const progress = ((now - start) % duration) / duration;
+      const offset = -(progress * sequenceWidth);
+
+      if (trackRef.current && sequenceWidth > 0) {
+        trackRef.current.style.transform = `translate3d(${offset}px, 0, 0)`;
+      }
+
+      animationFrame = window.requestAnimationFrame(moveReviews);
+    };
+
+    animationFrame = window.requestAnimationFrame(moveReviews);
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, []);
+
+  return (
+    <div className="reviews-track">
+      <div ref={trackRef} className="reviews-items">
+        {[0, 1].map((copy) => (
+          <div className="reviews-sequence" key={copy}>
+            {CUSTOMER_REVIEWS.map((review) => (
+              <article className="review-card" key={`${copy}-${review.username}`}>
+                <div className="review-card-top">
+                  <strong>{review.username}</strong>
+                  <span className="review-stars" aria-label={`${review.rating} étoiles`}>
+                    {"★".repeat(review.rating)}
+                  </span>
+                </div>
+                <p>“{review.review}”</p>
+              </article>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function LiveGenerationCounter() {
   const [count] = useState(formatDailyGenerationCount);
 
@@ -125,21 +180,7 @@ export default function Landing() {
           <span className="reviews-eyebrow">ILS ONT TESTÉ ASTRA</span>
           <h2 className="reviews-title">Des rendus qui font tourner les têtes</h2>
         </div>
-        <div className="reviews-track">
-          <div className="reviews-items">
-            {[...CUSTOMER_REVIEWS, ...CUSTOMER_REVIEWS].map((review, index) => (
-              <article className="review-card" key={`${review.username}-${index}`}>
-                <div className="review-card-top">
-                  <strong>{review.username}</strong>
-                  <span className="review-stars" aria-label={`${review.rating} étoiles`}>
-                    {"★".repeat(review.rating)}
-                  </span>
-                </div>
-                <p>“{review.review}”</p>
-              </article>
-            ))}
-          </div>
-        </div>
+        <ReviewsMarquee />
       </section>
 
       <Examples />
