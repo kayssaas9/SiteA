@@ -100,6 +100,7 @@ export async function sendAdminOnly(req, res) {
 export async function getAdminDashboard() {
   const [
     usersCount,
+    subscribersCount,
     generationsCount,
     completedCount,
     processingCount,
@@ -107,6 +108,10 @@ export async function getAdminDashboard() {
     recentGenerations,
   ] = await Promise.all([
     supabaseAdmin.from("users").select("clerk_user_id", { count: "exact", head: true }),
+    supabaseAdmin
+      .from("users")
+      .select("clerk_user_id", { count: "exact", head: true })
+      .in("plan", ["basic", "pro", "expert"]),
     supabaseAdmin.from("generations").select("id", { count: "exact", head: true }),
     supabaseAdmin
       .from("generations")
@@ -130,6 +135,7 @@ export async function getAdminDashboard() {
 
   const responses = [
     usersCount,
+    subscribersCount,
     generationsCount,
     completedCount,
     processingCount,
@@ -144,6 +150,7 @@ export async function getAdminDashboard() {
   return {
     stats: {
       users: usersCount.count ?? 0,
+      subscribers: subscribersCount.count ?? 0,
       generations: generationsCount.count ?? 0,
       completedGenerations: completedCount.count ?? 0,
       processingGenerations: processingCount.count ?? 0,

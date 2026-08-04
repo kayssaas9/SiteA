@@ -83,6 +83,7 @@ export default function Admin() {
 
       <section className="admin-stats" aria-label="Statistiques générales">
         <StatCard label="Utilisateurs" value={stats.users} />
+        <StatCard label="Abonnés en abonnement" value={stats.subscribers} detail="basic, pro ou expert" />
         <StatCard label="Générations" value={stats.generations} detail={`${stats.completedGenerations} terminées`} />
         <StatCard label="En cours" value={stats.processingGenerations} detail="processing ou finalizing" />
         <StatCard label="Taux de finalisation" value={stats.generations ? `${Math.round((stats.completedGenerations / stats.generations) * 100)}%` : "0%"} />
