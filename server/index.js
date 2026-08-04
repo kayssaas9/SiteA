@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
+import { clerkMiddleware } from "@clerk/express";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -26,6 +27,10 @@ app.use(cors());
 // ── Webhook routes need raw body — mount BEFORE express.json ─────────────────
 app.use("/api/webhook/stripe", webhookStripe);   // raw body handled inside route
 app.use("/api/webhook/clerk",  webhookClerk);    // raw body handled inside route
+
+// Attach Clerk's verified session to every non-webhook request before the API
+// routes inspect authentication state.
+app.use(clerkMiddleware());
 
 // ── JSON middleware for everything else ──────────────────────────────────────
 app.use(express.json({ limit: "10mb" }));

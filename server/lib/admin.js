@@ -1,18 +1,10 @@
-import { createClerkClient } from "@clerk/backend";
+import { clerkClient, getAuth } from "@clerk/express";
 import { supabaseAdmin } from "./supabase.js";
 
 export const ADMIN_EMAILS = new Set([
   "kays.amr9@gmail.com",
   "kays.saas9@gmail.com",
 ]);
-
-const clerkClient = createClerkClient({
-  secretKey: process.env.CLERK_SECRET_KEY,
-  publishableKey:
-    process.env.CLERK_PUBLISHABLE_KEY
-    || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-    || process.env.VITE_CLERK_PUBLISHABLE_KEY,
-});
 
 export function normalizeEmail(email) {
   return typeof email === "string" ? email.trim().toLowerCase() : "";
@@ -29,50 +21,21 @@ function getPrimaryEmail(user) {
   return primary?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || "";
 }
 
-function toClerkRequest(req) {
-  const rawUrl = typeof req.url === "string" ? req.url : "/";
-  const protocol = req.headers?.["x-forwarded-proto"]?.split(",")[0]?.trim()
-    || (req.socket?.encrypted ? "https" : "http");
-  const host = req.headers?.host || req.headers?.["x-forwarded-host"] || "localhost";
-  const url = /^https?:\/\//i.test(rawUrl)
-    ? rawUrl
-    : `${protocol}://${host}${rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`}`;
-  const headers = new Headers();
-
-  for (const [name, value] of Object.entries(req.headers || {})) {
-    if (Array.isArray(value)) {
-      value.forEach((item) => headers.append(name, String(item)));
-    } else if (value != null) {
-      headers.set(name, String(value));
-    }
-  }
-
-  return new Request(url, {
-    method: req.method || "GET",
-    headers,
-  });
-}
-
 /**
  * The browser only uses the email whitelist to decide whether to show the
  * navigation link. This server-side check is the actual authorization gate.
  */
 export async function getAdminContext(req) {
-  if (!process.env.CLERK_SECRET_KEY) return null;
-
   try {
-    const auth = await clerkClient.authenticateRequest(toClerkRequest(req), {
-      acceptsToken: "session_token",
-    });
+    const { userId } = getAuth(req);
+    if (!userId) return null;
 
-    if (!auth.isAuthenticated || !auth.userId) return null;
-
-    const user = await clerkClient.users.getUser(auth.userId);
+    const user = await clerkClient.users.getUser(userId);
     const email = getPrimaryEmail(user);
     if (!isAdminEmail(email)) return null;
 
     return {
-      userId: auth.userId,
+      userId,
       email: normalizeEmail(email),
     };
   } catch (error) {
