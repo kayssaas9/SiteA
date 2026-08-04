@@ -18,3 +18,4 @@
 - [Stripe subscription promo](stripe-promo-code.md) — DECOUVERTE gives 20% off subscriptions only; packs and SnapRouge stay at regular price.
 - [Vercel public assets](vercel-public-assets.md) — New landing images should use the established public asset path and be verified with a deployed 200 response.
 - [Hero background marquee](hero-pair-carousel.md) — Use a duplicated queue with direct frame-by-frame positioning when the landing hero must visibly scroll in either direction.
+- [Clerk authentication on Vercel](clerk-vercel-auth.md) — Production API handlers must verify session tokens inside the Vercel handler, not rely on local Express middleware or a custom proxy.
