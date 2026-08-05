@@ -44,7 +44,150 @@ const GENERATION_REVIEWS = [
   { username: "@premium_cars", review: "Les finitions sont incroyables, surtout sur les phares et les jantes." },
   { username: "@turbo.daily", review: "Je pensais que ça ferait artificiel, mais le résultat ressemble à une vraie photo." },
   { username: "@mydreamcar", review: "Astra m'a aidé à choisir mon prochain style avant même de passer commande." },
+  { username: "@carlifestyle", review: "On peut tester une idée en quelques secondes et le rendu reste super crédible." },
+  { username: "@fastlane_fr", review: "Les changements de carrosserie sont précis, même sur les photos prises au téléphone." },
+  { username: "@auto.mood", review: "J'ai trouvé mon prochain setup grâce à Astra. Le résultat est vraiment propre." },
+  { username: "@lowandclean", review: "Les proportions restent parfaites, on dirait une vraie configuration préparée." },
+  { username: "@motors_gallery", review: "Le rendu est assez réaliste pour visualiser chaque détail avant de décider." },
+  { username: "@boostedlife", review: "La qualité des images est impressionnante, surtout avec une description précise." },
+  { username: "@detailers.club", review: "Même les petits détails de finition sont bien repris dans l'image finale." },
+  { username: "@night_drive", review: "J'ai essayé un look de nuit et les lumières sont ressorties de façon incroyable." },
+  { username: "@thecarroom", review: "C'est devenu mon outil préféré pour préparer mes prochaines modifications." },
 ];
+
+function GenerationReviewsCarousel() {
+  const viewportRef = useRef(null);
+  const dragRef = useRef({ active: false, startX: 0, startScroll: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+
+  const normalizeScrollPosition = () => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const loopWidth = viewport.scrollWidth / 2;
+    if (!loopWidth) return;
+
+    if (viewport.scrollLeft < loopWidth * 0.35) {
+      viewport.scrollLeft += loopWidth;
+    } else if (viewport.scrollLeft > loopWidth * 1.65) {
+      viewport.scrollLeft -= loopWidth;
+    }
+  };
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (viewport) viewport.scrollLeft = viewport.scrollWidth / 2;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return undefined;
+
+    const timer = window.setInterval(() => {
+      const viewport = viewportRef.current;
+      if (!viewport || dragRef.current.active) return;
+
+      viewport.scrollLeft += 0.7;
+      normalizeScrollPosition();
+    }, 32);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const moveReviews = (direction) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    viewport.scrollBy({
+      left: direction * 270,
+      behavior: "smooth",
+    });
+    window.setTimeout(normalizeScrollPosition, 500);
+  };
+
+  const handlePointerDown = (event) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    dragRef.current = {
+      active: true,
+      startX: event.clientX,
+      startScroll: viewport.scrollLeft,
+    };
+    setIsDragging(true);
+    viewport.setPointerCapture?.(event.pointerId);
+  };
+
+  const handlePointerMove = (event) => {
+    const viewport = viewportRef.current;
+    if (!viewport || !dragRef.current.active) return;
+    viewport.scrollLeft = dragRef.current.startScroll - (event.clientX - dragRef.current.startX);
+    normalizeScrollPosition();
+  };
+
+  const stopDragging = (event) => {
+    const viewport = viewportRef.current;
+    dragRef.current.active = false;
+    setIsDragging(false);
+    if (viewport?.hasPointerCapture?.(event.pointerId)) {
+      viewport.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  return (
+    <section className="generation-progress-reviews" aria-label="Avis clients">
+      <div className="generation-progress-reviews-heading">
+        <span className="generation-progress-reviews-stars" aria-hidden="true">★★★★★</span>
+        <span>Ils ont testé Astra</span>
+      </div>
+      <div className="generation-progress-reviews-toolbar">
+        <span>Fais glisser pour lire les avis</span>
+        <div className="generation-progress-reviews-controls">
+          <button
+            type="button"
+            className="generation-reviews-arrow"
+            onClick={() => moveReviews(-1)}
+            aria-label="Avis précédents"
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            className="generation-reviews-arrow"
+            onClick={() => moveReviews(1)}
+            aria-label="Avis suivants"
+          >
+            →
+          </button>
+        </div>
+      </div>
+      <div
+        ref={viewportRef}
+        className={`generation-reviews-viewport ${isDragging ? "is-dragging" : ""}`}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={stopDragging}
+        onPointerCancel={stopDragging}
+        onPointerLeave={(event) => {
+          if (dragRef.current.active) stopDragging(event);
+        }}
+      >
+        <div className="generation-reviews-track">
+          {[0, 1].map((copy) => (
+            <div className="generation-reviews-sequence" key={copy} aria-hidden={copy === 1}>
+              {GENERATION_REVIEWS.map((review) => (
+                <article className="generation-review-card" key={`${copy}-${review.username}`}>
+                  <div className="generation-review-card-top">
+                    <strong>{review.username}</strong>
+                    <span aria-label="5 étoiles">★★★★★</span>
+                  </div>
+                  <p>“{review.review}”</p>
+                </article>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function getErrorMessage(value, fallback = "La génération a échoué.") {
   if (typeof value === "string" && value.trim()) return value.trim();
@@ -410,29 +553,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
           <i />
           <span>Finitions</span>
         </div>
-        <section className="generation-progress-reviews" aria-label="Avis clients">
-          <div className="generation-progress-reviews-heading">
-            <span className="generation-progress-reviews-stars" aria-hidden="true">★★★★★</span>
-            <span>Ils ont testé Astra</span>
-          </div>
-          <div className="generation-reviews-viewport">
-            <div className="generation-reviews-track">
-              {[0, 1].map((copy) => (
-                <div className="generation-reviews-sequence" key={copy} aria-hidden={copy === 1}>
-                  {GENERATION_REVIEWS.map((review) => (
-                    <article className="generation-review-card" key={`${copy}-${review.username}`}>
-                      <div className="generation-review-card-top">
-                        <strong>{review.username}</strong>
-                        <span aria-label="5 étoiles">★★★★★</span>
-                      </div>
-                      <p>“{review.review}”</p>
-                    </article>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <GenerationReviewsCarousel />
       </div>
     );
   }

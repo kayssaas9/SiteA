@@ -149,6 +149,19 @@
   animation: generation-dots-pulse 1.4s ease-in-out infinite;
 }
 
+.generation-progress-orbit::after {
+  position: absolute;
+  inset: 7px;
+  border: 2px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.95);
+  border-right-color: #ff3355;
+  border-bottom-color: rgba(255, 176, 166, 0.76);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(255, 51, 85, 0.28);
+  content: "";
+  animation: generation-orbit-spin 2.2s linear infinite;
+}
+
 .generation-progress-arc {
   display: none;
 }
@@ -264,6 +277,45 @@
   text-transform: uppercase;
 }
 
+.generation-progress-reviews-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 0 6px;
+  color: rgba(240, 242, 245, 0.42);
+  font-size: 10px;
+}
+
+.generation-progress-reviews-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.generation-reviews-arrow {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(240, 242, 245, 0.8);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.generation-reviews-arrow:hover {
+  border-color: rgba(255, 107, 95, 0.65);
+  background: rgba(255, 51, 85, 0.16);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .generation-progress-reviews-stars {
   color: #ffbf5f;
   font-size: 12px;
@@ -272,7 +324,11 @@
 
 .generation-reviews-viewport {
   width: 100%;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  scrollbar-width: none;
   mask-image: linear-gradient(
     90deg,
     transparent,
@@ -282,10 +338,18 @@
   );
 }
 
+.generation-reviews-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.generation-reviews-viewport.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
 .generation-reviews-track {
   display: flex;
   width: max-content;
-  animation: generation-reviews-scroll 78s linear infinite;
   will-change: transform;
 }
 
@@ -343,9 +407,8 @@
   -webkit-line-clamp: 3;
 }
 
-@keyframes generation-reviews-scroll {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
+@keyframes generation-orbit-spin {
+  to { transform: rotate(360deg); }
 }
 
 @keyframes generation-mark-pulse {
@@ -773,13 +836,17 @@
     width: 210px;
   }
 
+  .generation-progress-reviews-toolbar {
+    padding: 0;
+  }
+
   .snaprouge-mini-banner {
     padding: 14px 16px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .generation-reviews-track {
-    animation-play-state: paused;
+  .generation-reviews-viewport {
+    scroll-behavior: auto;
   }
 }
