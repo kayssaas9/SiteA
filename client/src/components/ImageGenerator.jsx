@@ -57,8 +57,14 @@ const GENERATION_REVIEWS = [
 
 function GenerationReviewsCarousel() {
   const viewportRef = useRef(null);
-  const dragRef = useRef({ active: false, startX: 0, startScroll: 0 });
+  const dragRef = useRef({ active: false, autoPaused: false, startX: 0, startScroll: 0 });
+  const interactionTimerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  const getReviewCards = () => {
+    const viewport = viewportRef.current;
+    return viewport ? Array.from(viewport.querySelectorAll(".generation-review-card")) : [];
+  };
 
   const normalizeScrollPosition = () => {
     const viewport = viewportRef.current;
@@ -83,7 +89,7 @@ function GenerationReviewsCarousel() {
 
     const timer = window.setInterval(() => {
       const viewport = viewportRef.current;
-      if (!viewport || dragRef.current.active) return;
+      if (!viewport || dragRef.current.active || dragRef.current.autoPaused) return;
 
       viewport.scrollLeft += 0.7;
       normalizeScrollPosition();
@@ -92,15 +98,52 @@ function GenerationReviewsCarousel() {
     return () => window.clearInterval(timer);
   }, []);
 
+  const pauseAutoPlay = () => {
+    dragRef.current.autoPaused = true;
+    window.clearTimeout(interactionTimerRef.current);
+    interactionTimerRef.current = window.setTimeout(() => {
+      dragRef.current.autoPaused = false;
+      interactionTimerRef.current = null;
+    }, 700);
+  };
+
+  const snapToNearestReview = () => {
+    const viewport = viewportRef.current;
+    const cards = getReviewCards();
+    if (!viewport || !cards.length) return;
+
+    const nearestCard = cards.reduce((nearest, card) => (
+      Math.abs(card.offsetLeft - viewport.scrollLeft) < Math.abs(nearest.offsetLeft - viewport.scrollLeft)
+        ? card
+        : nearest
+    ));
+    viewport.scrollTo({
+      left: nearestCard.offsetLeft,
+      behavior: "smooth",
+    });
+    window.setTimeout(normalizeScrollPosition, 550);
+  };
+
   const moveReviews = (direction) => {
     const viewport = viewportRef.current;
-    if (!viewport) return;
+    const cards = getReviewCards();
+    if (!viewport || !cards.length) return;
 
-    viewport.scrollBy({
-      left: direction * 270,
+    const currentIndex = cards.reduce(
+      (nearestIndex, card, index) =>
+        Math.abs(card.offsetLeft - viewport.scrollLeft) <
+        Math.abs(cards[nearestIndex].offsetLeft - viewport.scrollLeft)
+          ? index
+          : nearestIndex,
+      0,
+    );
+    const targetIndex = Math.max(0, Math.min(cards.length - 1, currentIndex + direction));
+    viewport.scrollTo({
+      left: cards[targetIndex].offsetLeft,
       behavior: "smooth",
     });
     window.setTimeout(normalizeScrollPosition, 500);
+    pauseAutoPlay();
   };
 
   const handlePointerDown = (event) => {
@@ -129,6 +172,8 @@ function GenerationReviewsCarousel() {
     if (viewport?.hasPointerCapture?.(event.pointerId)) {
       viewport.releasePointerCapture(event.pointerId);
     }
+    snapToNearestReview();
+    pauseAutoPlay();
   };
 
   return (
