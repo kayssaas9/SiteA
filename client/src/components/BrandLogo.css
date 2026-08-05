@@ -9,8 +9,7 @@
   display: block;
   width: 32px;
   height: 32px;
-  border-radius: 8px;
-  box-shadow: 0 0 18px rgba(124, 140, 255, 0.22);
+  border-radius: 0;
 }
 
 .brand-logo-name {
@@ -38,7 +37,7 @@
   .header-landing .brand-logo-mark {
     width: 30px;
     height: 30px;
-    border-radius: 7px;
+     border-radius: 0;
   }
 
   .brand-logo-name,
