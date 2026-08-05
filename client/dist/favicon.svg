@@ -10,13 +10,7 @@
       <stop offset=".48" stop-color="#7c8cff"/>
       <stop offset="1" stop-color="#ff83c8"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(18 18) rotate(45) scale(14)">
-      <stop stop-color="#fff" stop-opacity=".9"/>
-      <stop offset="1" stop-color="#5ee7ff" stop-opacity="0"/>
-    </radialGradient>
   </defs>
   <rect width="64" height="64" rx="16" fill="url(#bg)"/>
-  <circle cx="18" cy="18" r="12" fill="url(#glow)"/>
-  <circle cx="18" cy="18" r="5" fill="#fff"/>
   <path d="M16 48 29.5 15h5L48 48h-7l-2.8-7.5H26L23 48h-7Zm12.2-13h8.1l-4-11-4.1 11Z" fill="url(#mark)"/>
 </svg>
