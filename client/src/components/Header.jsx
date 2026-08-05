@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
@@ -36,19 +36,6 @@ export default function Header() {
     window.addEventListener("survey-completed", handleSurveyCompleted);
     return () => window.removeEventListener("survey-completed", handleSurveyCompleted);
   }, [refetchUserData]);
-
-function SignOutButton() {
-  const { signOut } = useClerk();
-  return (
-    <button
-      className="btn btn-outline signout-btn"
-      onClick={() => signOut({ redirectUrl: "/" })}
-      type="button"
-    >
-      Déconnexion
-    </button>
-  );
-}
 
 const navLink = (to, label, className = "") => (
     <Link
@@ -125,9 +112,6 @@ const navLink = (to, label, className = "") => (
                 <Link to="/generate" className="btn btn-primary header-btn landing-app-btn">
                   Accéder à l’app
                 </Link>
-                <SignedIn>
-                  <SignOutButton />
-                </SignedIn>
               </>
             ) : (
               <>
