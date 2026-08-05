@@ -1,10 +1,10 @@
 ---
 name: Mobile brand icon
-description: The Astracrea gradient A mark is the canonical favicon and mobile app icon.
+description: The supplied serif A with a neon outline is the canonical favicon and mobile app icon.
 ---
 
-Use the same Astracrea gradient “A” mark for browser favicons, Apple touch icons, and web app manifest icons.
+Use the supplied serif italic “A” mark for browser favicons, Apple touch icons, and web app manifest icons. The mark has a dark fill and a cyan-to-violet-to-pink neon outline on transparency.
 
-**Why:** The mobile tab and shortcut must match the branded logo shown in the site header rather than the former blue-dot Astra mark.
+**Why:** The user selected the serif “A” reference and the neon outlined mark reference as the official Astracrea icon direction.
 
-**How to apply:** When changing the logo, update the SVG source and regenerate the 180px, 192px, and 512px PNG variants, keeping cache-busting icon references in the document head.
+**How to apply:** Derive all favicon and mobile icon sizes from the same transparent source artwork, and bump the asset query version when replacing cached icons.
