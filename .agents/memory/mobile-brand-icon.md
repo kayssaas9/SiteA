@@ -1,9 +1,9 @@
 ---
 name: Mobile brand icon
-description: The supplied serif A with a black fill and a wide cyan-violet-pink outline is the canonical favicon and mobile app icon.
+description: The supplied serif A with a black fill and an extra-wide cyan-violet-pink band is the canonical favicon and mobile app icon.
 ---
 
-Use the supplied serif italic “A” mark for browser favicons, Apple touch icons, and web app manifest icons. The mark has a pure black fill and a wide, visible cyan-to-violet-to-pink outline on transparency.
+Use the supplied serif italic “A” mark for browser favicons, Apple touch icons, and web app manifest icons. The mark has a pure black fill and an extra-wide, visible cyan-to-violet-to-pink band on transparency.
 
 **Why:** The user explicitly requested a black “A” with a colored outline while keeping the result professional.
 
