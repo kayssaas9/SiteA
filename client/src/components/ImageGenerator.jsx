@@ -23,6 +23,29 @@ const GENERATION_MESSAGES = [
   "Finalisation de l’image",
 ];
 
+const GENERATION_REVIEWS = [
+  { username: "@meca_matteo", review: "Le rendu de ma Golf en full black est juste incroyable, on dirait une vraie photo de shooting." },
+  { username: "@ines.cars", review: "J'ai enfin pu tester mes idées de jantes avant de les acheter. Le résultat est ultra propre." },
+  { username: "@slammed_yno", review: "La transformation est folle. Même mes potes n'ont pas capté que c'était généré." },
+  { username: "@nox_rsx", review: "Super rapide et hyper réaliste, surtout les reflets sur la carrosserie." },
+  { username: "@lil_turbo", review: "Astra m'a permis de visualiser exactement le look que je voulais pour ma caisse." },
+  { username: "@drift.max", review: "Le avant/après est tellement convaincant que je l'ai posté direct en story." },
+  { username: "@daily_gti", review: "J'ai changé la couleur et les jantes de ma GTI en quelques secondes. Le résultat est bluffant." },
+  { username: "@luxeautomotive", review: "Les détails de carrosserie et les reflets sont vraiment propres, même en zoomant." },
+  { username: "@rs6.addict", review: "Parfait pour essayer plusieurs styles avant de passer chez le préparateur." },
+  { username: "@maria_drive", review: "L'outil est simple à utiliser et les rendus donnent immédiatement des idées." },
+  { username: "@blacklist_06", review: "J'ai testé trois looks différents sur ma voiture, tous très réalistes." },
+  { username: "@urban_rider", review: "Le résultat final ressemble vraiment à une photo prise en studio." },
+  { username: "@gti.lover", review: "Les modifications sont hyper naturelles, même les ombres restent cohérentes." },
+  { username: "@garage_vision", review: "Je peux enfin comparer mes idées de préparation avant de me lancer." },
+  { username: "@carspotting.fr", review: "Le rendu est propre dès le premier essai, c'est exactement ce que je cherchais." },
+  { username: "@motion_rs", review: "La voiture garde toute sa personnalité avec le nouveau style. Très impressionnant." },
+  { username: "@streetmachine", review: "Quelques secondes suffisent pour imaginer une configuration complète." },
+  { username: "@premium_cars", review: "Les finitions sont incroyables, surtout sur les phares et les jantes." },
+  { username: "@turbo.daily", review: "Je pensais que ça ferait artificiel, mais le résultat ressemble à une vraie photo." },
+  { username: "@mydreamcar", review: "Astra m'a aidé à choisir mon prochain style avant même de passer commande." },
+];
+
 function getErrorMessage(value, fallback = "La génération a échoué.") {
   if (typeof value === "string" && value.trim()) return value.trim();
   if (value instanceof Error && value.message) return value.message;
@@ -387,6 +410,29 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
           <i />
           <span>Finitions</span>
         </div>
+        <section className="generation-progress-reviews" aria-label="Avis clients">
+          <div className="generation-progress-reviews-heading">
+            <span className="generation-progress-reviews-stars" aria-hidden="true">★★★★★</span>
+            <span>Ils ont testé Astra</span>
+          </div>
+          <div className="generation-reviews-viewport">
+            <div className="generation-reviews-track">
+              {[0, 1].map((copy) => (
+                <div className="generation-reviews-sequence" key={copy} aria-hidden={copy === 1}>
+                  {GENERATION_REVIEWS.map((review) => (
+                    <article className="generation-review-card" key={`${copy}-${review.username}`}>
+                      <div className="generation-review-card-top">
+                        <strong>{review.username}</strong>
+                        <span aria-label="5 étoiles">★★★★★</span>
+                      </div>
+                      <p>“{review.review}”</p>
+                    </article>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
