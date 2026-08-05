@@ -19,4 +19,4 @@
 - [Vercel public assets](vercel-public-assets.md) — New landing images should use the established public asset path and be verified with a deployed 200 response.
 - [Hero background marquee](hero-pair-carousel.md) — Use a duplicated queue with direct frame-by-frame positioning when the landing hero must visibly scroll in either direction.
 - [Clerk authentication on Vercel](clerk-vercel-auth.md) — Production API handlers must verify session tokens inside the Vercel handler, not rely on local Express middleware or a custom proxy.
-- [Mobile brand icon](mobile-brand-icon.md) — Use the supplied serif “A” with a restrained steel-blue outline for favicons and mobile icons.
+- [Mobile brand icon](mobile-brand-icon.md) — Use the supplied serif black “A” with a thin colored outline for favicons and mobile icons.
