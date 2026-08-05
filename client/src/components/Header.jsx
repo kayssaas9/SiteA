@@ -62,9 +62,11 @@ const navLink = (to, label, className = "") => (
   ];
 
   const landingNavItems = [
-    { to: "#avis", label: "Avis" },
-    { to: "#faq", label: "FAQ" },
+    { to: "#avis", label: "Comment ça marche ?" },
     { to: "#exemples", label: "Fonctionnalités" },
+    { to: "#exemples", label: "Résultats" },
+    { to: "/pricing", label: "Tarifs" },
+    { to: "#faq", label: "FAQ" },
   ];
 
   const landingNavLink = (to, label) => (
@@ -89,9 +91,11 @@ const navLink = (to, label, className = "") => (
         <nav className="nav-center">
           {isLanding ? (
             <>
-              {landingNavLink("#avis", "Avis")}
-              {landingNavLink("#faq", "FAQ")}
+              {landingNavLink("#avis", "Comment ça marche ?")}
               {landingNavLink("#exemples", "Fonctionnalités")}
+              {landingNavLink("#exemples", "Résultats")}
+              {landingNavLink("/pricing", "Tarifs")}
+              {landingNavLink("#faq", "FAQ")}
             </>
           ) : (
             <>
@@ -160,7 +164,7 @@ const navLink = (to, label, className = "") => (
           {isLanding
             ? landingNavItems.map((item) => (
                 <a
-                  key={item.to}
+                  key={`${item.to}-${item.label}`}
                   href={item.to}
                   className="mobile-nav-link"
                   onClick={() => setMenuOpen(false)}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
 import "./Landing.css";
+import "./LandingRedesign.css";
 
 const CUSTOMER_REVIEWS = [
   { username: "@meca_matteo", review: "Le rendu de ma Golf en full black est juste incroyable, on dirait une vraie photo de shooting.", rating: 5 },
@@ -85,6 +86,41 @@ function HeroBackground() {
   );
 }
 
+function HeroVisual() {
+  return (
+    <div className="hero-visual" aria-label="Exemples de transformations d'images par Astracrea">
+      <div className="hero-visual-orbit hero-visual-orbit-one" />
+      <div className="hero-visual-orbit hero-visual-orbit-two" />
+      <div className="hero-visual-card hero-visual-card-main">
+        <img src="/landing-examples/hero-couple.png" alt="Photo originale prête à transformer" />
+        <span className="hero-visual-chip">PHOTO ORIGINALE</span>
+        <div className="hero-visual-card-footer">
+          <span>Importe une idée</span>
+          <strong>01</strong>
+        </div>
+      </div>
+      <div className="hero-visual-card hero-visual-card-result">
+        <img src="/landing-examples/hero-jet.png" alt="Résultat généré par Astracrea" />
+        <span className="hero-visual-chip hero-visual-chip-result">RÉSULTAT IA</span>
+        <div className="hero-visual-card-footer">
+          <span>Imagine sans limites</span>
+          <strong>02</strong>
+        </div>
+      </div>
+      <div className="hero-visual-arrow" aria-hidden="true">
+        <span>✦</span>
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M7 24h32M27 12l12 12-12 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <div className="hero-visual-prompt">
+        <span className="hero-prompt-dot" />
+        <span>« Transforme cette idée en image »</span>
+      </div>
+    </div>
+  );
+}
+
 function ReviewsMarquee() {
   const trackRef = useRef(null);
 
@@ -158,18 +194,27 @@ export default function Landing() {
 
       <section className="hero">
         <HeroBackground />
-        <div className="badge fade-up">
+        <div className="hero-kicker fade-up">
           <span className="badge-dot" />
-          La V3 est maintenant disponible
+          <strong>ASTRACREA AI</strong>
+          <span>/</span>
+          Transforme tes idées en images
         </div>
         <h1 className="hero-title fade-up delay-1">
-          <span className="hero-title-line">Modifie ta voiture</span>
-          <span className="hero-title-breath">Et</span>
-          <span className="hero-title-line">Rend dingue tes potes</span>
+          <span className="hero-title-line">Imagine plus.</span>
+          <span className="hero-title-line hero-title-accent">Crée mieux.</span>
+          <span className="hero-title-line">Montre tout.</span>
         </h1>
+        <p className="hero-description fade-up delay-2">
+          Transforme tes photos en images qui arrêtent le scroll.
+          <br />
+          Une idée, un prompt, un rendu qui te ressemble.
+        </p>
         <div className="hero-cta fade-up delay-2">
-          <Link to="/sign-up" className="btn btn-primary">Essayer</Link>
+          <Link to="/sign-up" className="btn btn-primary">Créer ma première image <span aria-hidden="true">↗</span></Link>
+          <a href="#exemples" className="hero-secondary-link">Voir les résultats <span aria-hidden="true">↓</span></a>
         </div>
+        <HeroVisual />
 
       </section>
 
