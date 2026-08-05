@@ -96,7 +96,7 @@ const navLink = (to, label, className = "") => (
       <div className="header-inner">
         <Link to="/" className="logo">
           <span className="logo-dot" />
-          <span className="logo-text">Astracrea</span>
+          <span className="logo-text">Astra</span>
         </Link>
 
         <nav className="nav-center">

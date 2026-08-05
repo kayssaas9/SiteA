@@ -6,7 +6,7 @@ export default function AuthNav() {
     <nav className="auth-nav">
       <Link to="/" className="logo">
         <span className="logo-dot" />
-        <span className="logo-text">Astracrea</span>
+        <span className="logo-text">Astra</span>
       </Link>
     </nav>
   );
