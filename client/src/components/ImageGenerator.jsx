@@ -482,7 +482,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
           onClick={handleGenerate}
           disabled={loading || !hasPrompt}
         >
-          {loading ? "Génération…" : `Générer — ${GENERATION_COST} crédits`}
+          {loading ? "Génération…" : "Générer"}
         </button>
       </div>
 
