@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
+import BrandLogo from "./BrandLogo.jsx";
 import "./AuthNav.css";
 
 export default function AuthNav() {
   return (
     <nav className="auth-nav">
       <Link to="/" className="logo">
-        <span className="logo-dot" />
-        <span className="logo-text">Astra</span>
+        <BrandLogo />
       </Link>
     </nav>
   );

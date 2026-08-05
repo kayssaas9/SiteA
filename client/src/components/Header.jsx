@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import { isAdminUser } from "../lib/admin.js";
+import BrandLogo from "./BrandLogo.jsx";
 import "./Header.css";
 
 export default function Header() {
@@ -95,8 +96,7 @@ const navLink = (to, label, className = "") => (
     >
       <div className="header-inner">
         <Link to="/" className="logo">
-          <span className="logo-dot" />
-          <span className="logo-text">Astra</span>
+          <BrandLogo />
         </Link>
 
         <nav className="nav-center">

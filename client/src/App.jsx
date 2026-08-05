@@ -60,7 +60,7 @@ function Layout() {
       <Outlet />
       <FakeActivityNotification visible={showActivityNotification} />
       <footer className="footer">
-        <p>© 2026 Astra · IA visuelle propriétaire</p>
+        <p>© 2026 Astracrea · IA visuelle propriétaire</p>
         <nav className="footer-links" aria-label="Informations légales">
           <Link to="/mentions-legales">Mentions légales</Link>
           <Link to="/conditions-generales-utilisation">Conditions Générales d’Utilisation</Link>
