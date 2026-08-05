@@ -7,8 +7,7 @@
 }
 
 .result-reveal {
-  animation: resultReveal 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
-  transform-origin: center top;
+  animation: none;
 }
 
 @keyframes resultReveal {

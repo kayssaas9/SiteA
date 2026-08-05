@@ -128,9 +128,9 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 132px;
-  height: 132px;
-  margin-bottom: 28px;
+   width: 112px;
+   height: 112px;
+   margin-bottom: 24px;
 }
 
 .generation-progress-orbit::before {
@@ -145,12 +145,12 @@
   position: absolute;
   inset: 0;
   display: block;
-  border: 5px solid transparent;
-  border-top-color: #2388ff;
-  border-right-color: #a977ff;
+   border: 4px solid rgba(255, 255, 255, 0.1);
+   border-top-color: #63d6ff;
+   border-right-color: #a977ff;
   border-radius: 50%;
   box-shadow: 0 0 22px rgba(35, 136, 255, 0.48);
-  animation: generation-arc-spin 1.15s linear infinite;
+   animation: generation-arc-spin 1.8s ease-in-out infinite;
 }
 
 .generation-progress-mark {
@@ -158,16 +158,16 @@
   z-index: 1;
   display: grid;
   place-items: center;
-  width: 76px;
-  height: 76px;
+   width: 68px;
+   height: 68px;
   color: #f4f8ff;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 58px;
+   font-size: 50px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.08em;
   text-shadow: 0 0 24px rgba(35, 136, 255, 0.7);
-  animation: generation-mark-pulse 1.8s ease-in-out infinite;
+   animation: generation-mark-pulse 2.4s ease-in-out infinite;
 }
 
 .generation-progress-title {
@@ -244,12 +244,14 @@
 }
 
 @keyframes generation-arc-spin {
-  to { transform: rotate(360deg); }
+   0% { transform: rotate(0deg); }
+   50% { transform: rotate(180deg); }
+   100% { transform: rotate(360deg); }
 }
 
 @keyframes generation-mark-pulse {
-  0%, 100% { transform: scale(0.94); filter: brightness(0.9); }
-  50% { transform: scale(1.06); filter: brightness(1.35); }
+   0%, 100% { opacity: 0.72; }
+   50% { opacity: 1; }
 }
 
 /* Generator card */

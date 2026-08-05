@@ -17,13 +17,10 @@ const PRICING_OPTIONS = [
 ];
 
 const GENERATION_MESSAGES = [
-  "Analyse de ta photo",
-  "Ajustement de la lumière",
-  "Activation du rendu cinématique",
-  "Reconstruction des détails de la voiture",
-  "Harmonisation des couleurs",
-  "Ajout des finitions réalistes",
-  "Dernière vérification du rendu",
+  "Préparation de ton image",
+  "Création du rendu",
+  "Ajout des détails",
+  "Finalisation de l’image",
 ];
 
 function getErrorMessage(value, fallback = "La génération a échoué.") {
@@ -365,11 +362,11 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
           {GENERATION_MESSAGES[generationMessageIndex]}
         </p>
         <p className="generation-progress-subtitle">
-          Astra transforme ta photo en une image ultra-réaliste…
+          Astra prépare ton rendu…
         </p>
         <div className="generation-progress-meter">
           <div className="generation-progress-meta">
-            <span>Création de ton image</span>
+            <span>Génération en cours</span>
             <strong>{generationProgress}%</strong>
           </div>
           <div
@@ -386,7 +383,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
         <div className="generation-progress-steps" aria-hidden="true">
           <span className="active">{GENERATION_MESSAGES[generationMessageIndex]}</span>
           <i />
-          <span>Création du rendu</span>
+          <span>Rendu en cours</span>
           <i />
           <span>Finitions</span>
         </div>

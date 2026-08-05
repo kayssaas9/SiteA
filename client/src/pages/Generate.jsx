@@ -135,10 +135,6 @@ export default function Generate() {
           <span className="generate-credits-label">crédits</span>
         </div>
 
-        <div className="generate-header fade-up delay-1">
-          <h1 className="page-title">Transforme ta <span className="accent">voiture</span></h1>
-        </div>
-
         {!isLoaded && !authTimedOut ? (
           <div className="generate-auth generate-loading fade-up delay-2">
             <p>Chargement de votre espace…</p>
@@ -154,7 +150,7 @@ export default function Generate() {
         ) : isSignedIn ? (
           <>
           {resultState.result?.imageUrl ? (
-            <div ref={resultShowcaseRef} className="generate-showcase fade-up delay-2">
+            <div ref={resultShowcaseRef} className="generate-showcase">
               <ResultDisplay
                 imageUrl={resultState.result.imageUrl}
                 teaser={resultState.result.teaser}
