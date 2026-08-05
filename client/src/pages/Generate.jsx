@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImageGenerator from "../components/ImageGenerator.jsx";
 import ResultDisplay from "../components/ResultDisplay.jsx";
 import { useUserData } from "../hooks/useUserData.js";
@@ -96,6 +96,7 @@ export default function Generate() {
     error: null,
   });
   const [startFresh, setStartFresh] = useState(false);
+  const resultShowcaseRef = useRef(null);
 
   useEffect(() => {
     if (isLoaded) {
@@ -106,6 +107,21 @@ export default function Generate() {
     const timeout = window.setTimeout(() => setAuthTimedOut(true), 5000);
     return () => window.clearTimeout(timeout);
   }, [isLoaded]);
+
+  useEffect(() => {
+    if (!resultState.result?.imageUrl || !window.matchMedia("(max-width: 767px)").matches) {
+      return undefined;
+    }
+
+    const scrollTimer = window.setTimeout(() => {
+      resultShowcaseRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 100);
+
+    return () => window.clearTimeout(scrollTimer);
+  }, [resultState.result?.imageUrl]);
 
   return (
     <main className="generate-page">
@@ -138,7 +154,7 @@ export default function Generate() {
         ) : isSignedIn ? (
           <>
           {resultState.result?.imageUrl ? (
-            <div className="generate-showcase fade-up delay-2">
+            <div ref={resultShowcaseRef} className="generate-showcase fade-up delay-2">
               <ResultDisplay
                 imageUrl={resultState.result.imageUrl}
                 teaser={resultState.result.teaser}
