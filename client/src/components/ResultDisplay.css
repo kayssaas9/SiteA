@@ -10,6 +10,14 @@
   animation: none;
 }
 
+.result-image-loading {
+  visibility: hidden;
+}
+
+.result-image-ready {
+  visibility: visible;
+}
+
 @keyframes resultReveal {
   from {
     opacity: 0;

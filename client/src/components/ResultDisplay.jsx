@@ -18,7 +18,12 @@ export default function ResultDisplay({
 }) {
   const imageFrameRef = useRef(null);
   const [isImageExpanded, setIsImageExpanded] = useState(false);
+  const [isImageReady, setIsImageReady] = useState(false);
   const safeImageUrl = getSafeUrl(imageUrl, { allowDataImage: true });
+
+  useEffect(() => {
+    setIsImageReady(false);
+  }, [safeImageUrl]);
 
   useEffect(() => {
     if (!isImageExpanded) return undefined;
@@ -85,7 +90,12 @@ export default function ResultDisplay({
     return (
       <div className="result-box result-credit-showcase result-reveal">
         <div className="result-credit-image-frame" ref={imageFrameRef}>
-            <img className="result-credit-image" src={safeImageUrl} alt="Résultat généré" />
+            <img
+              className={`result-credit-image ${isImageReady ? "result-image-ready" : "result-image-loading"}`}
+              src={safeImageUrl}
+              alt="Résultat généré"
+              onLoad={() => setIsImageReady(true)}
+            />
         </div>
 
         <div className="result-credit-actions">
@@ -160,9 +170,10 @@ export default function ResultDisplay({
             <div className="result-showcase-media-badge">✦ APERÇU ASTRA</div>
             <div className={`result-visual ${teaser ? "is-teaser" : ""}`}>
               <img
-                className="result-img"
+                className={`result-img ${isImageReady ? "result-image-ready" : "result-image-loading"}`}
                 src={safeImageUrl}
                 alt={teaser ? "Aperçu flouté du résultat" : "Résultat généré"}
+                onLoad={() => setIsImageReady(true)}
               />
             </div>
             <div className="result-social-proof">
@@ -256,7 +267,12 @@ export default function ResultDisplay({
         {teaser ? "✨ Aperçu de votre résultat" : "✨ Votre résultat"}
       </div>
       <div className={`result-visual ${teaser ? "is-teaser" : ""}`}>
-        <img className="result-img" src={safeImageUrl} alt={teaser ? "Aperçu flouté du résultat" : "Résultat généré"} />
+        <img
+          className={`result-img ${isImageReady ? "result-image-ready" : "result-image-loading"}`}
+          src={safeImageUrl}
+          alt={teaser ? "Aperçu flouté du résultat" : "Résultat généré"}
+          onLoad={() => setIsImageReady(true)}
+        />
         {teaser && (
           <div className="result-teaser-overlay">
             <p>Ton résultat est prêt</p>

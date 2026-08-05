@@ -104,8 +104,16 @@
 .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
 .btn-snaprouge {
-  background: var(--snaprouge);
+  background: linear-gradient(135deg, #FF3355 0%, #FF0033 100%);
   color: #fff;
+  box-shadow: 0 8px 24px rgba(255, 0, 51, 0.25), 0 0 0 1px rgba(255, 0, 51, 0.15) inset;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.btn-snaprouge:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255, 0, 51, 0.35), 0 0 0 1px rgba(255, 0, 51, 0.2) inset;
+  filter: brightness(1.05);
 }
 
 /* Badges */
