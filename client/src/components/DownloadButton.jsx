@@ -10,14 +10,12 @@ export default function DownloadButton({
 }) {
   const [progress, setProgress] = useState(0);
   const [downloading, setDownloading] = useState(false);
-  const [error, setError] = useState("");
 
   const downloadImage = async () => {
     if (downloading) return;
 
     setDownloading(true);
     setProgress(0);
-    setError("");
 
     try {
       const safeImageUrl = getSafeUrl(imageUrl);
@@ -31,7 +29,6 @@ export default function DownloadButton({
       setProgress(100);
     } catch (downloadError) {
       console.error("image download error", downloadError);
-      setError("Impossible d’ouvrir l’image dans un nouvel onglet");
 
       const safeImageUrl = getSafeUrl(imageUrl);
       if (safeImageUrl) window.open(safeImageUrl, "_blank", "noopener,noreferrer");
@@ -68,7 +65,6 @@ export default function DownloadButton({
           </span>
         ) : children}
       </button>
-      {error && <span className="result-download-error">{error}</span>}
     </div>
   );
 }
