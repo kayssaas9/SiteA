@@ -152,7 +152,8 @@
   );
   content: "";
   transform: rotate(18deg);
-  animation: snaprougeShine 3.8s ease-in-out infinite;
+  opacity: 0.68;
+  animation: snaprougeShine 2.2s ease-in-out infinite alternate;
 }
 
 .result-credit-action-snaprouge:hover {
@@ -181,9 +182,8 @@
 }
 
 @keyframes snaprougeShine {
-  0%, 35% { left: -45%; opacity: 0; }
-  48% { opacity: 1; }
-  65%, 100% { left: 125%; opacity: 0; }
+  from { left: -18%; }
+  to { left: 90%; }
 }
 
 .result-credit-action-download {
