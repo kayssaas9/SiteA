@@ -19,3 +19,4 @@
 - [Vercel public assets](vercel-public-assets.md) — New landing images should use the established public asset path and be verified with a deployed 200 response.
 - [Hero background marquee](hero-pair-carousel.md) — Use a duplicated queue with direct frame-by-frame positioning when the landing hero must visibly scroll in either direction.
 - [Clerk authentication on Vercel](clerk-vercel-auth.md) — Production API handlers must verify session tokens inside the Vercel handler, not rely on local Express middleware or a custom proxy.
+- [Mobile brand icon](mobile-brand-icon.md) — Use the Astracrea gradient “A” mark consistently for favicons, mobile shortcuts, and the web manifest.
