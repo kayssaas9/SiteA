@@ -120,8 +120,7 @@
   isolation: isolate;
   overflow: hidden;
   border-color: rgba(255, 168, 177, 0.55);
-  background:
-    linear-gradient(135deg, #6f1029 0%, #c52e4b 42%, #ff6b5f 100%);
+  background: var(--snaprouge-cta);
   color: #fff;
   box-shadow:
     0 12px 28px rgba(174, 27, 62, 0.34),

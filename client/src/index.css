@@ -17,6 +17,7 @@
   --text-muted: rgba(245, 248, 255, 0.62);
   --text-faint: rgba(245, 248, 255, 0.38);
   --snaprouge: #E8556B;
+  --snaprouge-cta: linear-gradient(135deg, #FF3355 0%, #FF0033 100%);
   --radius: 14px;
   --radius-sm: 10px;
   --radius-lg: 18px;
