@@ -151,19 +151,27 @@
 
 .generation-progress-orbit::after {
   position: absolute;
-  inset: 7px;
-  border: 2px solid transparent;
-  border-top-color: rgba(255, 255, 255, 0.95);
-  border-right-color: #ff3355;
-  border-bottom-color: rgba(255, 176, 166, 0.76);
+  inset: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 50%;
-  box-shadow: 0 0 18px rgba(255, 51, 85, 0.28);
   content: "";
-  animation: generation-orbit-spin 2.2s linear infinite;
 }
 
 .generation-progress-arc {
-  display: none;
+  position: absolute;
+  z-index: 2;
+  inset: 3px;
+  display: block;
+  border: 3px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.98);
+  border-right-color: #ff3355;
+  border-bottom-color: rgba(255, 176, 166, 0.8);
+  border-radius: 50%;
+  box-shadow:
+    0 0 10px rgba(255, 51, 85, 0.5),
+    0 0 22px rgba(255, 51, 85, 0.22);
+  pointer-events: none;
+  animation: generation-orbit-spin 1.05s linear infinite;
 }
 
 .generation-progress-mark {
