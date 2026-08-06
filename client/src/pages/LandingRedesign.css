@@ -54,7 +54,11 @@
     border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.65s ease,
     background 0.65s ease,
-    box-shadow 0.65s ease;
+    box-shadow 0.65s ease,
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scale(1);
+  transform-origin: top center;
+  will-change: transform;
 }
 
 .landing-layout .header-landing.is-scrolled {
@@ -62,11 +66,13 @@
 }
 
 .landing-layout .header-landing.is-scrolled .header-inner {
-  width: min(1020px, calc(100vw - 48px));
-  height: 56px;
+  width: min(1200px, calc(100vw - 72px));
+  height: 64px;
+  padding: 0 22px;
   background: rgba(5, 10, 23, 0.9);
   border-color: rgba(155, 199, 255, 0.36);
-  border-radius: 20px;
+  border-radius: 24px;
+  transform: scale(0.88);
 }
 
 .landing-layout .header-landing .brand-logo-mark,

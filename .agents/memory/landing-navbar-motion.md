@@ -7,4 +7,4 @@ The landing navbar should use two fixed sizes: a large top state and a compact s
 
 **Why:** Continuous scroll resizing was not the requested interaction, while abrupt threshold changes felt like a pop. Backdrop blur also made the navbar visually heavier than desired.
 
-**How to apply:** Keep a simple landing scroll threshold and animate width, height, padding, border radius, buttons, logo, and top offset with the same easing/duration. Use a translucent solid background with `backdrop-filter: none` on the landing navbar.
+**How to apply:** Keep a simple landing scroll threshold, preserve the navbar's layout box, and animate its compact state primarily with a smooth transform so the threshold does not trigger a reflow pop. Use a translucent solid background with `backdrop-filter: none` on the landing navbar.
