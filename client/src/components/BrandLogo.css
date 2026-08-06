@@ -28,24 +28,6 @@
   font-size: 21px;
 }
 
-.header-landing .brand-logo-full-wordmark {
-  gap: 0;
-}
-
-.header-landing .brand-logo-full-wordmark .brand-logo-mark {
-  display: none;
-}
-
-.header-landing .brand-logo-full-wordmark .brand-logo-name {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.045em;
-}
-
-.header-landing.is-scrolled .brand-logo-full-wordmark .brand-logo-name {
-  font-size: 19px;
-}
-
 @media (max-width: 600px) {
   .brand-logo {
     gap: 8px;
@@ -63,7 +45,4 @@
     font-size: 18px;
   }
 
-  .header-landing .brand-logo-full-wordmark .brand-logo-name {
-    font-size: 20px;
-  }
 }
