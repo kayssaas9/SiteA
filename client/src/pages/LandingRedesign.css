@@ -532,12 +532,11 @@
 .landing-layout .example-showcase {
   position: relative;
   max-width: 1080px;
-  padding: 24px;
-  border: 1px solid rgba(128, 190, 255, 0.16);
-  border-radius: 24px;
-  background:
-    linear-gradient(145deg, rgba(16, 40, 83, 0.42), rgba(5, 12, 29, 0.58));
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .landing-layout .example-showcase::before {
@@ -546,33 +545,18 @@
 
 .landing-layout .example-showcase-comparison {
   position: relative;
-  gap: 18px;
+  gap: 28px;
   align-items: stretch;
 }
 
 .landing-layout .example-showcase-comparison::before {
-  content: "→";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(162, 218, 255, 0.5);
-  border-radius: 50%;
-  background: #1769d5;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 300;
-  box-shadow: 0 6px 18px rgba(36, 139, 255, 0.28);
-  transform: translate(-50%, -50%);
+  display: none;
 }
 
 .landing-layout .example-side {
   position: relative;
-  gap: 12px;
+  gap: 14px;
+  align-items: stretch;
 }
 
 .landing-layout .example-side:first-child {
@@ -583,45 +567,17 @@
   transform: none;
 }
 
-.landing-layout .example-badge {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  z-index: 3;
-  padding: 6px 10px;
-  border-color: rgba(230, 242, 255, 0.28);
-  background: rgba(5, 13, 29, 0.68);
-  color: rgba(235, 246, 255, 0.86);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  font-size: 10px;
-  letter-spacing: 0.13em;
-}
-
-.landing-layout .example-badge-after {
-  border-color: rgba(122, 196, 255, 0.6);
-  background: rgba(18, 102, 208, 0.72);
-  color: #e9f6ff;
-}
-
 .landing-layout .example-image {
   aspect-ratio: 3 / 4;
-  border: 1px solid rgba(211, 235, 255, 0.24);
-  border-radius: 18px;
+  border: 0;
+  border-radius: 14px;
   background:
     linear-gradient(145deg, rgba(18, 52, 101, 0.58), rgba(4, 13, 31, 0.92));
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.26);
+  box-shadow: none;
 }
 
 .landing-layout .example-image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(4, 12, 27, 0.04) 30%, rgba(3, 9, 22, 0.9) 100%),
-    linear-gradient(90deg, rgba(5, 17, 40, 0.08), transparent 45%, rgba(67, 161, 255, 0.08));
+  display: none;
 }
 
 .landing-layout .example-photo {
@@ -639,39 +595,37 @@
 }
 
 .landing-layout .example-after {
-  border-color: rgba(86, 174, 255, 0.46);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.32), 0 0 24px rgba(29, 128, 255, 0.16);
+  border: 1px solid rgba(86, 174, 255, 0.26);
 }
 
-.landing-layout .example-after .example-photo {
-  filter: saturate(1.08) contrast(1.04);
+.landing-layout .example-copy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px 8px;
+  padding: 0 4px;
+  color: rgba(213, 231, 251, 0.62);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
-.landing-layout .example-quality-badge {
-  top: 16px;
-  right: 16px;
-  z-index: 3;
-  border-color: rgba(138, 213, 255, 0.58);
-  background: rgba(8, 74, 158, 0.7);
-  color: #dff4ff;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+.landing-layout .example-copy-label {
+  width: 100%;
+  color: rgba(130, 195, 255, 0.78);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.landing-layout .example-caption {
-  z-index: 2;
-  padding: 62px 22px 22px;
-  background: linear-gradient(to top, rgba(3, 9, 22, 0.98), rgba(3, 9, 22, 0.64) 58%, transparent 100%);
-  border-radius: 0 0 22px 22px;
-}
-
-.landing-layout .example-caption-title {
+.landing-layout .example-copy strong {
   color: #eaf6ff;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 600;
 }
 
-.landing-layout .example-caption-detail {
-  color: rgba(207, 229, 251, 0.7);
+.landing-layout .example-copy-result > span:last-child {
+  color: rgba(213, 231, 251, 0.52);
 }
 
 .landing-layout .examples-more {
@@ -806,8 +760,7 @@
   }
 
   .landing-layout .example-showcase {
-    padding: 16px;
-    border-radius: 20px;
+    padding: 0;
   }
 
   .landing-layout .example-showcase-comparison {

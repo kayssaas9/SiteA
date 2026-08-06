@@ -240,6 +240,19 @@ function Examples() {
   const [exampleIndex, setExampleIndex] = useState(0);
   const example = LANDING_EXAMPLES[exampleIndex];
 
+  useEffect(() => {
+    const imageSources = LANDING_EXAMPLES.flatMap(({ beforeImage, afterImage }) => [
+      beforeImage,
+      afterImage,
+    ]);
+
+    imageSources.forEach((source) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = source;
+    });
+  }, []);
+
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
       <h2 className="examples-title">
@@ -249,46 +262,31 @@ function Examples() {
       <div className="example-showcase">
         <div className="example-showcase-comparison">
           <div className="example-side">
-            <span className="example-badge example-badge-before">AVANT</span>
             <div className="example-image example-before">
               <img
                 className="example-photo"
                 src={example.beforeImage}
                 alt={example.original}
               />
-              <div className="example-caption">
-                <strong>Photo originale :</strong>{" "}
-                <span className="example-caption-detail">{example.original}</span>
-              </div>
+            </div>
+            <div className="example-copy">
+              <span className="example-copy-label">Photo originale</span>
+              <strong>{example.original}</strong>
             </div>
           </div>
 
           <div className="example-side">
-            <span className="example-badge example-badge-after">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-              </svg>
-              APRÈS
-            </span>
             <div className="example-image example-after">
               <img
                 className="example-photo"
                 src={example.afterImage}
                 alt={example.result}
               />
-              <span className="example-quality-badge">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                </svg>
-                ULTRA-RÉALISTE
-              </span>
-              <div className="example-caption">
-                <div className="example-caption-title">Ultra-réalisme Astra ✨</div>
-                <strong>Résultat Astra :</strong> Transformation en{" "}
-                <span className="example-caption-detail">
-                  {example.result}, {example.ending}
-                </span>
-              </div>
+            </div>
+            <div className="example-copy example-copy-result">
+              <span className="example-copy-label">Résultat Astra</span>
+              <strong>{example.result}</strong>
+              <span>{example.ending}</span>
             </div>
           </div>
         </div>
