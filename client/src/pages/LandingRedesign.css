@@ -5,10 +5,29 @@
   --landing-blue: #2f8cff;
   --landing-sky: #86c8ff;
   --landing-ice: #dceeff;
+  position: relative;
   background:
     radial-gradient(circle at 78% 12%, rgba(36, 121, 255, 0.24), transparent 30rem),
     radial-gradient(circle at 5% 58%, rgba(15, 61, 153, 0.25), transparent 36rem),
     var(--landing-ink);
+}
+
+.landing-layout::after {
+  content: "";
+  position: absolute;
+  top: calc(min(930px, 100vh) - 70px);
+  right: 0;
+  left: 0;
+  height: 280px;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(21, 91, 190, 0.3) 0%,
+    rgba(10, 46, 105, 0.22) 38%,
+    rgba(5, 9, 20, 0.84) 82%,
+    var(--landing-ink) 100%
+  );
 }
 
 .landing-layout .header-landing {
@@ -452,6 +471,8 @@
 .landing-layout .reviews-section,
 .landing-layout .examples-section,
 .landing-layout .faq-section {
+  position: relative;
+  z-index: 1;
   background: transparent;
 }
 
@@ -501,6 +522,11 @@
 }
 
 @media (max-width: 760px) {
+  .landing-layout::after {
+    top: calc(100svh - 24px);
+    height: 260px;
+  }
+
   .landing-layout .header-landing {
     padding-top: 14px;
   }
