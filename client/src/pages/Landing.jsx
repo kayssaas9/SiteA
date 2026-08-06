@@ -22,6 +22,13 @@ const CUSTOMER_REVIEWS = [
 
 const LANDING_EXAMPLES = [
   {
+    original: "Parking de quartier",
+    result: "Mercedes-AMG A 45 S",
+    ending: "même décor.",
+    beforeImage: "/landing-examples/parking-before.jpeg",
+    afterImage: "/landing-examples/parking-after.png",
+  },
+  {
     original: "BMW M3 G80",
     result: "Lamborghini Aventador SVJ",
     ending: "décor identique.",
@@ -92,18 +99,18 @@ function HeroVisual() {
       <div className="hero-visual-orbit hero-visual-orbit-one" />
       <div className="hero-visual-orbit hero-visual-orbit-two" />
       <div className="hero-visual-card hero-visual-card-main">
-        <img src="/landing-examples/hero-couple.png" alt="Photo originale prête à transformer" />
+        <img src="/landing-examples/parking-before.jpeg" alt="Photo originale d'une voiture sur un parking" />
         <span className="hero-visual-chip">PHOTO ORIGINALE</span>
         <div className="hero-visual-card-footer">
-          <span>Importe une idée</span>
+          <span>Photo originale</span>
           <strong>01</strong>
         </div>
       </div>
       <div className="hero-visual-card hero-visual-card-result">
-        <img src="/landing-examples/hero-jet.png" alt="Résultat généré par Astracrea" />
+        <img src="/landing-examples/parking-after.png" alt="Mercedes générée par Astracrea sur le même parking" />
         <span className="hero-visual-chip hero-visual-chip-result">RÉSULTAT IA</span>
         <div className="hero-visual-card-footer">
-          <span>Imagine sans limites</span>
+          <span>Résultat Astra</span>
           <strong>02</strong>
         </div>
       </div>
