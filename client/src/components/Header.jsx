@@ -85,7 +85,10 @@ const navLink = (to, label, className = "") => (
     >
       <div className="header-inner">
         <Link to="/" className="logo">
-          <BrandLogo name={isLanding ? "stracrea" : "Astracrea"} />
+          <BrandLogo
+            name={isLanding ? "stracrea" : "Astracrea"}
+            className={isLanding ? "brand-logo-landing-complete" : ""}
+          />
         </Link>
 
         <nav className="nav-center">

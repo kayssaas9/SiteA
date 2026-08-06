@@ -28,6 +28,36 @@
   font-size: 21px;
 }
 
+.header-landing .brand-logo-landing-complete {
+  gap: 0;
+}
+
+.header-landing .brand-logo-landing-complete .brand-logo-mark {
+  width: 36px;
+  height: 36px;
+}
+
+.header-landing .brand-logo-landing-complete .brand-logo-name {
+  position: relative;
+  z-index: 1;
+  margin-left: -5px;
+  padding-top: 1px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.9;
+}
+
+.header-landing.is-scrolled .brand-logo-landing-complete .brand-logo-mark {
+  width: 32px;
+  height: 32px;
+}
+
+.header-landing.is-scrolled .brand-logo-landing-complete .brand-logo-name {
+  font-size: 22px;
+}
+
 @media (max-width: 600px) {
   .brand-logo {
     gap: 8px;
@@ -45,4 +75,13 @@
     font-size: 18px;
   }
 
+  .header-landing .brand-logo-landing-complete .brand-logo-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .header-landing .brand-logo-landing-complete .brand-logo-name {
+    margin-left: -4px;
+    font-size: 22px;
+  }
 }
