@@ -665,20 +665,7 @@
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 38px rgba(27, 117, 234, 0.16);
   }
 
-  .header-app .mobile-menu {
-    top: 46px;
-  }
-
-  .header-app .app-mobile-language-dropdown {
-    display: inline-flex;
-    align-self: flex-start;
-    margin: 8px 0 4px;
-  }
-
-  .header-app .app-mobile-language-dropdown .app-language-options {
-    left: 0;
-    right: auto;
-  }
+  /* removed old .header-app .mobile-menu overrides — app now uses .app-mobile-overlay */
 
   .header-landing .mobile-menu-inner {
     padding: 28px 12px 30px;
@@ -764,5 +751,207 @@
     border-color: #ffffff;
     background: #f3f8ff;
     color: #16457f;
+  }
+}
+
+/* ─── App mobile full-screen overlay ─────────────────────────────────────── */
+.app-mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #0d0d0d;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* slide-in from right */
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.app-mobile-overlay.open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Top bar */
+.app-mobile-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 8px;
+}
+
+.app-mobile-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.app-mobile-close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  color: #9e9a9f;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.app-mobile-close:hover { color: #fff; }
+
+/* Nav links */
+.app-mobile-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 24px 0;
+}
+
+.app-mobile-nav-link {
+  display: block;
+  font-size: 28px;
+  font-weight: 600;
+  color: #4d4952;
+  text-decoration: none;
+  padding: 6px 0;
+  letter-spacing: -0.02em;
+  transition: color 0.15s ease;
+}
+
+.app-mobile-nav-link.active {
+  color: #ffffff;
+}
+
+.app-mobile-nav-link:hover {
+  color: #ccc8ce;
+}
+
+.app-mobile-nav-link.snaprouge-nav-link {
+  color: #6b3840;
+}
+
+.app-mobile-nav-link.snaprouge-nav-link.active,
+.app-mobile-nav-link.snaprouge-nav-link:hover {
+  color: #ff7a8f;
+}
+
+/* Profile section */
+.app-mobile-profile-section {
+  margin: 32px 24px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 24px;
+}
+
+.app-mobile-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  margin-bottom: 14px;
+}
+
+.app-mobile-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #2e2a33;
+  color: #c8c4cb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.app-mobile-profile-label {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 500;
+  color: #dbd7de;
+}
+
+.app-mobile-profile-arrow {
+  font-size: 20px;
+  color: #4d4952;
+}
+
+.app-mobile-signout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 0;
+  color: #e8524a;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.app-mobile-signout-icon {
+  font-size: 17px;
+}
+
+/* Language section */
+.app-mobile-lang-section {
+  margin: 28px 24px 32px;
+}
+
+.app-mobile-lang-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #4d4952;
+  margin-bottom: 12px;
+}
+
+.app-mobile-lang-pills {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.app-mobile-lang-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #9e9a9f;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.app-mobile-lang-pill.active {
+  background: rgba(139, 92, 246, 0.18);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #fff;
+}
+
+.app-mobile-lang-check {
+  color: #8b5cf6;
+  font-size: 13px;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+@media (max-width: 640px) {
+  .app-mobile-overlay {
+    display: flex;
   }
 }

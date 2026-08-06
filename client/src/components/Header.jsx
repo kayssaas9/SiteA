@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useUser, SignOutButton } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
@@ -275,31 +275,21 @@ const navLink = (to, label, className = "") => (
         </div>
       </div>
 
-      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
-        <div className="mobile-menu-inner">
-          {isLanding
-            ? landingNavItems.map((item) => (
-                <a
-                  key={`${item.to}-${item.label}`}
-                  href={item.to}
-                  className="mobile-nav-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))
-            : navItems.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
+      {/* Landing mobile menu — pill card */}
+      {isLanding && (
+        <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+          <div className="mobile-menu-inner">
+            {landingNavItems.map((item) => (
+              <a
+                key={`${item.to}-${item.label}`}
+                href={item.to}
+                className="mobile-nav-link"
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </a>
+            ))}
 
-          {isLanding && (
             <label className="mobile-language-picker">
               <span className="mobile-language-icon" aria-hidden="true">文A</span>
               <span className="sr-only">Choisir la langue</span>
@@ -309,56 +299,95 @@ const navLink = (to, label, className = "") => (
                 <option value="es">Español</option>
               </select>
             </label>
-          )}
 
-          {!isLanding && (
-            <LanguageDropdown language={language} onChange={handleLanguageChange} mobile />
-          )}
-
-          <div className={`mobile-menu-actions ${isLanding ? "landing-mobile-actions" : ""}`}>
-            {isLanding ? (
-              isSignedIn ? (
-                <>
-                  <Link to="/generate" className="btn btn-primary mobile-menu-btn">
-                    Accéder à l’app
-                  </Link>
-                </>
+            <div className="mobile-menu-actions landing-mobile-actions">
+              {isSignedIn ? (
+                <Link to="/generate" className="btn btn-primary mobile-menu-btn" onClick={() => setMenuOpen(false)}>
+                  Accéder à l'app
+                </Link>
               ) : (
                 <>
-                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
+                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn" onClick={() => setMenuOpen(false)}>
                     Se connecter
                   </Link>
-                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
-                    S’inscrire
+                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn" onClick={() => setMenuOpen(false)}>
+                    S'inscrire
                   </Link>
                 </>
-              )
-            ) : (
-              <>
-                {isSignedIn && (
-                  <Link to="/pricing" className="btn btn-primary mobile-menu-btn mobile-upgrade-btn">
-                    Upgrade
-                  </Link>
-                )}
-                {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
-                  <Link to="/survey" className="btn btn-primary mobile-menu-btn survey-mobile-btn">
-                    Gagne 400 crédits
-                  </Link>
-                )}
-                <SignedOut>
-                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
-                    Connexion
-                  </Link>
-                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
-                    Créer un compte
-                  </Link>
-                </SignedOut>
-
-              </>
-            )}
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* App mobile menu — full-screen overlay */}
+      {!isLanding && (
+        <div className={`app-mobile-overlay ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
+          {/* Top bar */}
+          <div className="app-mobile-topbar">
+            <span className="app-mobile-title">Menu</span>
+            <button
+              className="app-mobile-close"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Fermer le menu"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Nav links */}
+          <nav className="app-mobile-nav">
+            {navItems.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`app-mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Profile section */}
+          {isSignedIn && user && (
+            <div className="app-mobile-profile-section">
+              <Link to="/account" className="app-mobile-profile-row" onClick={() => setMenuOpen(false)}>
+                <div className="app-mobile-avatar">
+                  {user.firstName?.[0] ?? user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ?? "?"}
+                </div>
+                <span className="app-mobile-profile-label">Profil</span>
+                <span className="app-mobile-profile-arrow">›</span>
+              </Link>
+              <SignOutButton>
+                <button className="app-mobile-signout" onClick={() => setMenuOpen(false)}>
+                  <span className="app-mobile-signout-icon" aria-hidden="true">↪</span>
+                  Se déconnecter
+                </button>
+              </SignOutButton>
+            </div>
+          )}
+
+          {/* Language pills */}
+          <div className="app-mobile-lang-section">
+            <p className="app-mobile-lang-label">LANGUE</p>
+            <div className="app-mobile-lang-pills">
+              {LANGUAGE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  className={`app-mobile-lang-pill ${language === opt.value ? "active" : ""}`}
+                  onClick={() => handleLanguageChange(opt.value)}
+                >
+                  <span className={`flag-icon ${opt.flagClass}`} aria-hidden="true" />
+                  {opt.label}
+                  {language === opt.value && <span className="app-mobile-lang-check" aria-hidden="true">✓</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
