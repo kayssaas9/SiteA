@@ -1,6 +1,7 @@
 .landing-page {
   position: relative;
   overflow: hidden;
+  overflow-anchor: none;
 }
 .blob-1 {
   width: 520px;

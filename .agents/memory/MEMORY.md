@@ -22,3 +22,4 @@
 - [Mobile brand icon](mobile-brand-icon.md) — Use the supplied serif black “A” with a fine solid-blue keyline.
 - [Landing hero boundary](landing-hero-boundary.md) — The visible transition below the CTA follows the hero height and bottom fade.
 - [Landing examples restraint](landing-examples-restraint.md) — Keep the before/after section clear and restrained instead of stacking decorative effects.
+- [FAQ accordion scroll](faq-accordion-scroll.md) — FAQ answers must expand below a fixed question without browser focus or scroll repositioning.

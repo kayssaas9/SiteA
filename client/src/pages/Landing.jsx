@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
@@ -343,9 +343,39 @@ const FAQS = [
 
 function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState(null);
+  const scrollPositionRef = useRef(null);
+
+  const rememberScrollPosition = () => {
+    scrollPositionRef.current = {
+      left: window.scrollX,
+      top: window.scrollY,
+    };
+  };
+
   const toggle = (idx) => {
     setOpenIndex((currentIndex) => (currentIndex === idx ? null : idx));
   };
+
+  useLayoutEffect(() => {
+    const position = scrollPositionRef.current;
+    if (!position) return;
+
+    window.scrollTo({
+      left: position.left,
+      top: position.top,
+      behavior: "auto",
+    });
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({
+        left: position.left,
+        top: position.top,
+        behavior: "auto",
+      });
+    });
+    scrollPositionRef.current = null;
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [openIndex]);
 
   return (
     <section id="faq" className="faq-section fade-up delay-5">
@@ -356,7 +386,25 @@ function FaqAccordion() {
           <div key={idx} className={`faq-item ${openIndex === idx ? "open" : ""}`}>
             <button
               className="faq-question"
-              onClick={() => toggle(idx)}
+              onMouseDown={(event) => {
+                rememberScrollPosition();
+                event.preventDefault();
+              }}
+              onPointerDown={(event) => {
+                rememberScrollPosition();
+                event.preventDefault();
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  rememberScrollPosition();
+                  toggle(idx);
+                }
+              }}
+              onClick={(event) => {
+                event.currentTarget.blur();
+                toggle(idx);
+              }}
               type="button"
               aria-expanded={openIndex === idx}
               aria-controls={`faq-answer-${idx}`}
