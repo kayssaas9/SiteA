@@ -1,11 +1,85 @@
 import { Link, useLocation } from "react-router-dom";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import { isAdminUser } from "../lib/admin.js";
 import BrandLogo from "./BrandLogo.jsx";
 import "./Header.css";
+
+const LANGUAGE_OPTIONS = [
+  { value: "en", label: "English", flag: "🇺🇸", shortLabel: "EN" },
+  { value: "fr", label: "French", flag: "🇫🇷", shortLabel: "FR" },
+  { value: "es", label: "Spanish", flag: "🇪🇸", shortLabel: "ES" },
+];
+
+function LanguageDropdown({ language, onChange, mobile = false }) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const selectedLanguage = LANGUAGE_OPTIONS.find((option) => option.value === language) ?? LANGUAGE_OPTIONS[1];
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!dropdownRef.current?.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={dropdownRef}
+      className={`app-language-dropdown ${mobile ? "app-mobile-language-dropdown" : ""}`}
+    >
+      <button
+        type="button"
+        className="app-language-trigger"
+        onClick={() => setOpen((isOpen) => !isOpen)}
+        aria-label="Choisir la langue"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span className="app-language-flag" aria-hidden="true">{selectedLanguage.flag}</span>
+        <span className="app-language-short">{selectedLanguage.shortLabel}</span>
+        <span className={`app-language-chevron ${open ? "is-open" : ""}`} aria-hidden="true" />
+      </button>
+
+      {open && (
+        <div className="app-language-options" role="listbox" aria-label="Langues disponibles">
+          {LANGUAGE_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={`app-language-option ${option.value === language ? "is-selected" : ""}`}
+              onClick={() => {
+                onChange(option.value);
+                setOpen(false);
+              }}
+              role="option"
+              aria-selected={option.value === language}
+            >
+              <span className="app-language-option-flag" aria-hidden="true">{option.flag}</span>
+              <span className="app-language-option-label">{option.label}</span>
+              {option.value === language && <span className="app-language-check" aria-hidden="true">✓</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Header() {
   const { isSignedIn, user } = useUser();
@@ -89,7 +163,7 @@ const navLink = (to, label, className = "") => (
   );
 
   const handleLanguageChange = (event) => {
-    const nextLanguage = event.target.value;
+    const nextLanguage = typeof event === "string" ? event : event.target.value;
     setLanguage(nextLanguage);
     window.localStorage.setItem("astracrea-language", nextLanguage);
     document.documentElement.lang = nextLanguage;
@@ -162,17 +236,7 @@ const navLink = (to, label, className = "") => (
                   <Link to="/pricing" className="header-upgrade-btn">
                     Upgrade
                   </Link>
-                  <label className="desktop-language-picker app-language-picker">
-                    <span className="app-language-flag" aria-hidden="true">
-                      {language === "en" ? "🇬🇧" : language === "es" ? "🇪🇸" : "🇫🇷"}
-                    </span>
-                    <span className="sr-only">Choisir la langue</span>
-                    <select value={language} onChange={handleLanguageChange} aria-label="Choisir la langue">
-                      <option value="fr">FR</option>
-                      <option value="en">EN</option>
-                      <option value="es">ES</option>
-                    </select>
-                  </label>
+                  <LanguageDropdown language={language} onChange={handleLanguageChange} />
                 </>
               )}
               {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
@@ -242,17 +306,7 @@ const navLink = (to, label, className = "") => (
           )}
 
           {!isLanding && (
-            <label className="mobile-language-picker app-mobile-language-picker">
-              <span className="app-language-flag" aria-hidden="true">
-                {language === "en" ? "🇬🇧" : language === "es" ? "🇪🇸" : "🇫🇷"}
-              </span>
-              <span className="sr-only">Choisir la langue</span>
-              <select value={language} onChange={handleLanguageChange} aria-label="Choisir la langue">
-                <option value="fr">Français</option>
-                <option value="en">English</option>
-                <option value="es">Español</option>
-              </select>
-            </label>
+            <LanguageDropdown language={language} onChange={handleLanguageChange} mobile />
           )}
 
           <div className={`mobile-menu-actions ${isLanding ? "landing-mobile-actions" : ""}`}>
