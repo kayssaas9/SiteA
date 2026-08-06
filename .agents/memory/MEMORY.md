@@ -21,3 +21,4 @@
 - [Clerk authentication on Vercel](clerk-vercel-auth.md) — Production API handlers must verify session tokens inside the Vercel handler, not rely on local Express middleware or a custom proxy.
 - [Mobile brand icon](mobile-brand-icon.md) — Use the supplied serif black “A” with a fine solid-blue keyline.
 - [Landing hero boundary](landing-hero-boundary.md) — The visible transition below the CTA follows the hero height and bottom fade.
+- [Landing examples restraint](landing-examples-restraint.md) — Keep the before/after section clear and restrained instead of stacking decorative effects.
