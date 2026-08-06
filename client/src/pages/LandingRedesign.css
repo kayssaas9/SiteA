@@ -483,6 +483,7 @@
   border-color: rgba(111, 181, 255, 0.26);
   background: rgba(24, 98, 194, 0.16);
   box-shadow: 0 0 30px rgba(26, 119, 236, 0.18);
+  transform: translateY(100px);
 }
 
 .landing-layout .reviews-section,
@@ -766,6 +767,7 @@
 
   .landing-layout .live-generation-counter {
     margin-top: -10px;
+    transform: translateY(80px);
   }
 
   .landing-layout .examples-section {
