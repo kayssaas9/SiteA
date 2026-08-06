@@ -157,11 +157,56 @@
   border-color: rgba(139, 92, 246, 0.5);
 }
 
+.language-flag {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.flag-fr {
+  background: linear-gradient(
+    to right,
+    #1d4ed8 0 33.333%,
+    #fff 33.333% 66.666%,
+    #ef4444 66.666% 100%
+  );
+}
+
+.flag-es {
+  background: linear-gradient(
+    to bottom,
+    #ef233c 0 25%,
+    #facc15 25% 75%,
+    #ef233c 75% 100%
+  );
+}
+
+.flag-us {
+  background: repeating-linear-gradient(
+    to bottom,
+    #ef4444 0 7.69%,
+    #fff 7.69% 15.38%
+  );
+}
+
+.flag-us::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42%;
+  height: 54%;
+  background: #1d4ed8;
+  content: "";
+}
+
 .app-language-flag {
   display: inline-flex;
   align-items: center;
-  font-size: 19px;
-  line-height: 1;
 }
 
 .app-language-short {
@@ -215,12 +260,8 @@
 }
 
 .app-language-option-flag {
-  display: inline-flex;
-  align-items: center;
   width: 30px;
   margin-right: 9px;
-  font-size: 23px;
-  line-height: 1;
 }
 
 .app-language-option-label {

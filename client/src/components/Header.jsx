@@ -8,9 +8,9 @@ import BrandLogo from "./BrandLogo.jsx";
 import "./Header.css";
 
 const LANGUAGE_OPTIONS = [
-  { value: "en", label: "English", flag: "🇺🇸", shortLabel: "EN" },
-  { value: "fr", label: "French", flag: "🇫🇷", shortLabel: "FR" },
-  { value: "es", label: "Spanish", flag: "🇪🇸", shortLabel: "ES" },
+  { value: "en", label: "English", flagClass: "flag-us", shortLabel: "EN" },
+  { value: "fr", label: "French", flagClass: "flag-fr", shortLabel: "FR" },
+  { value: "es", label: "Spanish", flagClass: "flag-es", shortLabel: "ES" },
 ];
 
 function LanguageDropdown({ language, onChange, mobile = false }) {
@@ -51,7 +51,10 @@ function LanguageDropdown({ language, onChange, mobile = false }) {
         aria-haspopup="listbox"
         aria-expanded={open}
       >
-        <span className="app-language-flag" aria-hidden="true">{selectedLanguage.flag}</span>
+        <span
+          className={`language-flag ${selectedLanguage.flagClass}`}
+          aria-hidden="true"
+        />
         <span className="app-language-short">{selectedLanguage.shortLabel}</span>
         <span className={`app-language-chevron ${open ? "is-open" : ""}`} aria-hidden="true" />
       </button>
@@ -70,7 +73,10 @@ function LanguageDropdown({ language, onChange, mobile = false }) {
               role="option"
               aria-selected={option.value === language}
             >
-              <span className="app-language-option-flag" aria-hidden="true">{option.flag}</span>
+              <span
+                className={`language-flag app-language-option-flag ${option.flagClass}`}
+                aria-hidden="true"
+              />
               <span className="app-language-option-label">{option.label}</span>
               {option.value === language && <span className="app-language-check" aria-hidden="true">✓</span>}
             </button>
