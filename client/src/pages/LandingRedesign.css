@@ -19,7 +19,7 @@
 .landing-layout .landing-page::before {
   content: "";
   position: absolute;
-  top: calc(min(930px, 100vh) - 88px);
+  top: calc(min(930px, calc(100vh + 80px)) - 8px);
   right: 0;
   left: 0;
   height: 430px;
@@ -112,8 +112,8 @@
 }
 
 .landing-layout .hero {
-  min-height: min(850px, 100vh);
-  height: min(930px, 100vh);
+  min-height: min(850px, calc(100vh + 80px));
+  height: min(930px, calc(100vh + 80px));
   padding: 132px max(6vw, 52px) 54px;
   display: grid;
   grid-template-columns: minmax(440px, 0.9fr) minmax(460px, 1.1fr);
@@ -527,7 +527,7 @@
 
 @media (max-width: 760px) {
   .landing-layout .landing-page::before {
-    top: calc(100svh - 28px);
+    top: calc(100svh + 28px);
     height: 360px;
   }
 

@@ -20,3 +20,4 @@
 - [Hero background marquee](hero-pair-carousel.md) — Use a duplicated queue with direct frame-by-frame positioning when the landing hero must visibly scroll in either direction.
 - [Clerk authentication on Vercel](clerk-vercel-auth.md) — Production API handlers must verify session tokens inside the Vercel handler, not rely on local Express middleware or a custom proxy.
 - [Mobile brand icon](mobile-brand-icon.md) — Use the supplied serif black “A” with a fine solid-blue keyline.
+- [Landing hero boundary](landing-hero-boundary.md) — The visible transition below the CTA follows the hero height and bottom fade.
