@@ -196,7 +196,7 @@ export default function Landing() {
         <HeroBackground />
         <div className="hero-kicker fade-up">
           <span className="badge-dot" />
-          <strong>ASTRACREA AI</strong>
+          <strong>ASTRACREA</strong>
           <span>/</span>
           Transforme tes idées en images
         </div>
