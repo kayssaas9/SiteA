@@ -490,13 +490,21 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
     const prompt = promptValueRef.current.trim();
     if (loading || !prompt) return;
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const resetGenerationViewport = () => {
+      const scrollingElement = document.scrollingElement || document.documentElement;
+      scrollingElement.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      scrollingElement.scrollTop = 0;
+    };
+
+    resetGenerationViewport();
 
     setError(null);
     setResult(null);
     onResultChange?.({ loading: true, error: null, result: null });
 
     setLoading(true);
+    window.requestAnimationFrame(resetGenerationViewport);
+    window.setTimeout(resetGenerationViewport, 0);
 
     try {
       const form = new FormData();
