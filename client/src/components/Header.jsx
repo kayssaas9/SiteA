@@ -16,12 +16,21 @@ export default function Header() {
   const isAdmin = isAdminUser(user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [landingScrolled, setLandingScrolled] = useState(false);
+  const [language, setLanguage] = useState("fr");
   const isLanding = pathname === "/";
 
   useEffect(() => {
     setMenuOpen(false);
     if (!isLanding) setLandingScrolled(false);
   }, [pathname, isLanding]);
+
+  useEffect(() => {
+    const storedLanguage = window.localStorage.getItem("astracrea-language");
+    if (storedLanguage && ["fr", "en", "es"].includes(storedLanguage)) {
+      setLanguage(storedLanguage);
+      document.documentElement.lang = storedLanguage;
+    }
+  }, []);
 
   useEffect(() => {
     if (!isLanding) return undefined;
@@ -78,6 +87,13 @@ const navLink = (to, label, className = "") => (
       {label}
     </a>
   );
+
+  const handleLanguageChange = (event) => {
+    const nextLanguage = event.target.value;
+    setLanguage(nextLanguage);
+    window.localStorage.setItem("astracrea-language", nextLanguage);
+    document.documentElement.lang = nextLanguage;
+  };
 
   return (
     <header
@@ -186,7 +202,19 @@ const navLink = (to, label, className = "") => (
                 </Link>
               ))}
 
-          <div className="mobile-menu-actions">
+          {isLanding && (
+            <label className="mobile-language-picker">
+              <span className="mobile-language-icon" aria-hidden="true">文A</span>
+              <span className="sr-only">Choisir la langue</span>
+              <select value={language} onChange={handleLanguageChange} aria-label="Choisir la langue">
+                <option value="fr">Français</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </label>
+          )}
+
+          <div className={`mobile-menu-actions ${isLanding ? "landing-mobile-actions" : ""}`}>
             {isLanding ? (
               isSignedIn ? (
                 <>
