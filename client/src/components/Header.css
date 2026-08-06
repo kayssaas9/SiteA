@@ -756,13 +756,19 @@
 
 /* ─── App mobile full-screen overlay ─────────────────────────────────────── */
 .app-mobile-overlay {
-  /* Always rendered, hidden off-screen; no display:none so it works at any
-     viewport width (Replit preview, tablet, phone). */
+  /* Always rendered, hidden off-screen. z-index 99999 ensures it sits above
+     Clerk's dev-mode badge, Crisp chat widget, and any other fixed layers. */
   display: flex;
   position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: #0d0d0d;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  z-index: 99999;
+  background: #0a0a0a;
   flex-direction: column;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -770,6 +776,7 @@
   opacity: 0;
   pointer-events: none;
   transition: transform 0.28s ease, opacity 0.28s ease;
+  isolation: isolate;
 }
 
 .app-mobile-overlay.open {
@@ -821,11 +828,12 @@
   display: block;
   font-size: 28px;
   font-weight: 600;
-  color: #4d4952;
+  color: #5a555f;
   text-decoration: none;
   padding: 6px 0;
   letter-spacing: -0.02em;
   transition: color 0.15s ease;
+  background: none;
 }
 
 .app-mobile-nav-link.active {
@@ -837,7 +845,7 @@
 }
 
 .app-mobile-nav-link.snaprouge-nav-link {
-  color: #6b3840;
+  color: #7a3840;
 }
 
 .app-mobile-nav-link.snaprouge-nav-link.active,

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, useUser, SignOutButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useUser, useClerk } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
@@ -89,6 +89,7 @@ function LanguageDropdown({ language, onChange, mobile = false }) {
 
 export default function Header() {
   const { isSignedIn, user } = useUser();
+  const { signOut } = useClerk();
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const { plan, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
@@ -361,12 +362,13 @@ const navLink = (to, label, className = "") => (
               <span className="app-mobile-profile-label">Profil</span>
               <span className="app-mobile-profile-arrow">›</span>
             </Link>
-            <SignOutButton>
-              <button className="app-mobile-signout" onClick={() => setMenuOpen(false)}>
-                <span className="app-mobile-signout-icon" aria-hidden="true">↪</span>
-                Se déconnecter
-              </button>
-            </SignOutButton>
+            <button
+              className="app-mobile-signout"
+              onClick={() => { setMenuOpen(false); signOut(); }}
+            >
+              <span className="app-mobile-signout-icon" aria-hidden="true">↪</span>
+              Se déconnecter
+            </button>
           </div>
         )}
 
