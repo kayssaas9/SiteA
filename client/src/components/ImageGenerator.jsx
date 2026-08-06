@@ -490,9 +490,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
     const prompt = promptValueRef.current.trim();
     if (loading || !prompt) return;
 
-    if (window.matchMedia("(max-width: 767px)").matches) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
     setError(null);
     setResult(null);
