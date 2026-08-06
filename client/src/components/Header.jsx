@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { SignedIn, SignedOut, useUser, useClerk } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import { isAdminUser } from "../lib/admin.js";
@@ -340,10 +341,10 @@ const navLink = (to, label, className = "") => (
 
     </header>
 
-    {/* App mobile full-screen overlay — rendered OUTSIDE <header> so that
-        the header's backdrop-filter does not create a new containing block
-        that clips this position:fixed element on iOS Safari. */}
-    {!isLanding && menuOpen && (
+    {/* App mobile full-screen overlay — rendered via React Portal directly on
+        document.body so no ancestor CSS (backdrop-filter, transform, etc.)
+        can create a containing block that clips this fixed element on iOS. */}
+    {!isLanding && menuOpen && createPortal(
       <div className="app-mobile-overlay" role="dialog" aria-modal="true">
         <div className="app-mobile-topbar">
           <span className="app-mobile-title">Menu</span>
@@ -352,7 +353,7 @@ const navLink = (to, label, className = "") => (
             onClick={() => setMenuOpen(false)}
             aria-label="Fermer le menu"
           >
-            ×
+            ✕
           </button>
         </div>
 
@@ -375,14 +376,20 @@ const navLink = (to, label, className = "") => (
               <div className="app-mobile-avatar">
                 {user.firstName?.[0] ?? user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ?? "?"}
               </div>
-              <span className="app-mobile-profile-label">Profil</span>
+              <div className="app-mobile-profile-info">
+                <span className="app-mobile-profile-name">
+                  {user.firstName
+                    ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`
+                    : user.emailAddresses?.[0]?.emailAddress ?? "Profil"}
+                </span>
+                <span className="app-mobile-profile-sub">Voir mon profil</span>
+              </div>
               <span className="app-mobile-profile-arrow">›</span>
             </Link>
             <button
               className="app-mobile-signout"
               onClick={() => { setMenuOpen(false); signOut(); }}
             >
-              <span className="app-mobile-signout-icon" aria-hidden="true">↪</span>
               Se déconnecter
             </button>
           </div>
@@ -405,7 +412,8 @@ const navLink = (to, label, className = "") => (
             ))}
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
     )}
     </>
   );

@@ -870,39 +870,54 @@ body.mobile-menu-open iframe[src*="crisp"] {
   align-items: center;
   gap: 14px;
   text-decoration: none;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .app-mobile-avatar {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #2e2a33;
   color: #c8c4cb;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   flex-shrink: 0;
 }
 
-.app-mobile-profile-label {
+.app-mobile-profile-info {
   flex: 1;
-  font-size: 17px;
-  font-weight: 500;
-  color: #dbd7de;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.app-mobile-profile-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e8e4eb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-mobile-profile-sub {
+  font-size: 12px;
+  color: #5a555f;
 }
 
 .app-mobile-profile-arrow {
   font-size: 20px;
-  color: #4d4952;
+  color: #3d3842;
 }
 
 .app-mobile-signout {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0;
   background: transparent;
   border: 0;
   color: #e8524a;
@@ -911,10 +926,6 @@ body.mobile-menu-open iframe[src*="crisp"] {
   font-weight: 500;
   cursor: pointer;
   padding: 0;
-}
-
-.app-mobile-signout-icon {
-  font-size: 17px;
 }
 
 /* Language section */
