@@ -130,22 +130,31 @@ const navLink = (to, label, className = "") => (
 
         <div className="nav-right">
           {isLanding ? (
-            isSignedIn ? (
-              <>
+            <>
+              <label className="desktop-language-picker">
+                <span className="desktop-language-icon" aria-hidden="true">文A</span>
+                <span className="sr-only">Choisir la langue</span>
+                <select value={language} onChange={handleLanguageChange} aria-label="Choisir la langue">
+                  <option value="fr">Français</option>
+                  <option value="en">English</option>
+                  <option value="es">Español</option>
+                </select>
+              </label>
+              {isSignedIn ? (
                 <Link to="/generate" className="btn btn-primary header-btn landing-app-btn">
                   Accéder à l’app
                 </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/sign-in" className="btn btn-outline header-btn">
-                  Se connecter
-                </Link>
-                <Link to="/sign-up" className="btn btn-primary header-btn">
-                  S’inscrire
-                </Link>
-              </>
-            )
+              ) : (
+                <>
+                  <Link to="/sign-in" className="btn btn-outline header-btn">
+                    Se connecter
+                  </Link>
+                  <Link to="/sign-up" className="btn btn-primary header-btn">
+                    S’inscrire
+                  </Link>
+                </>
+              )}
+            </>
           ) : (
             <>
               {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (

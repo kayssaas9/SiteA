@@ -69,9 +69,16 @@
 }
 
 .landing-layout .header-landing .header-btn.btn-outline {
-  border-color: rgba(178, 214, 255, 0.3);
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.94);
+  color: #15529b;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+}
+
+.landing-layout .header-landing .header-btn.btn-outline:hover {
+  border-color: #ffffff;
+  color: #12437d;
+  background: #f3f8ff;
 }
 
 .landing-layout .header-landing .header-btn.btn-primary,
