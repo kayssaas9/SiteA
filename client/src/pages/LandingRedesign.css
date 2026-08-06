@@ -531,7 +531,7 @@
 
 .landing-layout .example-showcase {
   position: relative;
-  max-width: 1080px;
+  max-width: 920px;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -545,7 +545,7 @@
 
 .landing-layout .example-showcase-comparison {
   position: relative;
-  gap: 28px;
+  gap: clamp(20px, 3vw, 34px);
   align-items: stretch;
 }
 
@@ -568,12 +568,12 @@
 }
 
 .landing-layout .example-image {
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 768 / 1376;
   border: 0;
-  border-radius: 14px;
-  background:
-    linear-gradient(145deg, rgba(18, 52, 101, 0.58), rgba(4, 13, 31, 0.92));
-  box-shadow: none;
+  border-radius: 16px;
+  background: #080b12;
+  overflow: hidden;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
 }
 
 .landing-layout .example-image::after {
@@ -581,7 +581,7 @@
 }
 
 .landing-layout .example-photo {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   transition: transform 0.5s ease, filter 0.5s ease;
 }
@@ -591,11 +591,11 @@
 }
 
 .landing-layout .example-before .example-photo {
-  filter: saturate(0.78) brightness(0.82);
+  filter: saturate(0.88) brightness(0.92);
 }
 
 .landing-layout .example-after {
-  border: 1px solid rgba(86, 174, 255, 0.26);
+  border: 0;
 }
 
 .landing-layout .example-copy {
@@ -603,9 +603,9 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: 5px 8px;
-  padding: 0 4px;
+  padding: 0 2px;
   color: rgba(213, 231, 251, 0.62);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -620,7 +620,7 @@
 
 .landing-layout .example-copy strong {
   color: #eaf6ff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
 }
 
