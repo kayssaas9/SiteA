@@ -63,7 +63,7 @@
 
 .header-app .brand-logo-name {
   color: #f1eef2;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .header-app .nav-center {
@@ -72,7 +72,7 @@
 
 .header-app .nav-link {
   color: #8c8891;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -94,7 +94,7 @@
 .header-app .header-btn {
   padding: 6px 12px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .header-app .header-btn.btn-primary {
@@ -115,7 +115,7 @@
   border-radius: 999px;
   background: linear-gradient(135deg, #7c4dff 0%, #9b5cf6 55%, #b06cff 100%);
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   text-decoration: none;
@@ -149,7 +149,7 @@
   color: #f1eef2;
   cursor: pointer;
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
