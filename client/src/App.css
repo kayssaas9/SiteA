@@ -5,7 +5,7 @@
   background: var(--bg);
   position: relative;
   overflow-x: hidden;
-  padding-top: 76px;
+  padding-top: 64px;
 }
 
 .app.landing-layout {

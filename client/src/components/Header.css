@@ -28,6 +28,28 @@
   pointer-events: auto;
 }
 
+/* In the authenticated app, the navigation is a fixed top chrome rather
+   than a floating card. Keep it attached to the viewport edges like the
+   reference product navigation. */
+.header-app {
+  padding: 0;
+  background: rgba(5, 8, 15, 0.94);
+  border-bottom: 1px solid rgba(142, 197, 232, 0.12);
+}
+
+.header-app .header-inner {
+  width: 100%;
+  max-width: none;
+  height: 64px;
+  padding: 0 32px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 /* The landing header sits over the hero instead of reading like an app
    toolbar. Its translucent glass keeps the background visible underneath. */
 .header-landing .header-inner {
@@ -373,6 +395,11 @@
 }
 
 @media (max-width: 640px) {
+  .header-app .header-inner {
+    height: 60px;
+    padding: 0 16px;
+  }
+
   .header-landing .header-inner {
     width: calc(100vw - 40px);
     max-width: none;
@@ -405,6 +432,10 @@
       linear-gradient(180deg, rgba(7, 19, 46, 0.94), rgba(4, 10, 24, 0.97)),
       radial-gradient(circle at 50% 30%, rgba(37, 130, 244, 0.2), transparent 70%);
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 38px rgba(27, 117, 234, 0.16);
+  }
+
+  .header-app .mobile-menu {
+    top: 60px;
   }
 
   .header-landing .mobile-menu-inner {
