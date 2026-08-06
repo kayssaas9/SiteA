@@ -49,15 +49,6 @@
   line-height: 0.9;
 }
 
-.header-landing.is-scrolled .brand-logo-landing-complete .brand-logo-mark {
-  width: 32px;
-  height: 32px;
-}
-
-.header-landing.is-scrolled .brand-logo-landing-complete .brand-logo-name {
-  font-size: 22px;
-}
-
 @media (max-width: 600px) {
   .brand-logo {
     gap: 8px;
