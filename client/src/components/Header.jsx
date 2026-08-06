@@ -100,6 +100,22 @@ export default function Header() {
   const [language, setLanguage] = useState("fr");
   const isLanding = pathname === "/";
 
+  // Hide Crisp while the full-screen app menu is open so it never renders
+  // on top of (or behind) the overlay.
+  useEffect(() => {
+    if (menuOpen && !isLanding) {
+      document.body.classList.add("mobile-menu-open");
+      try { window.$crisp?.push(["do", "chat:hide"]); } catch {}
+    } else {
+      document.body.classList.remove("mobile-menu-open");
+      try { window.$crisp?.push(["do", "chat:show"]); } catch {}
+    }
+    return () => {
+      document.body.classList.remove("mobile-menu-open");
+      try { window.$crisp?.push(["do", "chat:show"]); } catch {}
+    };
+  }, [menuOpen, isLanding]);
+
   useEffect(() => {
     setMenuOpen(false);
     if (!isLanding) setLandingScrolled(false);
@@ -327,8 +343,8 @@ const navLink = (to, label, className = "") => (
     {/* App mobile full-screen overlay — rendered OUTSIDE <header> so that
         the header's backdrop-filter does not create a new containing block
         that clips this position:fixed element on iOS Safari. */}
-    {!isLanding && (
-      <div className={`app-mobile-overlay ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
+    {!isLanding && menuOpen && (
+      <div className="app-mobile-overlay" role="dialog" aria-modal="true">
         <div className="app-mobile-topbar">
           <span className="app-mobile-title">Menu</span>
           <button
