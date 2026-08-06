@@ -571,7 +571,7 @@ async function createBlurredPreview(imageUrl, clerkUserId, generationId) {
   const blurredBuffer = await sharp(originalBuffer)
     .rotate()
     .resize({ width: 1600, withoutEnlargement: true })
-    .blur(10)
+    .blur(7)
     .jpeg({ quality: 84, progressive: true })
     .toBuffer();
 
