@@ -108,6 +108,7 @@
 .landing-layout .hero-cta .btn-primary {
   background: linear-gradient(125deg, #1769d5 0%, #43a5ff 100%);
   border-color: rgba(170, 216, 255, 0.46);
+  color: #ffffff;
   box-shadow: 0 12px 28px rgba(21, 101, 213, 0.34);
 }
 
