@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { formatDailyGenerationCount } from "../lib/liveGenerationCounter.js";
@@ -343,7 +343,31 @@ const FAQS = [
 
 function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState(null);
-  const toggle = (idx) => setOpenIndex(openIndex === idx ? null : idx);
+  const questionRefs = useRef([]);
+  const positionToPreserve = useRef(null);
+
+  const toggle = (idx) => {
+    const question = questionRefs.current[idx];
+    if (question) {
+      positionToPreserve.current = {
+        question,
+        top: question.getBoundingClientRect().top,
+      };
+    }
+    setOpenIndex((currentIndex) => (currentIndex === idx ? null : idx));
+  };
+
+  useLayoutEffect(() => {
+    const position = positionToPreserve.current;
+    if (!position) return;
+
+    const nextTop = position.question.getBoundingClientRect().top;
+    const offset = nextTop - position.top;
+    if (Math.abs(offset) > 0.5) {
+      window.scrollBy({ top: offset, behavior: "auto" });
+    }
+    positionToPreserve.current = null;
+  }, [openIndex]);
 
   return (
     <section id="faq" className="faq-section fade-up delay-5">
@@ -354,6 +378,9 @@ function FaqAccordion() {
           <div key={idx} className={`faq-item ${openIndex === idx ? "open" : ""}`}>
             <button
               className="faq-question"
+              ref={(element) => {
+                questionRefs.current[idx] = element;
+              }}
               onClick={() => toggle(idx)}
               type="button"
               aria-expanded={openIndex === idx}
