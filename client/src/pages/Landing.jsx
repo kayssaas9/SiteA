@@ -22,13 +22,6 @@ const CUSTOMER_REVIEWS = [
 
 const LANDING_EXAMPLES = [
   {
-    original: "Parking de quartier",
-    result: "Mercedes-AMG A 45 S",
-    ending: "même décor.",
-    beforeImage: "/landing-examples/parking-before.jpeg",
-    afterImage: "/landing-examples/parking-after.png",
-  },
-  {
     original: "BMW M3 G80",
     result: "Lamborghini Aventador SVJ",
     ending: "décor identique.",
@@ -41,6 +34,13 @@ const LANDING_EXAMPLES = [
     ending: "même poignet.",
     beforeImage: "/landing-examples/rolex-dayjust-before.png",
     afterImage: "/landing-examples/richard-mille-bubba-watson-after.png",
+  },
+  {
+    original: "Parking de quartier",
+    result: "Mercedes-AMG A 45 S",
+    ending: "même décor.",
+    beforeImage: "/landing-examples/parking-before.jpeg",
+    afterImage: "/landing-examples/parking-after.png",
   },
 ];
 
