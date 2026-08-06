@@ -104,6 +104,55 @@
   background: #9b73f7;
 }
 
+.header-upgrade-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 25px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #8b5cf6;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.header-upgrade-btn:hover {
+  background: #9b73f7;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.header-app .app-language-picker {
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.app-language-flag {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.header-app .app-language-picker select {
+  min-width: 34px;
+  padding: 4px 13px 4px 0;
+  color: #c2bec5;
+  background:
+    linear-gradient(45deg, transparent 50%, #aaa5ad 50%) calc(100% - 6px) 51% / 4px 4px no-repeat,
+    linear-gradient(135deg, #aaa5ad 50%, transparent 50%) calc(100% - 3px) 51% / 4px 4px no-repeat,
+    transparent;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.header-app .app-language-picker select:hover,
+.header-app .app-language-picker select:focus {
+  color: #fff;
+}
+
 /* The landing header sits over the hero instead of reading like an app
    toolbar. Its translucent glass keeps the background visible underneath. */
 .header-landing .header-inner {
@@ -491,6 +540,31 @@
 
   .header-app .mobile-menu {
     top: 46px;
+  }
+
+  .header-app .app-mobile-language-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    margin: 8px 0 4px;
+    color: #c2bec5;
+  }
+
+  .header-app .app-mobile-language-picker select {
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 92px;
+    padding: 4px 22px 4px 0;
+    border: 0;
+    color: #c2bec5;
+    background:
+      linear-gradient(45deg, transparent 50%, #aaa5ad 50%) calc(100% - 9px) 52% / 5px 5px no-repeat,
+      linear-gradient(135deg, #aaa5ad 50%, transparent 50%) calc(100% - 5px) 52% / 5px 5px no-repeat,
+      transparent;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
   }
 
   .header-landing .mobile-menu-inner {

@@ -157,6 +157,24 @@ const navLink = (to, label, className = "") => (
             </>
           ) : (
             <>
+              {isSignedIn && (
+                <>
+                  <Link to="/pricing" className="header-upgrade-btn">
+                    Upgrade
+                  </Link>
+                  <label className="desktop-language-picker app-language-picker">
+                    <span className="app-language-flag" aria-hidden="true">
+                      {language === "en" ? "🇬🇧" : language === "es" ? "🇪🇸" : "🇫🇷"}
+                    </span>
+                    <span className="sr-only">Choisir la langue</span>
+                    <select value={language} onChange={handleLanguageChange} aria-label="Choisir la langue">
+                      <option value="fr">FR</option>
+                      <option value="en">EN</option>
+                      <option value="es">ES</option>
+                    </select>
+                  </label>
+                </>
+              )}
               {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
                 <Link to="/survey" className="btn btn-outline header-btn survey-nav-btn">
                   Gagne 400 crédits
@@ -223,6 +241,20 @@ const navLink = (to, label, className = "") => (
             </label>
           )}
 
+          {!isLanding && (
+            <label className="mobile-language-picker app-mobile-language-picker">
+              <span className="app-language-flag" aria-hidden="true">
+                {language === "en" ? "🇬🇧" : language === "es" ? "🇪🇸" : "🇫🇷"}
+              </span>
+              <span className="sr-only">Choisir la langue</span>
+              <select value={language} onChange={handleLanguageChange} aria-label="Choisir la langue">
+                <option value="fr">Français</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </label>
+          )}
+
           <div className={`mobile-menu-actions ${isLanding ? "landing-mobile-actions" : ""}`}>
             {isLanding ? (
               isSignedIn ? (
@@ -243,6 +275,11 @@ const navLink = (to, label, className = "") => (
               )
             ) : (
               <>
+                {isSignedIn && (
+                  <Link to="/pricing" className="btn btn-primary mobile-menu-btn mobile-upgrade-btn">
+                    Upgrade
+                  </Link>
+                )}
                 {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
                   <Link to="/survey" className="btn btn-primary mobile-menu-btn survey-mobile-btn">
                     Gagne 400 crédits
