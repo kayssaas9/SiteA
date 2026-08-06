@@ -33,21 +33,75 @@
    reference product navigation. */
 .header-app {
   padding: 0;
-  background: rgba(5, 8, 15, 0.94);
-  border-bottom: 1px solid rgba(142, 197, 232, 0.12);
+  background: #252329;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-app .header-inner {
   width: 100%;
   max-width: none;
-  height: 64px;
-  padding: 0 32px;
+  height: 44px;
+  padding: 0 20px;
   border: 0;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+.header-app .logo {
+  gap: 7px;
+}
+
+.header-app .brand-logo-mark {
+  width: 24px;
+  height: 24px;
+}
+
+.header-app .brand-logo-name {
+  color: #f1eef2;
+  font-size: 15px;
+}
+
+.header-app .nav-center {
+  gap: 22px;
+}
+
+.header-app .nav-link {
+  color: #8c8891;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.header-app .nav-link:hover,
+.header-app .nav-link.active {
+  color: #f5f2f6;
+}
+
+.header-app .snaprouge-nav-link,
+.header-app .snaprouge-nav-link:hover,
+.header-app .snaprouge-nav-link.active {
+  color: #a29da7;
+}
+
+.header-app .nav-right {
+  gap: 8px;
+}
+
+.header-app .header-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+}
+
+.header-app .header-btn.btn-primary {
+  background: #8b5cf6;
+  color: #fff;
+}
+
+.header-app .header-btn.btn-primary:hover {
+  background: #9b73f7;
 }
 
 /* The landing header sits over the hero instead of reading like an app
@@ -147,14 +201,15 @@
 }
 
 .header-app .survey-nav-btn {
-  border-color: rgba(35, 136, 255, 0.42);
-  color: var(--accent);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #c8c4cb;
   white-space: nowrap;
 }
 
 .header-app .survey-nav-btn:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
 
 .logo {
@@ -396,8 +451,8 @@
 
 @media (max-width: 640px) {
   .header-app .header-inner {
-    height: 60px;
-    padding: 0 16px;
+    height: 46px;
+    padding: 0 12px;
   }
 
   .header-landing .header-inner {
@@ -435,7 +490,7 @@
   }
 
   .header-app .mobile-menu {
-    top: 60px;
+    top: 46px;
   }
 
   .header-landing .mobile-menu-inner {
