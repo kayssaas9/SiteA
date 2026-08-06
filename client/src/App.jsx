@@ -36,7 +36,10 @@ function Layout() {
     && window.localStorage.getItem("astraGoogleSignUpRedirect") === "1";
 
   useEffect(() => {
-    if (googleSignUpPending && isLoaded && isSignedIn) {
+    // Clear the flag as soon as Clerk has loaded, whether signed in or not.
+    // Without this, the Replit preview (which rejects production Clerk keys)
+    // would stay stuck on "Finalisation de la connexion…" forever.
+    if (googleSignUpPending && isLoaded) {
       window.localStorage.removeItem("astraGoogleSignUpRedirect");
     }
   }, [googleSignUpPending, isLoaded, isSignedIn]);
@@ -50,7 +53,7 @@ function Layout() {
       return <Navigate to="/generate" replace />;
     }
 
-    return <div className="app-route-loading" aria-live="polite">Finalisation de la connexion…</div>;
+    // Clerk loaded but user is not signed in — fall through to normal render.
   }
 
   return (
