@@ -176,6 +176,7 @@ const navLink = (to, label, className = "") => (
   };
 
   return (
+    <>
     <header
       className={`header ${isLanding ? "header-landing" : "header-app"} ${landingScrolled ? "is-scrolled" : ""}`}
     >
@@ -320,74 +321,74 @@ const navLink = (to, label, className = "") => (
         </div>
       )}
 
-      {/* App mobile menu — full-screen overlay */}
-      {!isLanding && (
-        <div className={`app-mobile-overlay ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
-          {/* Top bar */}
-          <div className="app-mobile-topbar">
-            <span className="app-mobile-title">Menu</span>
-            <button
-              className="app-mobile-close"
+    </header>
+
+    {/* App mobile full-screen overlay — rendered OUTSIDE <header> so that
+        the header's backdrop-filter does not create a new containing block
+        that clips this position:fixed element on iOS Safari. */}
+    {!isLanding && (
+      <div className={`app-mobile-overlay ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
+        <div className="app-mobile-topbar">
+          <span className="app-mobile-title">Menu</span>
+          <button
+            className="app-mobile-close"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Fermer le menu"
+          >
+            ×
+          </button>
+        </div>
+
+        <nav className="app-mobile-nav">
+          {navItems.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`app-mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
               onClick={() => setMenuOpen(false)}
-              aria-label="Fermer le menu"
             >
-              ×
-            </button>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {isSignedIn && user && (
+          <div className="app-mobile-profile-section">
+            <Link to="/account" className="app-mobile-profile-row" onClick={() => setMenuOpen(false)}>
+              <div className="app-mobile-avatar">
+                {user.firstName?.[0] ?? user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ?? "?"}
+              </div>
+              <span className="app-mobile-profile-label">Profil</span>
+              <span className="app-mobile-profile-arrow">›</span>
+            </Link>
+            <SignOutButton>
+              <button className="app-mobile-signout" onClick={() => setMenuOpen(false)}>
+                <span className="app-mobile-signout-icon" aria-hidden="true">↪</span>
+                Se déconnecter
+              </button>
+            </SignOutButton>
           </div>
+        )}
 
-          {/* Nav links */}
-          <nav className="app-mobile-nav">
-            {navItems.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`app-mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
-                onClick={() => setMenuOpen(false)}
+        <div className="app-mobile-lang-section">
+          <p className="app-mobile-lang-label">LANGUE</p>
+          <div className="app-mobile-lang-pills">
+            {LANGUAGE_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                className={`app-mobile-lang-pill ${language === opt.value ? "active" : ""}`}
+                onClick={() => handleLanguageChange(opt.value)}
               >
-                {item.label}
-              </Link>
+                <span className={`flag-icon ${opt.flagClass}`} aria-hidden="true" />
+                {opt.label}
+                {language === opt.value && <span className="app-mobile-lang-check" aria-hidden="true">✓</span>}
+              </button>
             ))}
-          </nav>
-
-          {/* Profile section */}
-          {isSignedIn && user && (
-            <div className="app-mobile-profile-section">
-              <Link to="/account" className="app-mobile-profile-row" onClick={() => setMenuOpen(false)}>
-                <div className="app-mobile-avatar">
-                  {user.firstName?.[0] ?? user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ?? "?"}
-                </div>
-                <span className="app-mobile-profile-label">Profil</span>
-                <span className="app-mobile-profile-arrow">›</span>
-              </Link>
-              <SignOutButton>
-                <button className="app-mobile-signout" onClick={() => setMenuOpen(false)}>
-                  <span className="app-mobile-signout-icon" aria-hidden="true">↪</span>
-                  Se déconnecter
-                </button>
-              </SignOutButton>
-            </div>
-          )}
-
-          {/* Language pills */}
-          <div className="app-mobile-lang-section">
-            <p className="app-mobile-lang-label">LANGUE</p>
-            <div className="app-mobile-lang-pills">
-              {LANGUAGE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  className={`app-mobile-lang-pill ${language === opt.value ? "active" : ""}`}
-                  onClick={() => handleLanguageChange(opt.value)}
-                >
-                  <span className={`flag-icon ${opt.flagClass}`} aria-hidden="true" />
-                  {opt.label}
-                  {language === opt.value && <span className="app-mobile-lang-check" aria-hidden="true">✓</span>}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
-      )}
-    </header>
+      </div>
+    )}
+    </>
   );
 }

@@ -756,7 +756,9 @@
 
 /* ─── App mobile full-screen overlay ─────────────────────────────────────── */
 .app-mobile-overlay {
-  display: none;
+  /* Always rendered, hidden off-screen; no display:none so it works at any
+     viewport width (Replit preview, tablet, phone). */
+  display: flex;
   position: fixed;
   inset: 0;
   z-index: 200;
@@ -764,15 +766,16 @@
   flex-direction: column;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /* slide-in from right */
   transform: translateX(100%);
   opacity: 0;
+  pointer-events: none;
   transition: transform 0.28s ease, opacity 0.28s ease;
 }
 
 .app-mobile-overlay.open {
   transform: translateX(0);
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* Top bar */
