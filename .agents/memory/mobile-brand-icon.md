@@ -1,10 +1,10 @@
 ---
 name: Mobile brand icon
-description: The supplied serif A with a black fill and a fine solid-blue keyline is the canonical favicon and mobile app icon.
+description: The user-provided Astra symbol is the canonical favicon and mobile app icon, with a dark branded background and blue-violet color treatment.
 ---
 
-Use the supplied serif italic “A” mark for browser favicons, Apple touch icons, and web app manifest icons. The mark has a pure black fill and a fine, visible solid-blue keyline on transparency.
+Use the user-provided Astra symbol for browser favicons, Apple touch icons, and web app manifest icons. The symbol uses a dark Astra background with a blue-to-violet gradient treatment; it is separate from the visible site logo.
 
-**Why:** The user explicitly requested a black “A” with a colored outline while keeping the result professional.
+**Why:** On August 7, 2026, the user supplied a new Astra symbol and asked for it to be used only as the tab logo, with colors, while keeping the site logo unchanged.
 
-**How to apply:** Derive all favicon and mobile icon sizes from the same transparent source artwork, and bump the asset query version when replacing cached icons.
+**How to apply:** Derive all favicon and mobile icon sizes from the same source artwork, keep the visible navigation logo separate, and bump the asset query version when replacing cached icons.
