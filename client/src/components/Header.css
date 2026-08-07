@@ -755,45 +755,48 @@
 }
 
 /* ─── App mobile full-screen overlay ─────────────────────────────────────── */
-/* Slide-in animation for the app mobile overlay */
-@keyframes appMenuFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+/* Uses <dialog showModal()> which enters the browser's native top layer —
+   guaranteed above every CSS stacking context, backdrop-filter included.
+   No z-index, no portal, no animation hacks needed. */
 
-/* Hide Crisp chat widget while the full-screen mobile menu is open */
-html.mobile-menu-open,
-body.mobile-menu-open {
-  overflow: hidden !important;
-  overscroll-behavior: none;
-}
-
+/* Hide Crisp while the app menu is open */
 body.mobile-menu-open .crisp-client,
 body.mobile-menu-open [data-id="crisp"],
 body.mobile-menu-open iframe[src*="crisp"] {
   display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
 }
 
-.app-mobile-overlay {
-  /* Rendered through a portal so iOS cannot clip it inside the blurred header. */
-  display: flex;
+dialog.app-mobile-overlay {
+  /* Reset <dialog> user-agent defaults */
+  border: none;
+  padding: 0;
+  margin: 0;
+  /* Full-viewport coverage */
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100dvh;
-  min-height: 100svh;
-  z-index: 2147483647; /* CSS max z-index — above Crisp, Clerk dev badge, etc. */
-  background: #0a0a0a !important;
-  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  /* Appearance */
+  background: #0f0f0f;
+  color: var(--text);
+  font-family: var(--font);
+  /* Scrollable content */
   overflow-y: auto;
   overflow-x: hidden;
-  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  animation: appMenuFadeIn 0.16s ease both;
-  isolation: isolate;
-  contain: paint;
+  overscroll-behavior: contain;
+}
+
+dialog.app-mobile-overlay[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hide the native backdrop — we use a solid background instead */
+dialog.app-mobile-overlay::backdrop {
+  display: none;
 }
 
 /* Top bar */

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { SignedIn, SignedOut, useUser, useClerk } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import { isAdminUser } from "../lib/admin.js";
@@ -97,50 +97,48 @@ export default function Header() {
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
   const isAdmin = isAdminUser(user);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuDialogRef = useRef(null);
   const [landingScrolled, setLandingScrolled] = useState(false);
   const [language, setLanguage] = useState("fr");
   const isLanding = pathname === "/";
 
-  // Hide Crisp while the full-screen app menu is open so it never renders
-  // on top of (or behind) the overlay.
+  // App mobile menu — open/close the <dialog> in the browser's top layer.
+  // showModal() promotes the dialog above all CSS stacking contexts (including
+  // backdrop-filter ancestors), which is the only reliable fix on iOS Safari.
   useEffect(() => {
-    if (menuOpen && !isLanding) {
-      document.body.classList.add("mobile-menu-open");
-      document.documentElement.classList.add("mobile-menu-open");
+    const dialog = menuDialogRef.current;
+    if (!dialog || isLanding) return undefined;
+
+    if (menuOpen) {
+      // iOS scroll lock: fix the body at the current scroll position.
       const scrollY = window.scrollY;
-      const previousBodyStyles = {
-        position: document.body.style.position,
-        top: document.body.style.top,
-        width: document.body.style.width,
-        overflow: document.body.style.overflow,
-      };
-      document.body.dataset.mobileMenuScrollY = String(scrollY);
+      document.body.style.overflow = "hidden";
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
-      document.body.style.overflow = "hidden";
+      document.body.dataset.menuScrollY = String(scrollY);
       try { window.$crisp?.push(["do", "chat:hide"]); } catch {}
-
-      return () => {
-        document.body.classList.remove("mobile-menu-open");
-        document.documentElement.classList.remove("mobile-menu-open");
-        document.body.style.position = previousBodyStyles.position;
-        document.body.style.top = previousBodyStyles.top;
-        document.body.style.width = previousBodyStyles.width;
-        document.body.style.overflow = previousBodyStyles.overflow;
-        const lockedScrollY = Number(document.body.dataset.mobileMenuScrollY || 0);
-        delete document.body.dataset.mobileMenuScrollY;
-        window.scrollTo(0, lockedScrollY);
-        try { window.$crisp?.push(["do", "chat:show"]); } catch {}
-      };
+      if (!dialog.open) { try { dialog.showModal(); } catch {} }
     } else {
-      document.body.classList.remove("mobile-menu-open");
-      document.documentElement.classList.remove("mobile-menu-open");
+      const scrollY = parseInt(document.body.dataset.menuScrollY || "0", 10);
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      delete document.body.dataset.menuScrollY;
+      window.scrollTo(0, scrollY);
       try { window.$crisp?.push(["do", "chat:show"]); } catch {}
+      if (dialog.open) dialog.close();
     }
+
     return () => {
-      document.body.classList.remove("mobile-menu-open");
-      document.documentElement.classList.remove("mobile-menu-open");
+      const scrollY = parseInt(document.body.dataset.menuScrollY || "0", 10);
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      delete document.body.dataset.menuScrollY;
+      if (scrollY > 0) window.scrollTo(0, scrollY);
       try { window.$crisp?.push(["do", "chat:show"]); } catch {}
     };
   }, [menuOpen, isLanding]);
@@ -369,11 +367,16 @@ const navLink = (to, label, className = "") => (
 
     </header>
 
-    {/* App mobile full-screen overlay — rendered via React Portal directly on
-        document.body so no ancestor CSS (backdrop-filter, transform, etc.)
-        can create a containing block that clips this fixed element on iOS. */}
-    {!isLanding && menuOpen && createPortal(
-      <div className="app-mobile-overlay" role="dialog" aria-modal="true">
+    {/* App mobile menu — <dialog> with showModal() enters the browser's native
+        top layer, which sits above every CSS stacking context including
+        backdrop-filter. This is the reliable solution for iOS Safari. */}
+    {!isLanding && (
+      <dialog
+        ref={menuDialogRef}
+        className="app-mobile-overlay"
+        onClose={() => setMenuOpen(false)}
+        aria-label="Menu de navigation"
+      >
         <div className="app-mobile-topbar">
           <span className="app-mobile-title">Menu</span>
           <button
@@ -440,8 +443,7 @@ const navLink = (to, label, className = "") => (
             ))}
           </div>
         </div>
-      </div>,
-      document.body
+      </dialog>
     )}
     </>
   );
