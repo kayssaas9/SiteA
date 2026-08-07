@@ -1,7 +1,7 @@
 .brand-logo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
   color: var(--text);
 }
 
@@ -10,6 +10,7 @@
   width: 32px;
   height: 32px;
   border-radius: 0;
+  transform: translateY(2px);
 }
 
 .brand-logo-name {
@@ -40,7 +41,7 @@
 .header-landing .brand-logo-landing-complete .brand-logo-name {
   position: relative;
   z-index: 1;
-  margin-left: -5px;
+  margin-left: -10px;
   padding-top: 1px;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 25px;
@@ -51,14 +52,14 @@
 
 @media (max-width: 600px) {
   .brand-logo {
-    gap: 8px;
+    gap: 2px;
   }
 
   .brand-logo-mark,
   .header-landing .brand-logo-mark {
     width: 30px;
     height: 30px;
-     border-radius: 0;
+    border-radius: 0;
   }
 
   .brand-logo-name,
@@ -72,7 +73,7 @@
   }
 
   .header-landing .brand-logo-landing-complete .brand-logo-name {
-    margin-left: -4px;
+    margin-left: -8px;
     font-size: 22px;
   }
 }
