@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, useUser, useClerk } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
-
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import { isAdminUser } from "../lib/admin.js";
@@ -90,58 +89,15 @@ function LanguageDropdown({ language, onChange, mobile = false }) {
 
 export default function Header() {
   const { isSignedIn, user } = useUser();
-  const { signOut } = useClerk();
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const { plan, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
   const isAdmin = isAdminUser(user);
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuDialogRef = useRef(null);
   const [landingScrolled, setLandingScrolled] = useState(false);
   const [language, setLanguage] = useState("fr");
   const isLanding = pathname === "/";
-
-  // App mobile menu — open/close the <dialog> in the browser's top layer.
-  // showModal() promotes the dialog above all CSS stacking contexts (including
-  // backdrop-filter ancestors), which is the only reliable fix on iOS Safari.
-  useEffect(() => {
-    const dialog = menuDialogRef.current;
-    if (!dialog || isLanding) return undefined;
-
-    if (menuOpen) {
-      // iOS scroll lock: fix the body at the current scroll position.
-      const scrollY = window.scrollY;
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-      document.body.dataset.menuScrollY = String(scrollY);
-      try { window.$crisp?.push(["do", "chat:hide"]); } catch {}
-      if (!dialog.open) { try { dialog.showModal(); } catch {} }
-    } else {
-      const scrollY = parseInt(document.body.dataset.menuScrollY || "0", 10);
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      delete document.body.dataset.menuScrollY;
-      window.scrollTo(0, scrollY);
-      try { window.$crisp?.push(["do", "chat:show"]); } catch {}
-      if (dialog.open) dialog.close();
-    }
-
-    return () => {
-      const scrollY = parseInt(document.body.dataset.menuScrollY || "0", 10);
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      delete document.body.dataset.menuScrollY;
-      if (scrollY > 0) window.scrollTo(0, scrollY);
-      try { window.$crisp?.push(["do", "chat:show"]); } catch {}
-    };
-  }, [menuOpen, isLanding]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -220,7 +176,6 @@ const navLink = (to, label, className = "") => (
   };
 
   return (
-    <>
     <header
       className={`header ${isLanding ? "header-landing" : "header-app"} ${landingScrolled ? "is-scrolled" : ""}`}
     >
@@ -320,21 +275,31 @@ const navLink = (to, label, className = "") => (
         </div>
       </div>
 
-      {/* Landing mobile menu — pill card */}
-      {isLanding && (
-        <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
-          <div className="mobile-menu-inner">
-            {landingNavItems.map((item) => (
-              <a
-                key={`${item.to}-${item.label}`}
-                href={item.to}
-                className="mobile-nav-link"
-                onClick={() => setMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
+      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+        <div className="mobile-menu-inner">
+          {isLanding
+            ? landingNavItems.map((item) => (
+                <a
+                  key={`${item.to}-${item.label}`}
+                  href={item.to}
+                  className="mobile-nav-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))
+            : navItems.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
 
+          {isLanding && (
             <label className="mobile-language-picker">
               <span className="mobile-language-icon" aria-hidden="true">文A</span>
               <span className="sr-only">Choisir la langue</span>
@@ -344,107 +309,56 @@ const navLink = (to, label, className = "") => (
                 <option value="es">Español</option>
               </select>
             </label>
+          )}
 
-            <div className="mobile-menu-actions landing-mobile-actions">
-              {isSignedIn ? (
-                <Link to="/generate" className="btn btn-primary mobile-menu-btn" onClick={() => setMenuOpen(false)}>
-                  Accéder à l'app
-                </Link>
-              ) : (
+          {!isLanding && (
+            <LanguageDropdown language={language} onChange={handleLanguageChange} mobile />
+          )}
+
+          <div className={`mobile-menu-actions ${isLanding ? "landing-mobile-actions" : ""}`}>
+            {isLanding ? (
+              isSignedIn ? (
                 <>
-                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn" onClick={() => setMenuOpen(false)}>
-                    Se connecter
-                  </Link>
-                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn" onClick={() => setMenuOpen(false)}>
-                    S'inscrire
+                  <Link to="/generate" className="btn btn-primary mobile-menu-btn">
+                    Accéder à l’app
                   </Link>
                 </>
-              )}
-            </div>
+              ) : (
+                <>
+                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
+                    Se connecter
+                  </Link>
+                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
+                    S’inscrire
+                  </Link>
+                </>
+              )
+            ) : (
+              <>
+                {isSignedIn && (
+                  <Link to="/pricing" className="btn btn-primary mobile-menu-btn mobile-upgrade-btn">
+                    Upgrade
+                  </Link>
+                )}
+                {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
+                  <Link to="/survey" className="btn btn-primary mobile-menu-btn survey-mobile-btn">
+                    Gagne 400 crédits
+                  </Link>
+                )}
+                <SignedOut>
+                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
+                    Connexion
+                  </Link>
+                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
+                    Créer un compte
+                  </Link>
+                </SignedOut>
+
+              </>
+            )}
           </div>
         </div>
-      )}
-
+      </div>
     </header>
-
-    {/* App mobile menu — <dialog> with showModal() enters the browser's native
-        top layer, which sits above every CSS stacking context including
-        backdrop-filter. This is the reliable solution for iOS Safari. */}
-    {!isLanding && (
-      <dialog
-        ref={menuDialogRef}
-        className="app-mobile-overlay"
-        onClose={() => setMenuOpen(false)}
-        aria-label="Menu de navigation"
-      >
-        <div className="app-mobile-topbar">
-          <span className="app-mobile-title">Menu</span>
-          <button
-            className="app-mobile-close"
-            onClick={() => setMenuOpen(false)}
-            aria-label="Fermer le menu"
-          >
-            ✕
-          </button>
-        </div>
-
-        <nav className="app-mobile-nav">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={`app-mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        {isSignedIn && user && (
-          <div className="app-mobile-profile-section">
-            <Link to="/account" className="app-mobile-profile-row" onClick={() => setMenuOpen(false)}>
-              <div className="app-mobile-avatar">
-                {user.firstName?.[0] ?? user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ?? "?"}
-              </div>
-              <div className="app-mobile-profile-info">
-                <span className="app-mobile-profile-name">
-                  {user.firstName
-                    ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`
-                    : user.emailAddresses?.[0]?.emailAddress ?? "Profil"}
-                </span>
-                <span className="app-mobile-profile-sub">Voir mon profil</span>
-              </div>
-              <span className="app-mobile-profile-arrow">›</span>
-            </Link>
-            <button
-              className="app-mobile-signout"
-              onClick={() => { setMenuOpen(false); signOut(); }}
-            >
-              Se déconnecter
-            </button>
-          </div>
-        )}
-
-        <div className="app-mobile-lang-section">
-          <p className="app-mobile-lang-label">LANGUE</p>
-          <div className="app-mobile-lang-pills">
-            {LANGUAGE_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                className={`app-mobile-lang-pill ${language === opt.value ? "active" : ""}`}
-                onClick={() => handleLanguageChange(opt.value)}
-              >
-                <span className={`flag-icon ${opt.flagClass}`} aria-hidden="true" />
-                {opt.label}
-                {language === opt.value && <span className="app-mobile-lang-check" aria-hidden="true">✓</span>}
-              </button>
-            ))}
-          </div>
-        </div>
-      </dialog>
-    )}
-    </>
   );
 }
