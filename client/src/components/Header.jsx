@@ -193,8 +193,8 @@ const navLink = (to, label, className = "") => (
       <div className="header-inner">
         <Link to="/" className="logo">
           <BrandLogo
-            name={isLanding ? "stracrea" : "Astracrea"}
-            className={isLanding ? "brand-logo-landing-complete" : ""}
+            name="stracrea"
+            className={isLanding ? "brand-logo-landing-complete" : "brand-logo-app-complete"}
           />
         </Link>
 

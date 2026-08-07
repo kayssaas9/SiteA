@@ -66,6 +66,23 @@
   font-size: 16px;
 }
 
+.header-app .brand-logo-app-complete {
+  gap: 0;
+}
+
+.header-app .brand-logo-app-complete .brand-logo-name {
+  position: relative;
+  z-index: 1;
+  margin-left: -11px;
+  padding-top: 1px;
+  color: #f1eef2;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.9;
+}
+
 .header-app .nav-center {
   gap: 22px;
 }
