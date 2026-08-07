@@ -7,4 +7,4 @@ Use the user-provided complete Astra symbol for browser favicons, Apple touch ic
 
 **Why:** On August 7, 2026, the user supplied a white Astra symbol and clarified that the tab, mobile icon, and visible site mark should use that complete mark without a square background. A previous blue-to-violet derivative caused mobile browsers to show the wrong mark.
 
-**How to apply:** Derive all favicon and mobile icon sizes from the same source artwork, keep the visible navigation logo separate, and bump the asset query version when replacing cached icons.
+**How to apply:** Derive all favicon, mobile, and navigation icon sizes from the same source artwork, remove any opaque source background before resizing, and bump the asset query version when replacing cached icons.
