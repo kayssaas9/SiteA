@@ -23,6 +23,7 @@
 - [Clerk authentication on Vercel](clerk-vercel-auth.md) — Production API handlers must verify session tokens inside the Vercel handler, not rely on local Express middleware or a custom proxy.
 - [Mobile brand icon](mobile-brand-icon.md) — Use the supplied serif black “A” with a fine solid-blue keyline.
 - [Landing hero boundary](landing-hero-boundary.md) — The visible transition below the CTA follows the hero height and bottom fade.
+- [Auth logo spacing](auth-logo-spacing.md) — Sign-in and sign-up headers match the landing logo while keeping the full name visible.
 - [Landing examples loading](landing-examples-loading.md) — Preload optimized WebP pairs and decode both images before switching the example.
 - [Landing examples restraint](landing-examples-restraint.md) — Keep the before/after section clear and restrained instead of stacking decorative effects.
 - [FAQ accordion scroll](faq-accordion-scroll.md) — FAQ answers must expand below a fixed question without browser focus or scroll repositioning.
