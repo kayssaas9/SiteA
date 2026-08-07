@@ -987,8 +987,3 @@ dialog.app-mobile-overlay::backdrop {
   margin-left: 2px;
 }
 
-@media (max-width: 640px) {
-  .app-mobile-overlay {
-    display: flex;
-  }
-}
