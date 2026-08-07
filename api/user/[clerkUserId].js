@@ -33,5 +33,15 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Unable to load user data" });
   }
 
-  return res.status(200).json(data);
+  const { count, error: generationsError } = await supabaseAdmin
+    .from("generations")
+    .select("id", { count: "exact", head: true })
+    .eq("clerk_user_id", clerkUserId);
+
+  if (generationsError) {
+    console.error("user generations count error:", generationsError);
+    return res.status(500).json({ error: "Unable to load user generation history" });
+  }
+
+  return res.status(200).json({ ...data, has_generations: (count ?? 0) > 0 });
 }

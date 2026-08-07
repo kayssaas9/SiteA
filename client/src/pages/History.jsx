@@ -8,13 +8,13 @@ import "./History.css";
 export default function History() {
   const { user } = useUser();
   const navigate = useNavigate();
-  const { plan, credits, loading: userDataLoading } = useUserData();
+  const { plan, credits, hasGenerations, loading: userDataLoading } = useUserData();
   const [items, setItems] = useState([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
-  const hasHistoryAccess = isSubscriber && (plan === "expert" || credits > 0);
+  const hasHistoryAccess = hasGenerations || (isSubscriber && (plan === "expert" || credits > 0));
 
   useEffect(() => {
     if (user && !userDataLoading && !hasHistoryAccess) {

@@ -71,6 +71,7 @@ export function useUserData() {
     credits: data?.credits ?? 0,
     snaprougeUnlocked: data?.snaprouge_unlocked ?? false,
     surveyCompleted: data?.survey_completed ?? false,
+    hasGenerations: data?.has_generations ?? false,
     loading,
     refetch: fetch_,
   };

@@ -24,7 +24,18 @@ router.get("/:clerkUserId", async (req, res) => {
     .single();
 
   if (error) return res.status(404).json({ error: "User not found" });
-  res.json(data);
+
+  const { count, error: generationsError } = await supabaseAdmin
+    .from("generations")
+    .select("id", { count: "exact", head: true })
+    .eq("clerk_user_id", clerkUserId);
+
+  if (generationsError) {
+    console.error("user generations count error:", generationsError);
+    return res.status(500).json({ error: "Unable to load user generation history" });
+  }
+
+  res.json({ ...data, has_generations: (count ?? 0) > 0 });
 });
 
 /**
@@ -82,7 +93,20 @@ router.post("/ensure", express.json(), async (req, res) => {
     console.error("ensure referral code error:", codeErr);
   }
 
-  res.json(userRow.data);
+  const { count, error: generationsError } = await supabaseAdmin
+    .from("generations")
+    .select("id", { count: "exact", head: true })
+    .eq("clerk_user_id", clerkUserId);
+
+  if (generationsError) {
+    console.error("ensure generations count error:", generationsError);
+    return res.status(500).json({ error: "Unable to load user generation history" });
+  }
+
+  res.json({
+    ...userRow.data,
+    has_generations: (count ?? 0) > 0,
+  });
 });
 
 export default router;

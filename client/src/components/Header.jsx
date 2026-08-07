@@ -91,9 +91,17 @@ export default function Header() {
   const { isSignedIn, user } = useUser();
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
-  const { plan, credits, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
+  const {
+    plan,
+    credits,
+    hasGenerations,
+    surveyCompleted,
+    loading: userDataLoading,
+    refetch: refetchUserData,
+  } = useUserData();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
-  const historyPath = !userDataLoading && (!isSubscriber || (plan !== "expert" && credits <= 0))
+  const hasHistoryAccess = hasGenerations || (isSubscriber && (plan === "expert" || credits > 0));
+  const historyPath = !userDataLoading && !hasHistoryAccess
     ? "/pricing"
     : "/history";
   const isAdmin = isAdminUser(user);

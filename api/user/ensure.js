@@ -58,5 +58,18 @@ export default async function handler(req, res) {
     console.error("ensure referral code error:", codeErr);
   }
 
-  return res.status(200).json(userRow.data);
+  const { count, error: generationsError } = await supabaseAdmin
+    .from("generations")
+    .select("id", { count: "exact", head: true })
+    .eq("clerk_user_id", clerkUserId);
+
+  if (generationsError) {
+    console.error("ensure generations count error:", generationsError);
+    return res.status(500).json({ error: "Unable to load user generation history" });
+  }
+
+  return res.status(200).json({
+    ...userRow.data,
+    has_generations: (count ?? 0) > 0,
+  });
 }
