@@ -17,6 +17,14 @@
   text-decoration: none;
 }
 
+.auth-nav .brand-logo {
+  gap: 0;
+}
+
+.auth-nav .brand-logo-name {
+  margin-left: -9px;
+}
+
 .auth-nav .logo-dot {
   width: 10px;
   height: 10px;
