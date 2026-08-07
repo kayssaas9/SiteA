@@ -2,6 +2,7 @@
 - [Supabase migrations in this project](supabase-migrations.md) — Migrations must run in Supabase SQL Editor, not via Replit's built-in database skill.
 - [Clerk production domain](clerk-production-domain.md) — The production Clerk key rejects Replit preview origins; validate Clerk auth on app.astracrea.com.
 - [Vercel API handlers](vercel-api-handlers.md) — The static Vite deployment does not run server/index.js; production APIs need files under /api.
+- [Vercel deployment diagnostics](vercel-deployment-diagnostics.md) — Generic GitHub failure statuses do not expose Vercel build logs; diagnose from authenticated Vercel logs before changing code.
 - [Dev workflow pnpm commands](dev-workflow-pnpm.md) — Use explicit `pnpm run` commands in concurrently or the Express process may exit while Vite stays up.
 - [Teaser unlock security](teaser-unlock-security.md) — Keep original image URLs server-side and unlock only the exact generation attached to payment.
 - [Free teaser quota](free-teaser-quota.md) — Allow one real blurred teaser per zero-credit Clerk account, then require recharge or subscription.
