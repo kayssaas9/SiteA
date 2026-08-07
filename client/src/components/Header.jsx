@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, useUser, useClerk } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import { useUserData } from "../hooks/useUserData.js";
 import { useSnapRougeAccess } from "../hooks/useSnapRougeAccess.js";
 import { isAdminUser } from "../lib/admin.js";
@@ -90,7 +89,6 @@ function LanguageDropdown({ language, onChange, mobile = false }) {
 
 export default function Header() {
   const { isSignedIn, user } = useUser();
-  const { signOut } = useClerk();
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
   const { plan, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
@@ -127,25 +125,6 @@ export default function Header() {
     window.addEventListener("survey-completed", handleSurveyCompleted);
     return () => window.removeEventListener("survey-completed", handleSurveyCompleted);
   }, [refetchUserData]);
-
-  // Scroll lock + Crisp hide while the app full-screen menu is open
-  useEffect(() => {
-    if (!menuOpen || isLanding) return undefined;
-    const scrollY = window.scrollY;
-    document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = "100%";
-    try { window.$crisp?.push(["do", "chat:hide"]); } catch {}
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      window.scrollTo(0, scrollY);
-      try { window.$crisp?.push(["do", "chat:show"]); } catch {}
-    };
-  }, [menuOpen, isLanding]);
 
 const navLink = (to, label, className = "") => (
     <Link
@@ -197,7 +176,6 @@ const navLink = (to, label, className = "") => (
   };
 
   return (
-    <>
     <header
       className={`header ${isLanding ? "header-landing" : "header-app"} ${landingScrolled ? "is-scrolled" : ""}`}
     >
@@ -297,21 +275,31 @@ const navLink = (to, label, className = "") => (
         </div>
       </div>
 
-      {/* Landing mobile menu — pill card dropdown */}
-      {isLanding && (
-        <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
-          <div className="mobile-menu-inner">
-            {landingNavItems.map((item) => (
-              <a
-                key={`${item.to}-${item.label}`}
-                href={item.to}
-                className="mobile-nav-link"
-                onClick={() => setMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
+      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+        <div className="mobile-menu-inner">
+          {isLanding
+            ? landingNavItems.map((item) => (
+                <a
+                  key={`${item.to}-${item.label}`}
+                  href={item.to}
+                  className="mobile-nav-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))
+            : navItems.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
 
+          {isLanding && (
             <label className="mobile-language-picker">
               <span className="mobile-language-icon" aria-hidden="true">文A</span>
               <span className="sr-only">Choisir la langue</span>
@@ -321,119 +309,56 @@ const navLink = (to, label, className = "") => (
                 <option value="es">Español</option>
               </select>
             </label>
+          )}
 
-            <div className="mobile-menu-actions landing-mobile-actions">
-              {isSignedIn ? (
-                <Link to="/generate" className="btn btn-primary mobile-menu-btn" onClick={() => setMenuOpen(false)}>
-                  Accéder à l'app
-                </Link>
-              ) : (
+          {!isLanding && (
+            <LanguageDropdown language={language} onChange={handleLanguageChange} mobile />
+          )}
+
+          <div className={`mobile-menu-actions ${isLanding ? "landing-mobile-actions" : ""}`}>
+            {isLanding ? (
+              isSignedIn ? (
                 <>
-                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn" onClick={() => setMenuOpen(false)}>
-                    Se connecter
-                  </Link>
-                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn" onClick={() => setMenuOpen(false)}>
-                    S'inscrire
+                  <Link to="/generate" className="btn btn-primary mobile-menu-btn">
+                    Accéder à l’app
                   </Link>
                 </>
-              )}
-            </div>
+              ) : (
+                <>
+                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
+                    Se connecter
+                  </Link>
+                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
+                    S’inscrire
+                  </Link>
+                </>
+              )
+            ) : (
+              <>
+                {isSignedIn && (
+                  <Link to="/pricing" className="btn btn-primary mobile-menu-btn mobile-upgrade-btn">
+                    Upgrade
+                  </Link>
+                )}
+                {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
+                  <Link to="/survey" className="btn btn-primary mobile-menu-btn survey-mobile-btn">
+                    Gagne 400 crédits
+                  </Link>
+                )}
+                <SignedOut>
+                  <Link to="/sign-in" className="btn btn-outline mobile-menu-btn">
+                    Connexion
+                  </Link>
+                  <Link to="/sign-up" className="btn btn-primary mobile-menu-btn">
+                    Créer un compte
+                  </Link>
+                </SignedOut>
+
+              </>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </header>
-
-    {/* App mobile menu — full-screen overlay rendered via portal on document.body
-        so no ancestor CSS (backdrop-filter, transform…) can clip or stack-trap it. */}
-    {!isLanding && menuOpen && createPortal(
-      <div className="app-mobile-overlay" role="dialog" aria-modal="true" aria-label="Menu">
-        {/* Top bar */}
-        <div className="app-overlay-topbar">
-          <span className="app-overlay-brand">Menu</span>
-          <button
-            className="app-overlay-close"
-            onClick={() => setMenuOpen(false)}
-            aria-label="Fermer le menu"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path d="M2 2l14 14M16 2L2 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </button>
-        </div>
-
-        {/* Profile row */}
-        {isSignedIn && user && (
-          <Link to="/account" className="app-overlay-profile" onClick={() => setMenuOpen(false)}>
-            <div className="app-overlay-avatar">
-              {user.imageUrl
-                ? <img src={user.imageUrl} alt="" />
-                : (user.firstName?.[0] ?? user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ?? "?")}
-            </div>
-            <div className="app-overlay-profile-info">
-              <span className="app-overlay-profile-name">
-                {user.firstName
-                  ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`
-                  : user.emailAddresses?.[0]?.emailAddress ?? "Profil"}
-              </span>
-              <span className="app-overlay-profile-sub">Voir mon profil →</span>
-            </div>
-          </Link>
-        )}
-
-        {/* Nav links */}
-        <nav className="app-overlay-nav">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={`app-overlay-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Extra actions */}
-        <div className="app-overlay-actions">
-          {isSignedIn && !userDataLoading && isSubscriber && !surveyCompleted && (
-            <Link to="/survey" className="btn btn-primary app-overlay-btn survey-mobile-btn" onClick={() => setMenuOpen(false)}>
-              Gagne 400 crédits
-            </Link>
-          )}
-        </div>
-
-        {/* Language */}
-        <div className="app-overlay-lang">
-          <p className="app-overlay-lang-label">LANGUE</p>
-          <div className="app-overlay-lang-pills">
-            {LANGUAGE_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                className={`app-overlay-lang-pill ${language === opt.value ? "active" : ""}`}
-                onClick={() => handleLanguageChange(opt.value)}
-              >
-                <span className={`flag-icon ${opt.flagClass}`} aria-hidden="true" />
-                {opt.label}
-                {language === opt.value && <span aria-hidden="true"> ✓</span>}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Sign out */}
-        {isSignedIn && (
-          <button
-            className="app-overlay-signout"
-            onClick={() => { setMenuOpen(false); signOut(); }}
-          >
-            Se déconnecter
-          </button>
-        )}
-      </div>,
-      document.body
-    )}
-  </>
   );
 }
