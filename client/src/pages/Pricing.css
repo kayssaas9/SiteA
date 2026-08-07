@@ -4,24 +4,16 @@
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  background:
-    radial-gradient(circle at 50% -10%, rgba(35, 136, 255, 0.14), transparent 34%),
-    #080b12;
+  background: #000000;
 }
 
 .pricing-page::before {
   content: "";
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 8% 18%, rgba(35, 136, 255, 0.13) 0%, transparent 22%),
-    radial-gradient(circle at 92% 15%, rgba(169, 119, 255, 0.11) 0%, transparent 20%),
-    radial-gradient(circle at 50% 50%, rgba(142, 197, 232, 0.07) 0%, transparent 30%),
-    radial-gradient(circle at 14% 78%, rgba(169, 119, 255, 0.10) 0%, transparent 22%),
-    radial-gradient(circle at 85% 80%, rgba(35, 136, 255, 0.10) 0%, transparent 20%),
-    radial-gradient(circle at 38% 92%, rgba(142, 197, 232, 0.06) 0%, transparent 18%);
+  background: radial-gradient(circle at 92% 6%, rgba(35, 136, 255, 0.28) 0%, transparent 32%);
 }
 
 .pricing-content {
@@ -59,7 +51,7 @@
 
 .plan-card-v2.highlight {
   border: 2px solid var(--accent);
-  background: #1a1f2b;
+  background: rgba(142, 197, 232, 0.06);
   box-shadow: 0 0 40px rgba(142, 197, 232, 0.1);
 }
 
