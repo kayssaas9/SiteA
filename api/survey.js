@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "../../server/lib/supabase.js";
+import { supabaseAdmin } from "../server/lib/supabase.js";
 
 const SUBSCRIBER_PLANS = new Set(["basic", "pro", "expert"]);
 const MAX_EXPERT_CREDITS = 20000;
@@ -20,17 +20,6 @@ const QUESTIONS = [
   { id: "q14", text: "Qu'est-ce qui pourrait améliorer votre expérience sur Astra ?" },
   { id: "q15", text: "Quelle fonctionnalité aimeriez-vous voir ajoutée ?" },
 ];
-
-function getPath(req) {
-  const value = req.query?.path;
-  return (Array.isArray(value) ? value : value ? [value] : []).map((part) => {
-    try {
-      return decodeURIComponent(part);
-    } catch {
-      return part;
-    }
-  });
-}
 
 function getBody(req) {
   if (!req.body) return {};
@@ -55,38 +44,33 @@ function validateOpenAnswer(text) {
   return new Set(words).size >= 3;
 }
 
-async function getSubscriber(supabaseQuery, notFoundMessage) {
-  const { data, error } = await supabaseQuery;
-  if (error || !data) return { error: notFoundMessage };
-  if (!SUBSCRIBER_PLANS.has(data.plan)) {
-    return { error: "Le questionnaire est réservé aux abonnés.", status: 403 };
-  }
-  return { data };
+function getQueryValue(value) {
+  return Array.isArray(value) ? value[0] : value;
 }
 
 async function handleStatus(clerkUserId, res) {
-  const result = await getSubscriber(
-    supabaseAdmin
-      .from("users")
-      .select("plan, survey_completed")
-      .eq("clerk_user_id", clerkUserId)
-      .single(),
-    "User not found",
-  );
-  if (result.error) return res.status(result.status || 404).json({ error: result.error });
-  return res.status(200).json({ completed: result.data.survey_completed ?? false });
+  const { data, error } = await supabaseAdmin
+    .from("users")
+    .select("plan, survey_completed")
+    .eq("clerk_user_id", clerkUserId)
+    .single();
+  if (error || !data) return res.status(404).json({ error: "User not found" });
+  if (!SUBSCRIBER_PLANS.has(data.plan)) {
+    return res.status(403).json({ error: "Le questionnaire est réservé aux abonnés." });
+  }
+  return res.status(200).json({ completed: data.survey_completed ?? false });
 }
 
 async function handleQuestions(clerkUserId, res) {
-  const result = await getSubscriber(
-    supabaseAdmin
-      .from("users")
-      .select("plan, survey_completed")
-      .eq("clerk_user_id", clerkUserId)
-      .single(),
-    "Utilisateur introuvable.",
-  );
-  if (result.error) return res.status(result.status || 404).json({ error: result.error });
+  const { data, error } = await supabaseAdmin
+    .from("users")
+    .select("plan, survey_completed")
+    .eq("clerk_user_id", clerkUserId)
+    .single();
+  if (error || !data) return res.status(404).json({ error: "Utilisateur introuvable." });
+  if (!SUBSCRIBER_PLANS.has(data.plan)) {
+    return res.status(403).json({ error: "Le questionnaire est réservé aux abonnés." });
+  }
   return res.status(200).json(QUESTIONS);
 }
 
@@ -105,7 +89,6 @@ async function handleSubmit(req, res) {
     .select("plan, survey_completed, credits")
     .eq("clerk_user_id", clerkUserId)
     .single();
-
   if (userError || !userRow) return res.status(404).json({ error: "Utilisateur introuvable." });
   if (!SUBSCRIBER_PLANS.has(userRow.plan)) {
     return res.status(403).json({ error: "Le questionnaire est réservé aux abonnés." });
@@ -125,7 +108,6 @@ async function handleSubmit(req, res) {
   const { error: insertError } = await supabaseAdmin
     .from("survey_responses")
     .insert({ user_id: clerkUserId, answers });
-
   if (insertError) {
     console.error("survey insert error:", insertError);
     return res.status(500).json({ error: "Erreur lors de l'enregistrement du questionnaire." });
@@ -135,12 +117,10 @@ async function handleSubmit(req, res) {
   const newCredits = userRow.plan === "expert"
     ? Math.min(MAX_EXPERT_CREDITS, previousCredits + 400)
     : previousCredits + 400;
-
   const { error: updateError } = await supabaseAdmin
     .from("users")
     .update({ survey_completed: true, credits: newCredits })
     .eq("clerk_user_id", clerkUserId);
-
   if (updateError) {
     console.error("survey credit update error:", updateError);
     return res.status(500).json({ error: "Erreur lors du crédit des points." });
@@ -150,11 +130,11 @@ async function handleSubmit(req, res) {
   return res.status(200).json({ success: true, creditsEarned: 400, newCredits });
 }
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
+  const route = getQueryValue(req.query?.route);
 
-  const path = getPath(req);
-  if (path[0] === "submit") {
+  if (route === "submit") {
     if (req.method !== "POST") {
       res.setHeader("Allow", "POST");
       return res.status(405).json({ error: "Method not allowed" });
@@ -167,9 +147,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const clerkUserId = path[1];
+  const clerkUserId = getQueryValue(req.query?.clerkUserId);
   if (!clerkUserId) return res.status(400).json({ error: "clerkUserId is required" });
-  if (path[0] === "status") return handleStatus(clerkUserId, res);
-  if (path[0] === "questions") return handleQuestions(clerkUserId, res);
+  if (route === "status") return handleStatus(clerkUserId, res);
+  if (route === "questions") return handleQuestions(clerkUserId, res);
   return res.status(404).json({ error: "Not found" });
 }

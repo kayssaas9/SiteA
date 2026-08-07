@@ -4,6 +4,11 @@
   "buildCommand": "pnpm --filter nano-banana-client build",
   "outputDirectory": "client/dist",
   "rewrites": [
+    { "source": "/api/survey/status/:clerkUserId", "destination": "/api/survey?route=status&clerkUserId=:clerkUserId" },
+    { "source": "/api/survey/questions/:clerkUserId", "destination": "/api/survey?route=questions&clerkUserId=:clerkUserId" },
+    { "source": "/api/survey/submit", "destination": "/api/survey?route=submit" },
+    { "source": "/api/generations/:generationId/image", "destination": "/api/generations?route=image&generationId=:generationId" },
+    { "source": "/api/generations/:generationId", "destination": "/api/generations?route=status&generationId=:generationId" },
     { "source": "/generate", "destination": "/index.html" },
     { "source": "/pricing", "destination": "/index.html" },
     { "source": "/account", "destination": "/index.html" },
