@@ -39,7 +39,7 @@ const LANDING_EXAMPLES = [
     original: "Parking de quartier",
     result: "Mercedes-AMG A 45 S",
     ending: "même décor.",
-    beforeImage: "/landing-examples/parking-before.jpeg",
+    beforeImage: "/landing-examples/parking-before-example.jpg",
     afterImage: "/landing-examples/parking-after.png",
   },
 ];
@@ -245,7 +245,44 @@ export default function Landing() {
 function Examples() {
   const { isSignedIn } = useUser();
   const [exampleIndex, setExampleIndex] = useState(0);
+  const [isChangingExample, setIsChangingExample] = useState(false);
+  const imageReadyRef = useRef(new Map());
   const example = LANDING_EXAMPLES[exampleIndex];
+
+  const ensureImageReady = (source) => {
+    const cachedImage = imageReadyRef.current.get(source);
+    if (cachedImage) {
+      return cachedImage;
+    }
+
+    const image = new Image();
+    image.decoding = "async";
+    const ready = new Promise((resolve) => {
+      let settled = false;
+      const settle = () => {
+        if (!settled) {
+          settled = true;
+          resolve();
+        }
+      };
+
+      image.onload = () => {
+        const decoded = typeof image.decode === "function"
+          ? image.decode().catch(() => {})
+          : Promise.resolve();
+        decoded.then(settle);
+      };
+      image.onerror = settle;
+      image.src = source;
+
+      if (image.complete) {
+        image.onload();
+      }
+    });
+
+    imageReadyRef.current.set(source, ready);
+    return ready;
+  };
 
   useEffect(() => {
     const imageSources = LANDING_EXAMPLES.flatMap(({ beforeImage, afterImage }) => [
@@ -253,12 +290,28 @@ function Examples() {
       afterImage,
     ]);
 
-    imageSources.forEach((source) => {
-      const image = new Image();
-      image.decoding = "async";
-      image.src = source;
-    });
+    imageSources.forEach(ensureImageReady);
   }, []);
+
+  const handleNextExample = async () => {
+    if (isChangingExample) {
+      return;
+    }
+
+    const nextIndex = (exampleIndex + 1) % LANDING_EXAMPLES.length;
+    const nextExample = LANDING_EXAMPLES[nextIndex];
+    setIsChangingExample(true);
+
+    try {
+      await Promise.all([
+        ensureImageReady(nextExample.beforeImage),
+        ensureImageReady(nextExample.afterImage),
+      ]);
+      setExampleIndex(nextIndex);
+    } finally {
+      setIsChangingExample(false);
+    }
+  };
 
   return (
     <section id="exemples" className="examples-section fade-up delay-5">
@@ -274,6 +327,7 @@ function Examples() {
                 className="example-photo"
                 src={example.beforeImage}
                 alt={example.original}
+                decoding="sync"
               />
             </div>
             <div className="example-copy">
@@ -288,6 +342,7 @@ function Examples() {
                 className="example-photo"
                 src={example.afterImage}
                 alt={example.result}
+                decoding="sync"
               />
             </div>
             <div className="example-copy example-copy-result">
@@ -302,7 +357,8 @@ function Examples() {
       <button
         className="examples-more"
         type="button"
-        onClick={() => setExampleIndex((currentIndex) => (currentIndex + 1) % LANDING_EXAMPLES.length)}
+        onClick={handleNextExample}
+        disabled={isChangingExample}
       >
         Voir plus d'exemples
       </button>
