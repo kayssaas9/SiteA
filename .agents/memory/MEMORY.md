@@ -25,3 +25,4 @@
 - [Landing examples restraint](landing-examples-restraint.md) — Keep the before/after section clear and restrained instead of stacking decorative effects.
 - [FAQ accordion scroll](faq-accordion-scroll.md) — FAQ answers must expand below a fixed question without browser focus or scroll repositioning.
 - [Authenticated app navbar](authenticated-app-navbar.md) — Keep the signed-in navigation as full-width top chrome; the landing navbar remains a floating card.
+- [iOS app mobile menu](mobile-app-menu-ios.md) — Portal, dynamic viewport, scroll lock, and Crisp hiding keep the full-screen menu reliable on iPhone Safari.

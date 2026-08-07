@@ -106,13 +106,41 @@ export default function Header() {
   useEffect(() => {
     if (menuOpen && !isLanding) {
       document.body.classList.add("mobile-menu-open");
+      document.documentElement.classList.add("mobile-menu-open");
+      const scrollY = window.scrollY;
+      const previousBodyStyles = {
+        position: document.body.style.position,
+        top: document.body.style.top,
+        width: document.body.style.width,
+        overflow: document.body.style.overflow,
+      };
+      document.body.dataset.mobileMenuScrollY = String(scrollY);
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
       try { window.$crisp?.push(["do", "chat:hide"]); } catch {}
+
+      return () => {
+        document.body.classList.remove("mobile-menu-open");
+        document.documentElement.classList.remove("mobile-menu-open");
+        document.body.style.position = previousBodyStyles.position;
+        document.body.style.top = previousBodyStyles.top;
+        document.body.style.width = previousBodyStyles.width;
+        document.body.style.overflow = previousBodyStyles.overflow;
+        const lockedScrollY = Number(document.body.dataset.mobileMenuScrollY || 0);
+        delete document.body.dataset.mobileMenuScrollY;
+        window.scrollTo(0, lockedScrollY);
+        try { window.$crisp?.push(["do", "chat:show"]); } catch {}
+      };
     } else {
       document.body.classList.remove("mobile-menu-open");
+      document.documentElement.classList.remove("mobile-menu-open");
       try { window.$crisp?.push(["do", "chat:show"]); } catch {}
     }
     return () => {
       document.body.classList.remove("mobile-menu-open");
+      document.documentElement.classList.remove("mobile-menu-open");
       try { window.$crisp?.push(["do", "chat:show"]); } catch {}
     };
   }, [menuOpen, isLanding]);
