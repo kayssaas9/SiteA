@@ -22,7 +22,15 @@
 }
 
 .auth-nav .brand-logo-name {
-  margin-left: -9px;
+  position: relative;
+  z-index: 1;
+  margin-left: -16px;
+  padding-top: 1px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.9;
 }
 
 .auth-nav .logo-dot {
@@ -38,4 +46,11 @@
   font-size: 20px;
   letter-spacing: -0.02em;
   color: var(--text);
+}
+
+@media (max-width: 600px) {
+  .auth-nav .brand-logo-name {
+    margin-left: -14px;
+    font-size: 22px;
+  }
 }
