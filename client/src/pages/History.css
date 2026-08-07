@@ -1,6 +1,25 @@
 .history-page {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% -12%, rgba(35, 136, 255, 0.14), transparent 34%),
+    #080b12;
+}
+
+.history-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(142, 197, 232, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(142, 197, 232, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at 10% 20%, rgba(35, 136, 255, 0.18), transparent 26%),
+    radial-gradient(circle at 90% 72%, rgba(169, 119, 255, 0.14), transparent 28%);
+  background-size: 44px 44px, 44px 44px, auto, auto;
+  mask-image: linear-gradient(to bottom, black 0%, rgba(0,0,0,0.75) 55%, transparent 100%);
 }
 
 
