@@ -6,7 +6,7 @@ export default function AuthNav() {
   return (
     <nav className="auth-nav">
       <Link to="/" className="logo">
-        <BrandLogo />
+        <BrandLogo name="stracrea" />
       </Link>
     </nav>
   );
