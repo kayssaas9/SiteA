@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "../../server/lib/supabase.js";
-import { MAX_EXPERT_CREDITS } from "../../server/lib/stripe.js";
 
 const SUBSCRIBER_PLANS = new Set(["basic", "pro", "expert"]);
+const MAX_EXPERT_CREDITS = 20000;
 
 const QUESTIONS = [
   { id: "q1" }, { id: "q2" }, { id: "q3" }, { id: "q4" }, { id: "q5" },
