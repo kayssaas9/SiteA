@@ -10,6 +10,7 @@ import "./ImageGenerator.css";
 const GENERATION_COST = 100;
 const ACTIVE_GENERATIONS_KEY = "astraActiveGenerationIds";
 const PENDING_UNLOCK_KEY = "astraPendingGenerationId";
+const GENERATION_QUERY_KEY = "generationId";
 const PRICING_OPTIONS = [
   { name: "Basique", price: "7,99 €", originalPrice: "9,99 €", details: "2 500 crédits / mois" },
   { name: "Pro", price: "15,99 €", originalPrice: "19,99 €", details: "7 500 crédits / mois" },
@@ -296,6 +297,21 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
   const activeGenerationIdRef = useRef(null);
   const pollGenerationRef = useRef(null);
 
+  const readGenerationIdFromUrl = () => {
+    try {
+      return new URLSearchParams(window.location.search).get(GENERATION_QUERY_KEY);
+    } catch {
+      return null;
+    }
+  };
+
+  const writeGenerationIdToUrl = (generationId) => {
+    const url = new URL(window.location.href);
+    if (generationId) url.searchParams.set(GENERATION_QUERY_KEY, generationId);
+    else url.searchParams.delete(GENERATION_QUERY_KEY);
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+  };
+
   const unlockedCount = plan === "expert" ? 2 : plan === "pro" ? 1 : 0;
 
   useEffect(() => {
@@ -396,6 +412,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
           setError(friendlyError);
           onResultChange?.({ loading: false, error: friendlyError, result: null });
         }
+        if (readGenerationIdFromUrl() === generationId) writeGenerationIdToUrl(null);
         if (window.localStorage.getItem(PENDING_UNLOCK_KEY) === generationId) {
           window.localStorage.removeItem(PENDING_UNLOCK_KEY);
         }
@@ -415,6 +432,8 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
         onResultChange?.({ loading: false, error: null, result: nextResult });
         window.dispatchEvent(new Event("astra-user-data-changed"));
       }
+
+      if (readGenerationIdFromUrl() === generationId) writeGenerationIdToUrl(null);
 
       if (data.unlocked) {
         if (window.localStorage.getItem(PENDING_UNLOCK_KEY) === generationId) {
@@ -443,16 +462,17 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
     const bootstrap = async () => {
       if (!user?.id) return;
 
-      if (skipResume) {
-        activeGenerationIdRef.current = null;
-        return;
-      }
-
       const pendingUnlock = window.localStorage.getItem(PENDING_UNLOCK_KEY)
         || window.sessionStorage.getItem(PENDING_UNLOCK_KEY);
       if (pendingUnlock) window.localStorage.setItem(PENDING_UNLOCK_KEY, pendingUnlock);
 
-      const ids = new Set([...readActiveIds(), pendingUnlock].filter(Boolean));
+      const urlGenerationId = readGenerationIdFromUrl();
+      const ids = new Set([...readActiveIds(), pendingUnlock, urlGenerationId].filter(Boolean));
+
+      if (skipResume) {
+        activeGenerationIdRef.current = null;
+        return;
+      }
       try {
         const historyRes = await fetch(`/api/history/${encodeURIComponent(user.id)}?fresh=${Date.now()}`, {
           cache: "no-store",
@@ -551,6 +571,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
       }
       if (data.generationId) {
         activeGenerationIdRef.current = data.generationId;
+        writeGenerationIdToUrl(data.generationId);
         window.localStorage.setItem(
           ACTIVE_GENERATIONS_KEY,
           JSON.stringify([data.generationId]),
