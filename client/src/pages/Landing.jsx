@@ -25,22 +25,22 @@ const LANDING_EXAMPLES = [
     original: "BMW M3 G80",
     result: "Lamborghini Aventador SVJ",
     ending: "décor identique.",
-    beforeImage: "/landing-examples/bmw-m3-g80-before.png",
-    afterImage: "/landing-examples/lamborghini-aventador-svj-after.png",
+    beforeImage: "/landing-examples/bmw-m3-g80-before.webp",
+    afterImage: "/landing-examples/lamborghini-aventador-svj-after.webp",
   },
   {
     original: "Montre Rolex Dayjust en classe",
     result: "Richard Mille Bubba Watson",
     ending: "même poignet.",
-    beforeImage: "/landing-examples/rolex-dayjust-before.png",
-    afterImage: "/landing-examples/richard-mille-bubba-watson-after.png",
+    beforeImage: "/landing-examples/rolex-dayjust-before.webp",
+    afterImage: "/landing-examples/richard-mille-bubba-watson-after.webp",
   },
   {
     original: "Parking de quartier",
     result: "Mercedes-AMG A 45 S",
     ending: "même décor.",
-    beforeImage: "/landing-examples/parking-before-example.jpg",
-    afterImage: "/landing-examples/parking-after.png",
+    beforeImage: "/landing-examples/parking-before-example.webp",
+    afterImage: "/landing-examples/parking-after.webp",
   },
 ];
 
@@ -99,7 +99,7 @@ function HeroVisual() {
       <div className="hero-visual-orbit hero-visual-orbit-one" />
       <div className="hero-visual-orbit hero-visual-orbit-two" />
       <div className="hero-visual-card hero-visual-card-main">
-        <img src="/landing-examples/parking-before.jpeg" alt="Photo originale d'une voiture sur un parking" />
+        <img src="/landing-examples/parking-before-hero.webp" alt="Photo originale d'une voiture sur un parking" />
         <span className="hero-visual-chip">PHOTO ORIGINALE</span>
         <div className="hero-visual-card-footer">
           <span>Photo originale</span>
@@ -107,7 +107,7 @@ function HeroVisual() {
         </div>
       </div>
       <div className="hero-visual-card hero-visual-card-result">
-        <img src="/landing-examples/parking-after.png" alt="Mercedes générée par Astracrea sur le même parking" />
+        <img src="/landing-examples/parking-after.webp" alt="Mercedes générée par Astracrea sur le même parking" />
         <span className="hero-visual-chip hero-visual-chip-result">RÉSULTAT ASTRA</span>
         <div className="hero-visual-card-footer">
           <span>Résultat Astra</span>
