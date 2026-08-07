@@ -91,8 +91,11 @@ export default function Header() {
   const { isSignedIn, user } = useUser();
   const { pathname } = useLocation();
   const { hasAccess: snapRougeAccess } = useSnapRougeAccess();
-  const { plan, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
+  const { plan, credits, surveyCompleted, loading: userDataLoading, refetch: refetchUserData } = useUserData();
   const isSubscriber = ["basic", "pro", "expert"].includes(plan);
+  const historyPath = !userDataLoading && (!isSubscriber || (plan !== "expert" && credits <= 0))
+    ? "/pricing"
+    : "/history";
   const isAdmin = isAdminUser(user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [landingScrolled, setLandingScrolled] = useState(false);
@@ -145,7 +148,7 @@ const navLink = (to, label, className = "") => (
     { to: "/generate", label: "Générer" },
     { to: "/pricing", label: "Tarifs" },
     { to: "/snaprouge", label: "SnapRouge", className: "snaprouge-nav-link" },
-    ...(isSignedIn ? [{ to: "/history", label: "Historique" }] : []),
+    ...(isSignedIn ? [{ to: historyPath, label: "Historique" }] : []),
     ...(isSignedIn ? [{ to: "/account", label: "Compte" }] : []),
     ...(isAdmin ? [{ to: "/admin", label: "Admin", className: "admin-nav-link" }] : []),
   ];
@@ -201,7 +204,7 @@ const navLink = (to, label, className = "") => (
               {navLink("/generate", "Générer")}
               {navLink("/pricing", "Tarifs")}
               {navLink("/snaprouge", "SnapRouge", "snaprouge-nav-link")}
-              {isSignedIn && navLink("/history", "Historique")}
+              {isSignedIn && navLink(historyPath, "Historique")}
               {isSignedIn && navLink("/account", "Compte")}
               {isAdmin && navLink("/admin", "Admin", "admin-nav-link")}
             </>
@@ -290,7 +293,7 @@ const navLink = (to, label, className = "") => (
               ))
             : navItems.map((item) => (
                 <Link
-                  key={item.to}
+                  key={`${item.to}-${item.label}`}
                   to={item.to}
                   className={`mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
                   onClick={() => setMenuOpen(false)}

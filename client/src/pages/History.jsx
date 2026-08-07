@@ -1,17 +1,29 @@
 import { useCallback, useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 import DownloadButton from "../components/DownloadButton.jsx";
+import { useUserData } from "../hooks/useUserData.js";
 import "./History.css";
 
 export default function History() {
   const { user } = useUser();
+  const navigate = useNavigate();
+  const { plan, credits, loading: userDataLoading } = useUserData();
   const [items, setItems] = useState([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
+  const isSubscriber = ["basic", "pro", "expert"].includes(plan);
+  const hasHistoryAccess = isSubscriber && (plan === "expert" || credits > 0);
+
+  useEffect(() => {
+    if (user && !userDataLoading && !hasHistoryAccess) {
+      navigate("/pricing", { replace: true });
+    }
+  }, [hasHistoryAccess, navigate, user, userDataLoading]);
 
   const fetchHistory = useCallback(async () => {
-    if (!user) return;
+    if (!user || !hasHistoryAccess) return;
     setLoading(true);
     try {
       const search = new URLSearchParams();
@@ -33,16 +45,16 @@ export default function History() {
       setLoading(false);
     }
     return [];
-  }, [query, user?.id]);
+  }, [hasHistoryAccess, query, user?.id]);
 
   useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
+    if (!userDataLoading && hasHistoryAccess) fetchHistory();
+  }, [fetchHistory, hasHistoryAccess, userDataLoading]);
 
   // Stripe webhooks can finish just after the browser returns from Checkout.
   // Keep the history in sync so the exact teaser becomes sharp automatically.
   useEffect(() => {
-    if (!user?.id) return undefined;
+    if (!user?.id || !hasHistoryAccess) return undefined;
 
     let pendingGenerationId = null;
     try {
@@ -71,7 +83,7 @@ export default function History() {
     }, 1500);
 
     return () => window.clearInterval(timer);
-  }, [fetchHistory, user?.id]);
+  }, [fetchHistory, hasHistoryAccess, user?.id]);
 
   // A generation is persisted before OneShot finishes. Keep checking while
   // one is processing so the history updates even if the generator page was
@@ -80,15 +92,15 @@ export default function History() {
     (item) => item.status === "processing" || item.status === "finalizing",
   );
   useEffect(() => {
-    if (!user?.id || !hasActiveGenerations) return undefined;
+    if (!user?.id || !hasHistoryAccess || !hasActiveGenerations) return undefined;
     const timer = window.setInterval(fetchHistory, 2000);
     return () => window.clearInterval(timer);
-  }, [fetchHistory, hasActiveGenerations]);
+  }, [fetchHistory, hasActiveGenerations, hasHistoryAccess, user?.id]);
 
   // Refresh history when the user comes back to this tab/page.
   useEffect(() => {
     const onVisible = () => {
-      if (!document.hidden) fetchHistory();
+      if (!document.hidden && hasHistoryAccess) fetchHistory();
     };
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("focus", onVisible);
@@ -96,7 +108,7 @@ export default function History() {
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("focus", onVisible);
     };
-  }, [fetchHistory, user?.id]);
+  }, [fetchHistory, hasHistoryAccess, user?.id]);
 
   if (!user) {
     return (
@@ -105,6 +117,18 @@ export default function History() {
         <div className="blob blob-2" />
         <div className="page">
           <p className="history-empty fade-up">Connectez-vous pour consulter votre historique.</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (userDataLoading || !hasHistoryAccess) {
+    return (
+      <main className="history-page">
+        <div className="blob blob-1" />
+        <div className="blob blob-2" />
+        <div className="page">
+          <p className="history-loading fade-up">Redirection vers les tarifs…</p>
         </div>
       </main>
     );
