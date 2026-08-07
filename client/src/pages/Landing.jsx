@@ -108,7 +108,7 @@ function HeroVisual() {
       </div>
       <div className="hero-visual-card hero-visual-card-result">
         <img src="/landing-examples/parking-after.png" alt="Mercedes générée par Astracrea sur le même parking" />
-        <span className="hero-visual-chip hero-visual-chip-result">RÉSULTAT IA</span>
+        <span className="hero-visual-chip hero-visual-chip-result">RÉSULTAT ASTRA</span>
         <div className="hero-visual-card-footer">
           <span>Résultat Astra</span>
           <strong>02</strong>
