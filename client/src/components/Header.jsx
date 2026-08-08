@@ -137,10 +137,10 @@ export default function Header() {
     return () => window.removeEventListener("survey-completed", handleSurveyCompleted);
   }, [refetchUserData]);
 
-const navLink = (to, label, className = "") => (
+  const navLink = (to, label, className = "", activeTo = to) => (
     <Link
       to={to}
-      className={`nav-link ${className} ${pathname === to ? "active" : ""}`}
+      className={`nav-link ${className} ${pathname === activeTo ? "active" : ""}`}
       onClick={() => {
         setMenuOpen(false);
         if (pathname === to) {
@@ -156,7 +156,7 @@ const navLink = (to, label, className = "") => (
     { to: "/generate", label: "Générer" },
     { to: "/pricing", label: "Tarifs" },
     { to: "/snaprouge", label: "SnapRouge", className: "snaprouge-nav-link" },
-    ...(isSignedIn ? [{ to: historyPath, label: "Historique" }] : []),
+    ...(isSignedIn ? [{ to: historyPath, label: "Historique", activeTo: "/history" }] : []),
     ...(isSignedIn ? [{ to: "/account", label: "Compte" }] : []),
     ...(isAdmin ? [{ to: "/admin", label: "Admin", className: "admin-nav-link" }] : []),
   ];
@@ -212,7 +212,7 @@ const navLink = (to, label, className = "") => (
               {navLink("/generate", "Générer")}
               {navLink("/pricing", "Tarifs")}
               {navLink("/snaprouge", "SnapRouge", "snaprouge-nav-link")}
-              {isSignedIn && navLink(historyPath, "Historique")}
+               {isSignedIn && navLink(historyPath, "Historique", "", "/history")}
               {isSignedIn && navLink("/account", "Compte")}
               {isAdmin && navLink("/admin", "Admin", "admin-nav-link")}
             </>
@@ -303,7 +303,7 @@ const navLink = (to, label, className = "") => (
                 <Link
                   key={`${item.to}-${item.label}`}
                   to={item.to}
-                  className={`mobile-nav-link ${item.className ?? ""} ${pathname === item.to ? "active" : ""}`}
+                  className={`mobile-nav-link ${item.className ?? ""} ${pathname === (item.activeTo ?? item.to) ? "active" : ""}`}
                   onClick={() => setMenuOpen(false)}
                 >
                   {item.label}
