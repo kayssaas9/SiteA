@@ -820,15 +820,23 @@ Create the final image as a vertical 9:16 portrait composition, with the complet
       return res.status(502).json({ error: "OneShot n'a pas retourné d'identifiant de génération." });
     }
 
-    const { error: attachError } = await supabaseAdmin
+    const { data: attachedGeneration, error: attachError } = await supabaseAdmin
       .from("generations")
       .update({
         oneshot_job_id: job.id,
         updated_at: new Date().toISOString(),
-      });
+      })
+      .eq("id", generationId)
+      .eq("clerk_user_id", clerkUserId)
+      .eq("status", "processing")
+      .select("id")
+      .maybeSingle();
 
-    if (attachError) {
-      console.error("Failed to attach OneShot job:", attachError);
+    if (attachError || !attachedGeneration) {
+      console.error("Failed to attach OneShot job:", attachError || {
+        message: "Generation row was not updated",
+        generationId,
+      });
       await failGeneration({
         id: generationId,
         clerk_user_id: clerkUserId,
