@@ -24,6 +24,31 @@ const GENERATION_MESSAGES = [
   "Finalisation de l’image",
 ];
 
+function readStorage(storage, key) {
+  try {
+    return storage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(storage, key, value) {
+  try {
+    storage.setItem(key, value);
+  } catch {
+    // The URL and the server-side row remain available on restricted Safari
+    // storage, so a failed localStorage write must not cancel a generation.
+  }
+}
+
+function removeStorage(storage, key) {
+  try {
+    storage.removeItem(key);
+  } catch {
+    // Ignore storage restrictions; the persisted generation is still safe.
+  }
+}
+
 const GENERATION_REVIEWS = [
   { username: "@alex.motion", review: "Le rendu de ma Golf en full black est juste incroyable, on dirait une vraie photo de shooting." },
   { username: "@noah.vrs", review: "J'ai enfin pu tester mes idées de jantes avant de les acheter. Le résultat est ultra propre." },
@@ -350,16 +375,19 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
     const timers = new Map();
 
     const readActiveIds = () => {
+      const stored = readStorage(window.localStorage, ACTIVE_GENERATIONS_KEY);
+      if (!stored) return [];
       try {
-        return JSON.parse(window.localStorage.getItem(ACTIVE_GENERATIONS_KEY) || "[]");
+        const ids = JSON.parse(stored);
+        return Array.isArray(ids) ? ids.filter((id) => typeof id === "string" && id) : [];
       } catch {
         return [];
       }
     };
 
     const writeActiveIds = (ids) => {
-      if (ids.length) window.localStorage.setItem(ACTIVE_GENERATIONS_KEY, JSON.stringify(ids));
-      else window.localStorage.removeItem(ACTIVE_GENERATIONS_KEY);
+      if (ids.length) writeStorage(window.localStorage, ACTIVE_GENERATIONS_KEY, JSON.stringify(ids));
+      else removeStorage(window.localStorage, ACTIVE_GENERATIONS_KEY);
     };
 
     const removeActiveId = (generationId) => {
@@ -413,8 +441,8 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
           onResultChange?.({ loading: false, error: friendlyError, result: null });
         }
         if (readGenerationIdFromUrl() === generationId) writeGenerationIdToUrl(null);
-        if (window.localStorage.getItem(PENDING_UNLOCK_KEY) === generationId) {
-          window.localStorage.removeItem(PENDING_UNLOCK_KEY);
+        if (readStorage(window.localStorage, PENDING_UNLOCK_KEY) === generationId) {
+          removeStorage(window.localStorage, PENDING_UNLOCK_KEY);
         }
         return;
       }
@@ -436,15 +464,15 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
       if (readGenerationIdFromUrl() === generationId) writeGenerationIdToUrl(null);
 
       if (data.unlocked) {
-        if (window.localStorage.getItem(PENDING_UNLOCK_KEY) === generationId) {
-          window.localStorage.removeItem(PENDING_UNLOCK_KEY);
+        if (readStorage(window.localStorage, PENDING_UNLOCK_KEY) === generationId) {
+          removeStorage(window.localStorage, PENDING_UNLOCK_KEY);
         }
         await refetchUserData();
         return;
       }
 
       if (data.teaser) {
-        window.localStorage.setItem(PENDING_UNLOCK_KEY, generationId);
+        writeStorage(window.localStorage, PENDING_UNLOCK_KEY, generationId);
         // Stripe's webhook may unlock the exact teaser after redirect.
         if (attempts < 40) {
           timers.set(generationId, window.setTimeout(() => trackGeneration(generationId, attempts + 1), 1500));
@@ -459,12 +487,14 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
       trackGeneration(generationId);
     };
 
-    const bootstrap = async () => {
+    let discoveryTimer = null;
+
+    const bootstrap = async (attempt = 0) => {
       if (!user?.id) return;
 
-      const pendingUnlock = window.localStorage.getItem(PENDING_UNLOCK_KEY)
-        || window.sessionStorage.getItem(PENDING_UNLOCK_KEY);
-      if (pendingUnlock) window.localStorage.setItem(PENDING_UNLOCK_KEY, pendingUnlock);
+      const pendingUnlock = readStorage(window.localStorage, PENDING_UNLOCK_KEY)
+        || readStorage(window.sessionStorage, PENDING_UNLOCK_KEY);
+      if (pendingUnlock) writeStorage(window.localStorage, PENDING_UNLOCK_KEY, pendingUnlock);
 
       const urlGenerationId = readGenerationIdFromUrl();
       const ids = new Set([...readActiveIds(), pendingUnlock, urlGenerationId].filter(Boolean));
@@ -473,17 +503,18 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
         activeGenerationIdRef.current = null;
         return;
       }
+      let discoveredHistory = [];
       try {
         const historyRes = await fetch(
-          `/api/history/${encodeURIComponent(user.id)}?resume=false&fresh=${Date.now()}`,
+          `/api/history/${encodeURIComponent(user.id)}?resume=true&fresh=${Date.now()}`,
           {
           cache: "no-store",
           headers: { "Cache-Control": "no-cache" },
           },
         );
         if (historyRes.ok) {
-          const history = await historyRes.json();
-          history
+          discoveredHistory = await historyRes.json();
+          discoveredHistory
             .filter((item) => item.status === "processing" || item.status === "finalizing")
             .forEach((item) => ids.add(item.id));
         }
@@ -493,18 +524,27 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
 
       const activeIds = [...ids];
       writeActiveIds(activeIds.filter((id) => id !== pendingUnlock));
-      const currentGenerationId = urlGenerationId || activeIds[activeIds.length - 1];
+      const currentGenerationId = urlGenerationId
+        || discoveredHistory.find(
+          (item) => item.status === "processing" || item.status === "finalizing",
+        )?.id
+        || activeIds[activeIds.length - 1];
       if (currentGenerationId) {
         activeGenerationIdRef.current = currentGenerationId;
         setLoading(true);
         onResultChange?.({ loading: true, error: null, result: null });
         trackGeneration(currentGenerationId);
+      } else if (attempt < 5 && !cancelled) {
+        // The POST may still be finishing while a fast refresh runs. Look
+        // again so the newly persisted row is adopted without a new job.
+        discoveryTimer = window.setTimeout(() => bootstrap(attempt + 1), 1500);
       }
     };
 
     bootstrap();
     return () => {
       cancelled = true;
+      if (discoveryTimer) window.clearTimeout(discoveryTimer);
       timers.forEach((timer) => window.clearTimeout(timer));
       pollGenerationRef.current = null;
     };
@@ -532,9 +572,19 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
 
     try {
       const form = new FormData();
+      const clientGenerationId = window.crypto?.randomUUID?.()
+        || `${"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"}`.replace(/[xy]/g, (character) => {
+          const random = Math.floor(Math.random() * 16);
+          const value = character === "x" ? random : (random & 0x3) | 0x8;
+          return value.toString(16);
+        });
       form.append("mode", "car");
       form.append("prompt", prompt);
       form.append("clerk_user_id", user?.id || "");
+      form.append("generation_id", clientGenerationId);
+      activeGenerationIdRef.current = clientGenerationId;
+      writeGenerationIdToUrl(clientGenerationId);
+      writeStorage(window.localStorage, ACTIVE_GENERATIONS_KEY, JSON.stringify([clientGenerationId]));
       const [mainFile, ref1File, ref2File] = [
         mainPhoto?.file || null,
         unlockedCount >= 1 ? refs.ref1?.file || null : null,
@@ -562,6 +612,10 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
         if (res.status === 402) {
           setLoading(false);
           setError(null);
+          removeStorage(window.localStorage, ACTIVE_GENERATIONS_KEY);
+          if (readGenerationIdFromUrl() === activeGenerationIdRef.current) {
+            writeGenerationIdToUrl(null);
+          }
           setPricingMessage(
             data.code === "INSUFFICIENT_CREDITS"
               ? "Il te faut au moins 100 crédits pour générer une image nette. Recharge ton compte pour continuer."
@@ -576,10 +630,7 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
       if (data.generationId) {
         activeGenerationIdRef.current = data.generationId;
         writeGenerationIdToUrl(data.generationId);
-        window.localStorage.setItem(
-          ACTIVE_GENERATIONS_KEY,
-          JSON.stringify([data.generationId]),
-        );
+        writeStorage(window.localStorage, ACTIVE_GENERATIONS_KEY, JSON.stringify([data.generationId]));
         setLoading(true);
         pollGenerationRef.current?.(data.generationId);
       }
@@ -587,6 +638,10 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
       const friendlyError = getFriendlyGenerationError(err.message);
       setError(friendlyError);
       setLoading(false);
+      removeStorage(window.localStorage, ACTIVE_GENERATIONS_KEY);
+      if (readGenerationIdFromUrl() === activeGenerationIdRef.current) {
+        writeGenerationIdToUrl(null);
+      }
       onResultChange?.({ loading: false, error: friendlyError, result: null });
     } finally {
       // Keep the loading state while the persisted OneShot job is running.

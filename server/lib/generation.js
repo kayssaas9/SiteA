@@ -433,7 +433,10 @@ export async function getGenerationStatus(generationId, clerkUserId) {
     if (!recovered) return clientGeneration(row);
     row.status = "processing";
   }
-  if (!row.oneshot_job_id) return failGeneration(row, "Le job de génération est introuvable.");
+  // The browser can refresh while the request is still uploading references or
+  // creating the OneShot job. Keep the durable row alive until the job ID is
+  // attached instead of turning a normal refresh into a failed generation.
+  if (!row.oneshot_job_id) return clientGeneration(row);
 
   let job;
   try {
@@ -638,10 +641,19 @@ export async function createGeneration(req, res) {
   let freeTeaserClaimed = false;
   let generationPersisted = false;
   let clerkUserId = "";
+  let generationId = "";
 
   try {
-    const { mode, prompt, clerk_user_id: rawClerkUserId } = req.body;
+    const {
+      mode,
+      prompt,
+      generation_id: requestedGenerationId,
+      clerk_user_id: rawClerkUserId,
+    } = req.body;
     clerkUserId = typeof rawClerkUserId === "string" ? rawClerkUserId.trim() : "";
+    generationId = typeof requestedGenerationId === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestedGenerationId)
+      ? requestedGenerationId
+      : randomUUID();
 
     if (!ONESHOT_API_KEY) {
       return res.status(500).json({ error: "Clé OneShotAPI non configurée." });
@@ -656,6 +668,30 @@ export async function createGeneration(req, res) {
     const user = await ensureUser(clerkUserId);
     if (!user) {
       return res.status(500).json({ error: "Impossible de charger votre compte." });
+    }
+
+    // A refresh can replay the multipart POST after the browser has already
+    // started the original request. Reuse the durable row before claiming a
+    // teaser or checking credits, so the replay cannot consume entitlement
+    // twice or create a second OneShot job.
+    const { data: existingGeneration, error: existingError } = await supabaseAdmin
+      .from("generations")
+      .select("id, clerk_user_id, status, teaser, unlocked")
+      .eq("id", generationId)
+      .eq("clerk_user_id", clerkUserId)
+      .maybeSingle();
+    if (existingError) {
+      console.error("Failed to check existing generation:", existingError);
+      return res.status(500).json({ error: "Impossible d'enregistrer la génération." });
+    }
+    if (existingGeneration) {
+      return res.status(202).json({
+        generationId,
+        status: existingGeneration.status || "processing",
+        imageUrl: null,
+        unlocked: existingGeneration.unlocked === true,
+        teaser: existingGeneration.teaser === true,
+      });
     }
 
     const subscriber = isSubscriber(user.plan);
@@ -688,6 +724,34 @@ export async function createGeneration(req, res) {
 
     const teaser = freeTeaserClaimed;
 
+    // Persist the generation before slow uploads and OneShot calls. A refresh
+    // can now discover the exact row even if the multipart request is still
+    // in flight or the response has not reached the browser yet.
+    const { error: persistError } = await supabaseAdmin
+      .from("generations")
+      .insert({
+        id: generationId,
+        clerk_user_id: clerkUserId,
+        mode: mode || "image",
+        prompt: prompt.trim(),
+        image_url: null,
+        preview_url: null,
+        unlocked: false,
+        oneshot_job_id: null,
+        status: "processing",
+        teaser,
+        free_teaser_claimed: freeTeaserClaimed,
+        consumed_credits: 0,
+        error_message: null,
+      });
+
+    if (persistError) {
+      console.error("Failed to persist generation before OneShot:", persistError);
+      return res.status(500).json({ error: "Erreur lors de l'enregistrement de la génération." });
+    }
+    generationPersisted = true;
+    console.log(`⏳ Persisted ${teaser ? "teaser" : "full"} generation for ${clerkUserId}: ${generationId}`);
+
     const files = req.files || {};
     const allFiles = [
       files.image?.[0],
@@ -701,6 +765,11 @@ export async function createGeneration(req, res) {
         referenceFileIds = await Promise.all(allFiles.map(uploadToOneShot));
       } catch (uploadErr) {
         console.error("OneShot upload error:", uploadErr);
+        await failGeneration({
+          id: generationId,
+          clerk_user_id: clerkUserId,
+          free_teaser_claimed: freeTeaserClaimed,
+        }, uploadErr.message);
         return res.status(502).json({ error: uploadErr.message });
       }
     }
@@ -734,39 +803,41 @@ Create the final image as a vertical 9:16 portrait composition, with the complet
       });
     } catch (jobErr) {
       console.error("OneShot job creation error:", jobErr);
+      await failGeneration({
+        id: generationId,
+        clerk_user_id: clerkUserId,
+        free_teaser_claimed: freeTeaserClaimed,
+      }, jobErr.message);
       return res.status(502).json({ error: jobErr.message });
     }
 
     if (!job?.id) {
+      await failGeneration({
+        id: generationId,
+        clerk_user_id: clerkUserId,
+        free_teaser_claimed: freeTeaserClaimed,
+      }, "OneShot n'a pas retourné d'identifiant de génération.");
       return res.status(502).json({ error: "OneShot n'a pas retourné d'identifiant de génération." });
     }
 
-    const generationId = randomUUID();
-    const { error: saveError } = await supabaseAdmin
+    const { error: attachError } = await supabaseAdmin
       .from("generations")
-      .insert({
-        id: generationId,
-        clerk_user_id: clerkUserId,
-        mode: mode || "image",
-        prompt: prompt.trim(),
-        image_url: null,
-        preview_url: null,
-        unlocked: false,
+      .update({
         oneshot_job_id: job.id,
-        status: "processing",
-        teaser,
-        free_teaser_claimed: freeTeaserClaimed,
-        consumed_credits: 0,
-        error_message: null,
+        updated_at: new Date().toISOString(),
       });
 
-    if (saveError) {
-      console.error("Failed to persist generation job:", saveError);
+    if (attachError) {
+      console.error("Failed to attach OneShot job:", attachError);
+      await failGeneration({
+        id: generationId,
+        clerk_user_id: clerkUserId,
+        free_teaser_claimed: freeTeaserClaimed,
+      }, "Impossible d'attacher le job de génération.");
       return res.status(500).json({ error: "Erreur lors de l'enregistrement de la génération." });
     }
 
-    generationPersisted = true;
-    console.log(`⏳ Persisted ${teaser ? "teaser" : "full"} generation for ${clerkUserId}: ${generationId} (job ${job.id})`);
+    console.log(`🔗 Attached OneShot job ${job.id} to generation ${generationId}`);
 
     return res.status(202).json({
       generationId,
