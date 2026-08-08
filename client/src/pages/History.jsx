@@ -29,6 +29,7 @@ export default function History() {
       const search = new URLSearchParams();
       if (query) search.set("q", query);
       search.set("fresh", Date.now());
+      search.set("resume", "true");
       const url = `/api/history/${user.id}?${search.toString()}`;
       const res = await fetch(url, {
         cache: "no-store",

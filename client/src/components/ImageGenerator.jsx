@@ -474,10 +474,13 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
         return;
       }
       try {
-        const historyRes = await fetch(`/api/history/${encodeURIComponent(user.id)}?fresh=${Date.now()}`, {
+        const historyRes = await fetch(
+          `/api/history/${encodeURIComponent(user.id)}?resume=false&fresh=${Date.now()}`,
+          {
           cache: "no-store",
           headers: { "Cache-Control": "no-cache" },
-        });
+          },
+        );
         if (historyRes.ok) {
           const history = await historyRes.json();
           history
@@ -490,11 +493,12 @@ export default function ImageGenerator({ onResultChange, skipResume = false }) {
 
       const activeIds = [...ids];
       writeActiveIds(activeIds.filter((id) => id !== pendingUnlock));
-      if (activeIds.length) {
-        activeGenerationIdRef.current = activeIds[activeIds.length - 1];
+      const currentGenerationId = urlGenerationId || activeIds[activeIds.length - 1];
+      if (currentGenerationId) {
+        activeGenerationIdRef.current = currentGenerationId;
         setLoading(true);
         onResultChange?.({ loading: true, error: null, result: null });
-        activeIds.forEach((id) => trackGeneration(id));
+        trackGeneration(currentGenerationId);
       }
     };
 

@@ -11,6 +11,7 @@ const router = express.Router();
 router.get("/:clerkUserId", async (req, res) => {
   const { clerkUserId } = req.params;
   const query = typeof req.query.q === "string" ? req.query.q.trim() : "";
+  const shouldResume = req.query.resume === "true";
 
   let { data, error } = await supabaseAdmin
     .from("generations")
@@ -27,7 +28,7 @@ router.get("/:clerkUserId", async (req, res) => {
   const active = (data ?? []).filter(
     (item) => item.status === "processing" || item.status === "finalizing",
   );
-  if (active.length) {
+  if (shouldResume && active.length) {
     await Promise.all(
       active.map((item) =>
         getGenerationStatus(item.id, clerkUserId).catch((statusError) => {
@@ -56,6 +57,7 @@ router.get("/:clerkUserId", async (req, res) => {
 router.get("/:clerkUserId/search", async (req, res) => {
   const { clerkUserId } = req.params;
   const { q } = req.query;
+  const shouldResume = req.query.resume === "true";
 
   if (!q || q.trim() === "") {
     return res.redirect(`/api/history/${clerkUserId}`);
@@ -76,7 +78,7 @@ router.get("/:clerkUserId/search", async (req, res) => {
   const active = (data ?? []).filter(
     (item) => item.status === "processing" || item.status === "finalizing",
   );
-  if (active.length) {
+  if (shouldResume && active.length) {
     await Promise.all(
       active.map((item) =>
         getGenerationStatus(item.id, clerkUserId).catch((statusError) => {

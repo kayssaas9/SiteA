@@ -28,6 +28,7 @@ export default async function handler(req, res) {
 
   const { clerkUserId } = req.query;
   const query = typeof req.query.q === "string" ? req.query.q.trim() : "";
+  const shouldResume = req.query.resume === "true";
   let request = supabaseAdmin
     .from("generations")
     .select("id, clerk_user_id, mode, prompt, image_url, preview_url, unlocked, status, error_message, created_at")
@@ -41,7 +42,7 @@ export default async function handler(req, res) {
   const active = (data ?? []).filter(
     (item) => item.status === "processing" || item.status === "finalizing",
   );
-  if (active.length) {
+  if (shouldResume && active.length) {
     await Promise.all(
       active.map((item) =>
         getGenerationStatus(item.id, clerkUserId).catch((statusError) => {
